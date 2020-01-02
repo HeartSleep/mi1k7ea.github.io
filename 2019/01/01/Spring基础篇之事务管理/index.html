@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+    <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+    
+      <link rel="icon" href="/kanxi.jpg">
+    
+
+    <title>
+        
+          Spring基础篇之事务管理 - Mi1k7ea
+        
+    </title>
+
+    <!-- Spectre.css framework -->
+    <link rel="stylesheet" href="/css/spectre.min.css">
+    <link rel="stylesheet" href="/css/spectre-exp.min.css">
+    <link rel="stylesheet" href="/css/spectre-icons.min.css">
+
+    <!-- Noto Sans TC -->
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+TC" rel="stylesheet">
+    <!-- Noto Sans SC -->
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+SC" rel="stylesheet">
+    <!-- Noto Sans -->
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet">
+
+    <!-- theme css & js -->
+    <link rel="stylesheet" href="/css/book.css">
+    <script src="/js/book.js"></script>
+
+    <!-- tocbot -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css">
+    
+    <!-- katex -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/zooming/2.1.1/zooming.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const zooming = new Zooming()
+    zooming.listen('img')
+})
+</script>
+
+</head>
+
+<body>
+
+<div class="container">
+  <div class="book-container">
+    <div class="columns">
+      <div class="column col-2 hide-lg">
+        <div class="book-sidebar">
+  <h4 class="site-meta">
+    <a href="/">Mi1k7ea</a>
+  </h4>
+  <div class="sidebar-content">
+    <ul>
+<li><strong>Web安全</strong><ul>
+<li>Web安全基础&amp;Tricks<ul>
+<li><a href="/2019/10/14/文件上传漏洞总结/">文件上传攻击框架</a></li>
+<li><a href="/2019/10/04/CSWSH漏洞总结/">CSWSH漏洞总结</a></li>
+<li><a href="/2019/09/28/SSI注入漏洞总结/">SSI注入漏洞总结</a></li>
+<li><a href="/2019/08/20/JSONP跨域漏洞总结/">JSONP跨域漏洞总结</a></li>
+<li><a href="/2019/08/18/CORS跨域漏洞总结/">CORS跨域漏洞总结</a></li>
+<li><a href="/2019/08/18/利用HTML注入劫持标签Bypass-CSP/">利用HTML注入劫持标签Bypass CSP</a></li>
+<li><a href="/2019/08/11/NoSQL注入之MongoDB/">NoSQL注入之MongoDB</a></li>
+<li><a href="/2019/08/10/Flash安全总结/">Flash安全总结</a></li>
+<li><a href="/2019/08/05/利用Flash进行Json-CSRF攻击/">利用Flash进行Json CSRF攻击</a></li>
+<li><a href="/2019/07/31/SWFUpload-swf的Flash型XSS分析/">SWFUpload.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/30/ZeroClipboard-swf的Flash型XSS分析/">ZeroClipboard.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/28/Flash型CSRF总结/">Flash型CSRF总结</a></li>
+<li><a href="/2019/07/21/Flash型XSS小结/">Flash型XSS总结</a></li>
+<li><a href="/2019/06/30/XSS从弹框到RCE/">XSS从弹框到RCE（IE）</a></li>
+<li><a href="/2019/06/30/命令注入Bypass技巧小结/">命令注入Bypass技巧小结</a></li>
+<li><a href="/2019/06/25/浅析DOM型XSS/">浅析DOM型XSS</a></li>
+<li><a href="/2019/03/22/图片XSS小结/">图片XSS小结</a></li>
+<li><a href="/2019/02/24/CSP策略及绕过技巧小结/">CSP策略及绕过技巧小结</a></li>
+<li><a href="/2019/02/19/一些加载XSS-Payload的标签/">一些加载XSS Payload的标签</a></li>
+<li><a href="/2019/02/16/个人XSS-payload收集/">个人XSS payload收集</a></li>
+<li><a href="/2019/01/30/常见Web漏洞类型/">常见Web漏洞类型总结</a></li>
+<li><a href="/2019/01/01/Sqli-labs-writeup/">Sqli-labs Less1-20</a></li>
+<li><a href="/2019/01/01/SQL注入写WebShell方式小结/">SQL注入写WebShell方式小结</a></li>
+</ul>
+</li>
+<li>Web安全之机器学习</li>
+<li>WriteUp Web<ul>
+<li><a href="/2019/10/20/InCTF-2019-PHP三题复现/">InCTF 2019 PHP+1,+1.5,+2.5三题复现</a></li>
+<li><a href="/2019/10/05/upload-labs-WriteUp/">Upload-Labs WriteUp</a></li>
+<li><a href="/2019/09/28/bWAPP之Cross-Origin-Resource-Sharing-AJAX/">bWAPP之Cross-Origin Resource Sharing (AJAX)</a></li>
+<li><a href="/2019/07/02/DVWA之JavaScript攻击/">DVWA之JavaScript攻击</a></li>
+<li><a href="/2019/06/27/一道Bypass正则过滤的反序列化漏洞题目/">一道Bypass正则过滤的反序列化漏洞题目</a></li>
+<li><a href="/2019/06/27/从一道CTF题看如何利用本地DTD文件实现XXE攻击/">从一道CTF题看如何通过本地DTD文件利用XXE实现回显</a></li>
+<li><a href="/2019/03/31/0CTF-Web-writeup/">0CTF Web writeup</a></li>
+<li><a href="/2019/03/29/Securinets-CTF-Web-writeup/">Securinets CTF Web writeup</a></li>
+<li><a href="/2019/03/21/Teaser-CONFidence-CTF-Web-writeup/">Teaser CONFidence CTF Web writeup</a></li>
+<li><a href="/2019/03/17/SpEL注入之javacon/">SpEL注入之javacon</a></li>
+<li><a href="/2019/03/13/AeroCTF-writeupup之board-tracking-system/">AeroCTF writeupup之board tracking system</a></li>
+<li><a href="/2019/03/09/TAMUctf-Web-writeup/">TAMUctf Web writeup</a></li>
+<li><a href="/2019/02/21/一道绕过CSP的XSS题目/">一道绕过CSP的XSS题目</a></li>
+<li><a href="/2019/02/15/XSS闯关之xss-haozi-me/">XSS闯关之xss.haozi.me</a></li>
+<li><a href="/2019/01/01/通过DVWA学习DOM型XSS/">DVWA之DOM型XSS</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Java</strong><ul>
+<li>Java安全<ul>
+<li><a href="/2019/02/01/Java动态代理机制/">Java动态代理机制</a></li>
+<li><a href="/2019/02/01/Java反射机制/">Java反射机制</a></li>
+<li><a href="/2019/02/03/Java序列化和反序列化机制/">Java序列化和反序列化机制</a></li>
+<li><a href="/2019/09/01/Java-RMI原理与使用/">Java RMI原理与使用</a></li>
+<li><a href="/2019/11/25/（转）Java代码审计指南">（转）Java代码审计指南</a></li>
+<li><a href="/2019/11/25/（转）Java项目中常见jar包的说明">（转）Java项目中常见jar包的说明</a></li>
+<li><a href="/2019/06/09/探讨XXE防御之setFeature设置/">探讨XXE防御之setFeature设置</a></li>
+<li><a href="/2019/05/26/XML注入之SAXBuilder/">XML注入之SAXBuilder</a></li>
+<li><a href="/2019/05/26/XML注入之SAXParser/">XML注入之SAXParser</a></li>
+<li><a href="/2019/05/24/XML注入之SAXReader/">XML注入之SAXReader</a></li>
+<li><a href="/2019/02/13/XML注入之DocumentBuilder/">XML注入之DocumentBuilder与XXE攻击防御</a></li>
+<li><a href="/2019/09/15/浅析JNDI注入/">浅析JNDI注入</a></li>
+<li><a href="/2019/12/08/浅析Java-SPI安全/">浅析Java SPI安全</a></li>
+<li><a href="/2019/02/06/Java反序列化漏洞/">Java反序列化漏洞</a></li>
+<li><a href="/2019/01/01/XMLDecoder反序列化漏洞/">Java XMLDecoder反序列化漏洞</a></li>
+<li><a href="/2019/10/21/XStream反序列化漏洞/">Java XStream反序列化漏洞</a></li>
+<li><a href="/2019/11/29/Java-SnakeYaml反序列化漏洞">Java SnakeYaml反序列化漏洞</a></li>
+<li><a href="/2019/12/07/Java-AMF3反序列化漏洞/">Java AMF3反序列化漏洞</a></li>
+<li><a href="/2019/11/13/Fastjson系列五——高版本JDK绕过及检测与防御/">Fastjson系列五——高版本JDK绕过及检测与防御</a></li>
+<li><a href="/2019/11/11/Fastjson系列四——1-2-25-1-2-47反序列化漏洞（无需开启AutoType）/">Fastjson系列四——1.2.25-1.2.47反序列化漏洞（无需开启AutoType）</a></li>
+<li><a href="/2019/11/10/Fastjson系列三——历史版本补丁绕过（需开启AutoType）/">Fastjson系列三——历史版本补丁绕过（需开启AutoType）</a></li>
+<li><a href="/2019/11/07/Fastjson系列二——1-2-22-1-2-24反序列化漏洞/">Fastjson系列二——1.2.22-1.2.24反序列化漏洞</a></li>
+<li><a href="/2019/11/03/Fastjson系列一——反序列化漏洞基本原理/">Fastjson系列一——反序列化漏洞基本原理</a></li>
+<li><a href="/2019/11/24/Jackson系列七——其他Gadgets/">Jackson系列七——其他Gadgets与检测防御</a></li>
+<li><a href="/2019/11/24/Jackson系列六——CVE-2019-12814（基于JDOM-XSLTransformer利用链）/">Jackson系列六——CVE-2019-12814（基于JDOM XSLTransformer利用链）</a></li>
+<li><a href="/2019/11/22/Jackson系列五——CVE-2019-12384（基于logback利用链）/">Jackson系列五——CVE-2019-12384（基于logback利用链）</a></li>
+<li><a href="/2019/11/19/Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）/">Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）</a></li>
+<li><a href="/2019/11/17/Jackson系列三—CVE-2017-1748（基于ClassPathXmlApplicationContext利用链）/">Jackson系列三——CVE-2017-17485（基于ClassPathXmlApplicationContext利用链）</a></li>
+<li><a href="/2019/11/16/Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）/">Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）</a></li>
+<li><a href="/2019/11/13/Jackson系列一——反序列化漏洞基本原理/">Jackson系列一——反序列化漏洞基本原理</a></li>
+</ul>
+</li>
+<li>Struts2</li>
+<li>Spring<ul>
+<li><a href="/2019/01/01/Spring基础篇之基本概念/">Spring基础篇之基本概念</a></li>
+<li><a href="/2019/01/01/Spring基础篇之IoC容器/">Spring基础篇之IoC容器</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean/">Spring基础篇之Bean</a></li>
+<li><a href="/2019/01/01/Spring基础篇之DI（依赖注入）/">Spring基础篇之DI（依赖注入）</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean装配/">Spring基础篇之Bean装配</a></li>
+<li><a href="/2019/01/01/Spring基础篇之AOP/">Spring基础篇之AOP</a></li>
+<li><a href="/2019/01/01/Spring基础篇之JDBC框架/">Spring基础篇之JDBC框架</a></li>
+<li><a href="/2019/01/01/Spring基础篇之事务管理/">Spring基础篇之事务管理</a></li>
+<li><a href="/2019/09/02/由JNDI注入导致的Spring-Framework反序列化漏洞/">由JNDI注入引发的Spring Framework反序列化漏洞</a></li>
+<li><a href="/2019/04/05/Spring-Data-Rest之cve-2017-8046分析/">浅析Spring Data Rest之cve-2017-8046</a></li>
+</ul>
+</li>
+<li>SpringCloud</li>
+</ul>
+</li>
+<li><strong>PHP</strong><ul>
+<li>PHP安全<ul>
+<li><a href="/2019/08/25/浅谈PHP-FPM安全/">浅谈PHP-FPM安全</a></li>
+<li><a href="/2019/08/03/从蚁剑插件看利用PHP-FPM绕过disable-functions/">从蚁剑插件看利用PHP-FPM绕过disable_functions</a></li>
+<li><a href="/2019/07/20/浅谈几种Bypass-open-basedir的方法/">浅谈几种Bypass open_basedir的方法</a></li>
+<li><a href="/2019/07/16/PHP中mail-函数安全问题与防御/">PHP中mail()函数安全问题与防御</a></li>
+<li><a href="/2019/07/04/浅谈escapeshellarg与参数注入/">浅谈escapeshellarg逃逸与参数注入</a></li>
+<li><a href="/2019/07/02/浅析preg-replace与preg-match/">浅析preg_replace与preg_match</a></li>
+<li><a href="/2019/06/21/PHP弱类型小结/">PHP弱类型及相关函数Bypass小结</a></li>
+<li><a href="/2019/06/20/PHP变量覆盖漏洞/">PHP变量覆盖漏洞小结</a></li>
+<li><a href="/2019/06/09/巧用get-defined-functions隐藏WebShell/">巧用get_defined_functions隐藏WebShell</a></li>
+<li><a href="/2019/06/07/从一道题看PHP7-4的FFI绕过disable-functions/">从RCTF nextphp看PHP7.4的FFI绕过disable_functions</a></li>
+<li><a href="/2019/06/02/浅谈几种Bypass-disable-functions的方法/">浅谈几种Bypass disable_functions的方法</a></li>
+<li><a href="/2019/05/04/PHP对象注入之pop链构造/">PHP对象注入之pop链构造</a></li>
+<li><a href="/2019/04/21/PHP-session反序列化漏洞/">PHP session反序列化漏洞</a></li>
+<li><a href="/2019/01/31/PHP伪协议/">PHP伪协议</a></li>
+<li><a href="/2019/01/01/phar反序列化漏洞/">phar反序列化漏洞</a></li>
+<li><a href="/2019/01/01/Windows下的一种PHP隐蔽后门姿势/">Windows下的一种PHP隐藏后门姿势</a></li>
+<li><a href="/2019/01/01/PHP反序列化漏洞/">PHP unserialize反序列化漏洞</a></li>
+<li><a href="/2019/01/01/PHP内存型木马/">PHP内存型木马</a></li>
+</ul>
+</li>
+<li>CMS</li>
+</ul>
+</li>
+<li><strong>Python</strong><ul>
+<li>Python安全<ul>
+<li><a href="/2019/06/02/浅析Python-Flask-SSTI/">浅析Python Flask SSTI</a></li>
+<li><a href="/2019/05/31/Python沙箱逃逸小结/">Python沙箱逃逸小结</a></li>
+<li><a href="/2019/01/01/PyYAML反序列化漏洞/">Python PyYAML反序列化漏洞</a></li>
+<li><a href="/2019/01/01/cPickle反序列化漏洞/">Python cPickle反序列化漏洞</a></li>
+</ul>
+</li>
+<li>安全开发<ul>
+<li><a href="/2019/06/30/AWD文件监控脚本/">AWD文件监控脚本</a></li>
+<li><a href="/2019/01/01/Python安全小工具之反编译pyc文件/">Python安全小工具之反编译pyc文件</a></li>
+</ul>
+</li>
+<li>爬虫</li>
+<li>Django</li>
+</ul>
+</li>
+<li><strong>JavaScript</strong><ul>
+<li>JavaScript安全<ul>
+<li><a href="/2019/10/20/浅析JavaScript原型链污染攻击/">浅析JavaScript原型链污染攻击</a></li>
+</ul>
+</li>
+<li>NodeJS</li>
+<li>AngularJS</li>
+</ul>
+</li>
+<li><strong>GO</strong><ul>
+<li>GO安全<ul>
+<li><a href="/2020/01/01/浅析Influxdb认证绕过漏洞/">浅析Influxdb认证绕过漏洞</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>二进制安全</strong><ul>
+<li>二进制基础<ul>
+<li><a href="/2019/05/24/GOT表-PLT表与动态链接/">ELF动态链接,PLT和GOT</a></li>
+<li><a href="/2019/04/27/堆基础/">堆基础</a></li>
+<li><a href="/2019/04/15/ELF二进制格式/">ELF二进制格式</a></li>
+<li><a href="/2019/03/03/栈及栈帧/">栈基础</a></li>
+<li><a href="/2019/02/09/ELF安全防御机制小结/">ELF安全防御机制小结</a></li>
+<li><a href="/2019/01/28/IA-32寄存器/">IA-32（Intel Architecture 32位）寄存器</a></li>
+<li><a href="/2019/01/01/Linux环境与相关工具/">Linux环境与相关工具</a></li>
+</ul>
+</li>
+<li>C/C++<ul>
+<li><a href="/2019/03/24/C编写实现Linux反弹shell/">C编写实现Linux反弹shell</a></li>
+</ul>
+</li>
+<li>逆向工程</li>
+<li>Fuzzing</li>
+<li>Pwn<ul>
+<li><a href="/2019/04/20/花式栈溢出之stack-pivoting/">花式栈溢出之stack pivoting</a></li>
+<li><a href="/2019/04/12/中级ROP之ret2csu/">栈溢出之ret2csu</a></li>
+<li><a href="/2019/04/09/蒸米ROP学习笔记/">蒸米32位及64位ROP笔记</a></li>
+<li><a href="/2019/04/07/pwntools笔记/">pwntools笔记</a></li>
+<li><a href="/2019/03/23/花式栈溢出之Stack-smash/">花式栈溢出之Stack smash</a></li>
+<li><a href="/2019/03/05/栈溢出之ret2libc/">栈溢出之ret2libc</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2syscall/">栈溢出之ret2syscall</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2shellcode/">栈溢出之ret2shellcode</a></li>
+<li><a href="/2019/03/03/ROP之ret2text/">ROP基础及栈溢出之ret2text</a></li>
+<li><a href="/2019/03/03/栈溢出基本原理/">栈溢出基本原理</a></li>
+</ul>
+</li>
+<li>WriteUp Pwn<ul>
+<li><a href="/2019/03/08/TAMUctf-Pwn-writeup/">TAMUctf Pwn writeup</a></li>
+</ul>
+</li>
+<li>WriteUp Reverse<ul>
+<li><a href="/2019/01/01/HITB_Binary_100_writeup/">HITB Binary 100 writeup</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>渗透测试</strong><ul>
+<li>基础&amp;Tricks</li>
+<li>Kali</li>
+<li>Metasploit</li>
+<li>内网渗透</li>
+<li>提权<ul>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（一）：Administrator提权到System">Administrator提权到System</a></li>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（二）：注入进程和利用漏洞提权">注入进程和利用漏洞提权</a></li>
+</ul>
+</li>
+<li>免杀</li>
+<li>工具</li>
+</ul>
+</li>
+<li><strong>OS</strong><ul>
+<li>Windows<ul>
+<li><a href="/2019/01/01/将Python脚本转换为exe">将Python脚本转换为exe</a></li>
+<li><a href="/2019/01/01/几个查看用户信息的Windows程序">几个查看用户信息的Windows程序</a></li>
+</ul>
+</li>
+<li>Linux</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+</div>
+
+<script src="/js/book-sidebar.js"></script>
+
+<script>
+collapse_sidebar(2)
+highlight_tab()
+show_sidebar()
+</script>
+      </div>
+
+      <div class="column col-8 col-lg-12">
+        <div class="book-content">
+          <div class="book-navbar">
+  <header class="navbar">
+  <section class="navbar-section">
+    <img class="navbar-icon" src="/kanxi.jpg">
+  </section>
+  <section class="navbar-center">
+    Mi1k7ea
+  </section>
+  <section class="navbar-section">
+    <label class="accordion-header c-hand" for="accordion-sidebar">
+      <i class="icon icon-menu"></i>
+    </label>
+  </section>
+</header>
+
+<div class="accordion">
+  <input type="checkbox" id="accordion-sidebar" name="accordion-checkbox" hidden>
+  <div class="accordion-body">
+    <ul>
+<li><strong>Web安全</strong><ul>
+<li>Web安全基础&amp;Tricks<ul>
+<li><a href="/2019/10/14/文件上传漏洞总结/">文件上传攻击框架</a></li>
+<li><a href="/2019/10/04/CSWSH漏洞总结/">CSWSH漏洞总结</a></li>
+<li><a href="/2019/09/28/SSI注入漏洞总结/">SSI注入漏洞总结</a></li>
+<li><a href="/2019/08/20/JSONP跨域漏洞总结/">JSONP跨域漏洞总结</a></li>
+<li><a href="/2019/08/18/CORS跨域漏洞总结/">CORS跨域漏洞总结</a></li>
+<li><a href="/2019/08/18/利用HTML注入劫持标签Bypass-CSP/">利用HTML注入劫持标签Bypass CSP</a></li>
+<li><a href="/2019/08/11/NoSQL注入之MongoDB/">NoSQL注入之MongoDB</a></li>
+<li><a href="/2019/08/10/Flash安全总结/">Flash安全总结</a></li>
+<li><a href="/2019/08/05/利用Flash进行Json-CSRF攻击/">利用Flash进行Json CSRF攻击</a></li>
+<li><a href="/2019/07/31/SWFUpload-swf的Flash型XSS分析/">SWFUpload.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/30/ZeroClipboard-swf的Flash型XSS分析/">ZeroClipboard.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/28/Flash型CSRF总结/">Flash型CSRF总结</a></li>
+<li><a href="/2019/07/21/Flash型XSS小结/">Flash型XSS总结</a></li>
+<li><a href="/2019/06/30/XSS从弹框到RCE/">XSS从弹框到RCE（IE）</a></li>
+<li><a href="/2019/06/30/命令注入Bypass技巧小结/">命令注入Bypass技巧小结</a></li>
+<li><a href="/2019/06/25/浅析DOM型XSS/">浅析DOM型XSS</a></li>
+<li><a href="/2019/03/22/图片XSS小结/">图片XSS小结</a></li>
+<li><a href="/2019/02/24/CSP策略及绕过技巧小结/">CSP策略及绕过技巧小结</a></li>
+<li><a href="/2019/02/19/一些加载XSS-Payload的标签/">一些加载XSS Payload的标签</a></li>
+<li><a href="/2019/02/16/个人XSS-payload收集/">个人XSS payload收集</a></li>
+<li><a href="/2019/01/30/常见Web漏洞类型/">常见Web漏洞类型总结</a></li>
+<li><a href="/2019/01/01/Sqli-labs-writeup/">Sqli-labs Less1-20</a></li>
+<li><a href="/2019/01/01/SQL注入写WebShell方式小结/">SQL注入写WebShell方式小结</a></li>
+</ul>
+</li>
+<li>Web安全之机器学习</li>
+<li>WriteUp Web<ul>
+<li><a href="/2019/10/20/InCTF-2019-PHP三题复现/">InCTF 2019 PHP+1,+1.5,+2.5三题复现</a></li>
+<li><a href="/2019/10/05/upload-labs-WriteUp/">Upload-Labs WriteUp</a></li>
+<li><a href="/2019/09/28/bWAPP之Cross-Origin-Resource-Sharing-AJAX/">bWAPP之Cross-Origin Resource Sharing (AJAX)</a></li>
+<li><a href="/2019/07/02/DVWA之JavaScript攻击/">DVWA之JavaScript攻击</a></li>
+<li><a href="/2019/06/27/一道Bypass正则过滤的反序列化漏洞题目/">一道Bypass正则过滤的反序列化漏洞题目</a></li>
+<li><a href="/2019/06/27/从一道CTF题看如何利用本地DTD文件实现XXE攻击/">从一道CTF题看如何通过本地DTD文件利用XXE实现回显</a></li>
+<li><a href="/2019/03/31/0CTF-Web-writeup/">0CTF Web writeup</a></li>
+<li><a href="/2019/03/29/Securinets-CTF-Web-writeup/">Securinets CTF Web writeup</a></li>
+<li><a href="/2019/03/21/Teaser-CONFidence-CTF-Web-writeup/">Teaser CONFidence CTF Web writeup</a></li>
+<li><a href="/2019/03/17/SpEL注入之javacon/">SpEL注入之javacon</a></li>
+<li><a href="/2019/03/13/AeroCTF-writeupup之board-tracking-system/">AeroCTF writeupup之board tracking system</a></li>
+<li><a href="/2019/03/09/TAMUctf-Web-writeup/">TAMUctf Web writeup</a></li>
+<li><a href="/2019/02/21/一道绕过CSP的XSS题目/">一道绕过CSP的XSS题目</a></li>
+<li><a href="/2019/02/15/XSS闯关之xss-haozi-me/">XSS闯关之xss.haozi.me</a></li>
+<li><a href="/2019/01/01/通过DVWA学习DOM型XSS/">DVWA之DOM型XSS</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Java</strong><ul>
+<li>Java安全<ul>
+<li><a href="/2019/02/01/Java动态代理机制/">Java动态代理机制</a></li>
+<li><a href="/2019/02/01/Java反射机制/">Java反射机制</a></li>
+<li><a href="/2019/02/03/Java序列化和反序列化机制/">Java序列化和反序列化机制</a></li>
+<li><a href="/2019/09/01/Java-RMI原理与使用/">Java RMI原理与使用</a></li>
+<li><a href="/2019/11/25/（转）Java代码审计指南">（转）Java代码审计指南</a></li>
+<li><a href="/2019/11/25/（转）Java项目中常见jar包的说明">（转）Java项目中常见jar包的说明</a></li>
+<li><a href="/2019/06/09/探讨XXE防御之setFeature设置/">探讨XXE防御之setFeature设置</a></li>
+<li><a href="/2019/05/26/XML注入之SAXBuilder/">XML注入之SAXBuilder</a></li>
+<li><a href="/2019/05/26/XML注入之SAXParser/">XML注入之SAXParser</a></li>
+<li><a href="/2019/05/24/XML注入之SAXReader/">XML注入之SAXReader</a></li>
+<li><a href="/2019/02/13/XML注入之DocumentBuilder/">XML注入之DocumentBuilder与XXE攻击防御</a></li>
+<li><a href="/2019/09/15/浅析JNDI注入/">浅析JNDI注入</a></li>
+<li><a href="/2019/12/08/浅析Java-SPI安全/">浅析Java SPI安全</a></li>
+<li><a href="/2019/02/06/Java反序列化漏洞/">Java反序列化漏洞</a></li>
+<li><a href="/2019/01/01/XMLDecoder反序列化漏洞/">Java XMLDecoder反序列化漏洞</a></li>
+<li><a href="/2019/10/21/XStream反序列化漏洞/">Java XStream反序列化漏洞</a></li>
+<li><a href="/2019/11/29/Java-SnakeYaml反序列化漏洞">Java SnakeYaml反序列化漏洞</a></li>
+<li><a href="/2019/12/07/Java-AMF3反序列化漏洞/">Java AMF3反序列化漏洞</a></li>
+<li><a href="/2019/11/13/Fastjson系列五——高版本JDK绕过及检测与防御/">Fastjson系列五——高版本JDK绕过及检测与防御</a></li>
+<li><a href="/2019/11/11/Fastjson系列四——1-2-25-1-2-47反序列化漏洞（无需开启AutoType）/">Fastjson系列四——1.2.25-1.2.47反序列化漏洞（无需开启AutoType）</a></li>
+<li><a href="/2019/11/10/Fastjson系列三——历史版本补丁绕过（需开启AutoType）/">Fastjson系列三——历史版本补丁绕过（需开启AutoType）</a></li>
+<li><a href="/2019/11/07/Fastjson系列二——1-2-22-1-2-24反序列化漏洞/">Fastjson系列二——1.2.22-1.2.24反序列化漏洞</a></li>
+<li><a href="/2019/11/03/Fastjson系列一——反序列化漏洞基本原理/">Fastjson系列一——反序列化漏洞基本原理</a></li>
+<li><a href="/2019/11/24/Jackson系列七——其他Gadgets/">Jackson系列七——其他Gadgets与检测防御</a></li>
+<li><a href="/2019/11/24/Jackson系列六——CVE-2019-12814（基于JDOM-XSLTransformer利用链）/">Jackson系列六——CVE-2019-12814（基于JDOM XSLTransformer利用链）</a></li>
+<li><a href="/2019/11/22/Jackson系列五——CVE-2019-12384（基于logback利用链）/">Jackson系列五——CVE-2019-12384（基于logback利用链）</a></li>
+<li><a href="/2019/11/19/Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）/">Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）</a></li>
+<li><a href="/2019/11/17/Jackson系列三—CVE-2017-1748（基于ClassPathXmlApplicationContext利用链）/">Jackson系列三——CVE-2017-17485（基于ClassPathXmlApplicationContext利用链）</a></li>
+<li><a href="/2019/11/16/Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）/">Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）</a></li>
+<li><a href="/2019/11/13/Jackson系列一——反序列化漏洞基本原理/">Jackson系列一——反序列化漏洞基本原理</a></li>
+</ul>
+</li>
+<li>Struts2</li>
+<li>Spring<ul>
+<li><a href="/2019/01/01/Spring基础篇之基本概念/">Spring基础篇之基本概念</a></li>
+<li><a href="/2019/01/01/Spring基础篇之IoC容器/">Spring基础篇之IoC容器</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean/">Spring基础篇之Bean</a></li>
+<li><a href="/2019/01/01/Spring基础篇之DI（依赖注入）/">Spring基础篇之DI（依赖注入）</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean装配/">Spring基础篇之Bean装配</a></li>
+<li><a href="/2019/01/01/Spring基础篇之AOP/">Spring基础篇之AOP</a></li>
+<li><a href="/2019/01/01/Spring基础篇之JDBC框架/">Spring基础篇之JDBC框架</a></li>
+<li><a href="/2019/01/01/Spring基础篇之事务管理/">Spring基础篇之事务管理</a></li>
+<li><a href="/2019/09/02/由JNDI注入导致的Spring-Framework反序列化漏洞/">由JNDI注入引发的Spring Framework反序列化漏洞</a></li>
+<li><a href="/2019/04/05/Spring-Data-Rest之cve-2017-8046分析/">浅析Spring Data Rest之cve-2017-8046</a></li>
+</ul>
+</li>
+<li>SpringCloud</li>
+</ul>
+</li>
+<li><strong>PHP</strong><ul>
+<li>PHP安全<ul>
+<li><a href="/2019/08/25/浅谈PHP-FPM安全/">浅谈PHP-FPM安全</a></li>
+<li><a href="/2019/08/03/从蚁剑插件看利用PHP-FPM绕过disable-functions/">从蚁剑插件看利用PHP-FPM绕过disable_functions</a></li>
+<li><a href="/2019/07/20/浅谈几种Bypass-open-basedir的方法/">浅谈几种Bypass open_basedir的方法</a></li>
+<li><a href="/2019/07/16/PHP中mail-函数安全问题与防御/">PHP中mail()函数安全问题与防御</a></li>
+<li><a href="/2019/07/04/浅谈escapeshellarg与参数注入/">浅谈escapeshellarg逃逸与参数注入</a></li>
+<li><a href="/2019/07/02/浅析preg-replace与preg-match/">浅析preg_replace与preg_match</a></li>
+<li><a href="/2019/06/21/PHP弱类型小结/">PHP弱类型及相关函数Bypass小结</a></li>
+<li><a href="/2019/06/20/PHP变量覆盖漏洞/">PHP变量覆盖漏洞小结</a></li>
+<li><a href="/2019/06/09/巧用get-defined-functions隐藏WebShell/">巧用get_defined_functions隐藏WebShell</a></li>
+<li><a href="/2019/06/07/从一道题看PHP7-4的FFI绕过disable-functions/">从RCTF nextphp看PHP7.4的FFI绕过disable_functions</a></li>
+<li><a href="/2019/06/02/浅谈几种Bypass-disable-functions的方法/">浅谈几种Bypass disable_functions的方法</a></li>
+<li><a href="/2019/05/04/PHP对象注入之pop链构造/">PHP对象注入之pop链构造</a></li>
+<li><a href="/2019/04/21/PHP-session反序列化漏洞/">PHP session反序列化漏洞</a></li>
+<li><a href="/2019/01/31/PHP伪协议/">PHP伪协议</a></li>
+<li><a href="/2019/01/01/phar反序列化漏洞/">phar反序列化漏洞</a></li>
+<li><a href="/2019/01/01/Windows下的一种PHP隐蔽后门姿势/">Windows下的一种PHP隐藏后门姿势</a></li>
+<li><a href="/2019/01/01/PHP反序列化漏洞/">PHP unserialize反序列化漏洞</a></li>
+<li><a href="/2019/01/01/PHP内存型木马/">PHP内存型木马</a></li>
+</ul>
+</li>
+<li>CMS</li>
+</ul>
+</li>
+<li><strong>Python</strong><ul>
+<li>Python安全<ul>
+<li><a href="/2019/06/02/浅析Python-Flask-SSTI/">浅析Python Flask SSTI</a></li>
+<li><a href="/2019/05/31/Python沙箱逃逸小结/">Python沙箱逃逸小结</a></li>
+<li><a href="/2019/01/01/PyYAML反序列化漏洞/">Python PyYAML反序列化漏洞</a></li>
+<li><a href="/2019/01/01/cPickle反序列化漏洞/">Python cPickle反序列化漏洞</a></li>
+</ul>
+</li>
+<li>安全开发<ul>
+<li><a href="/2019/06/30/AWD文件监控脚本/">AWD文件监控脚本</a></li>
+<li><a href="/2019/01/01/Python安全小工具之反编译pyc文件/">Python安全小工具之反编译pyc文件</a></li>
+</ul>
+</li>
+<li>爬虫</li>
+<li>Django</li>
+</ul>
+</li>
+<li><strong>JavaScript</strong><ul>
+<li>JavaScript安全<ul>
+<li><a href="/2019/10/20/浅析JavaScript原型链污染攻击/">浅析JavaScript原型链污染攻击</a></li>
+</ul>
+</li>
+<li>NodeJS</li>
+<li>AngularJS</li>
+</ul>
+</li>
+<li><strong>GO</strong><ul>
+<li>GO安全<ul>
+<li><a href="/2020/01/01/浅析Influxdb认证绕过漏洞/">浅析Influxdb认证绕过漏洞</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>二进制安全</strong><ul>
+<li>二进制基础<ul>
+<li><a href="/2019/05/24/GOT表-PLT表与动态链接/">ELF动态链接,PLT和GOT</a></li>
+<li><a href="/2019/04/27/堆基础/">堆基础</a></li>
+<li><a href="/2019/04/15/ELF二进制格式/">ELF二进制格式</a></li>
+<li><a href="/2019/03/03/栈及栈帧/">栈基础</a></li>
+<li><a href="/2019/02/09/ELF安全防御机制小结/">ELF安全防御机制小结</a></li>
+<li><a href="/2019/01/28/IA-32寄存器/">IA-32（Intel Architecture 32位）寄存器</a></li>
+<li><a href="/2019/01/01/Linux环境与相关工具/">Linux环境与相关工具</a></li>
+</ul>
+</li>
+<li>C/C++<ul>
+<li><a href="/2019/03/24/C编写实现Linux反弹shell/">C编写实现Linux反弹shell</a></li>
+</ul>
+</li>
+<li>逆向工程</li>
+<li>Fuzzing</li>
+<li>Pwn<ul>
+<li><a href="/2019/04/20/花式栈溢出之stack-pivoting/">花式栈溢出之stack pivoting</a></li>
+<li><a href="/2019/04/12/中级ROP之ret2csu/">栈溢出之ret2csu</a></li>
+<li><a href="/2019/04/09/蒸米ROP学习笔记/">蒸米32位及64位ROP笔记</a></li>
+<li><a href="/2019/04/07/pwntools笔记/">pwntools笔记</a></li>
+<li><a href="/2019/03/23/花式栈溢出之Stack-smash/">花式栈溢出之Stack smash</a></li>
+<li><a href="/2019/03/05/栈溢出之ret2libc/">栈溢出之ret2libc</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2syscall/">栈溢出之ret2syscall</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2shellcode/">栈溢出之ret2shellcode</a></li>
+<li><a href="/2019/03/03/ROP之ret2text/">ROP基础及栈溢出之ret2text</a></li>
+<li><a href="/2019/03/03/栈溢出基本原理/">栈溢出基本原理</a></li>
+</ul>
+</li>
+<li>WriteUp Pwn<ul>
+<li><a href="/2019/03/08/TAMUctf-Pwn-writeup/">TAMUctf Pwn writeup</a></li>
+</ul>
+</li>
+<li>WriteUp Reverse<ul>
+<li><a href="/2019/01/01/HITB_Binary_100_writeup/">HITB Binary 100 writeup</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>渗透测试</strong><ul>
+<li>基础&amp;Tricks</li>
+<li>Kali</li>
+<li>Metasploit</li>
+<li>内网渗透</li>
+<li>提权<ul>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（一）：Administrator提权到System">Administrator提权到System</a></li>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（二）：注入进程和利用漏洞提权">注入进程和利用漏洞提权</a></li>
+</ul>
+</li>
+<li>免杀</li>
+<li>工具</li>
+</ul>
+</li>
+<li><strong>OS</strong><ul>
+<li>Windows<ul>
+<li><a href="/2019/01/01/将Python脚本转换为exe">将Python脚本转换为exe</a></li>
+<li><a href="/2019/01/01/几个查看用户信息的Windows程序">几个查看用户信息的Windows程序</a></li>
+</ul>
+</li>
+<li>Linux</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+</div>
+</div>
+
+<header class="post-header text-center">
+	<h1 class="title">
+		Spring基础篇之事务管理
+	</h1>
+	<span class="read">
+		阅读量 <span id="busuanzi_value_page_pv"></span>
+	</span>
+</header><br>
+
+<div class="book-post">
+  <h2 id="0x00-参考"><a href="#0x00-参考" class="headerlink" title="0x00 参考"></a>0x00 参考</h2><p>本笔记直接参考或引自如下链接文章：</p>
+<p><a href="https://www.w3cschool.cn/wkspring/" target="_blank" rel="noopener">https://www.w3cschool.cn/wkspring/</a></p>
+<p><a href="http://c.biancheng.net/spring/" target="_blank" rel="noopener">http://c.biancheng.net/spring/</a></p>
+<h2 id="0x01-Spring事务管理"><a href="#0x01-Spring事务管理" class="headerlink" title="0x01 Spring事务管理"></a>0x01 Spring事务管理</h2><p>事务就是一系列的动作，它们综合在一起才是一个完整的工作单元，这些动作必须全部完成，如果有一个失败的话，那么事务就会回滚到最开始的状态，仿佛什么都没发生过一样。</p>
+<p>在企业级应用程序开发中，事务管理是必不可少的技术，用来确保数据的完整性和一致性。</p>
+<p>事务的概念可以描述为具有以下四个关键属性说成是<strong>ACID</strong>：</p>
+<ul>
+<li><strong>原子性：</strong>事务应该当作一个单独单元的操作，这意味着整个序列操作要么是成功，要么是失败的。</li>
+<li><strong>一致性：</strong>这表示数据库的引用完整性的一致性，表中唯一的主键等。</li>
+<li><strong>隔离性：</strong>可能同时处理很多有相同的数据集的事务，每个事务应该与其他事务隔离，以防止数据损坏。</li>
+<li><strong>持久性：</strong>一个事务一旦完成全部操作后，这个事务的结果必须是永久性的，不能因系统故障而从数据库中删除。</li>
+</ul>
+<p>Spring的事务管理是基于AOP实现的，而AOP是以方法为单位的。Spring的事务属性分别为传播行为、隔离级别、只读和超时属性，这些属性提供了事务应用的方法和描述策略。</p>
+<p>在Java EE开发经常采用的分层模式中，Spring的事务处理位于业务逻辑层，它提供了针对事务的解决方案。</p>
+<h2 id="0x02-三个核心类"><a href="#0x02-三个核心类" class="headerlink" title="0x02 三个核心类"></a>0x02 三个核心类</h2><p>在Spring解压包的libs目录中，包含一个名称为spring-tx-4.1.6.RELEASE.jar的文件，该文件是 Spring 提供的用于事务管理的 JAR 包，其中包括事务管理的三个核心接口：PlatformTransactionManager、TransactionDefinition和TransactionStatus。</p>
+<p>三个核心类之间的关系如图：</p>
+<p><img src="/2019/01/01/Spring基础篇之事务管理/1.png" alt=""></p>
+<h3 id="PlatformTransactionManager"><a href="#PlatformTransactionManager" class="headerlink" title="PlatformTransactionManager"></a>PlatformTransactionManager</h3><p>PlatformTransactionManager接口是Spring提供的平台事务管理器，用于管理事务。该接口中提供了三个事务操作方法，具体如下：</p>
+<ul>
+<li>TransactionStatus getTransaction（TransactionDefinition definition）：用于获取事务状态信息。</li>
+<li>void commit（TransactionStatus status）：用于提交事务。</li>
+<li>void rollback（TransactionStatus status）：用于回滚事务。</li>
+</ul>
+<p>在项目中，Spring将xml中配置的事务详细信息封装到对象TransactionDefinition中，然后通过事务管理器的getTransaction()方法获得事务的状态（TransactionStatus），并对事务进行下一步的操作。</p>
+<h3 id="TransactionDefinition"><a href="#TransactionDefinition" class="headerlink" title="TransactionDefinition"></a>TransactionDefinition</h3><p>TransactionDefinition接口是事务定义（描述）的对象，它提供了事务相关信息获取的方法，其中包括五个操作，具体如下：</p>
+<ul>
+<li>String getName()：获取事务对象名称。</li>
+<li>int getIsolationLevel()：获取事务的隔离级别。</li>
+<li>int getPropagationBehavior()：获取事务的传播行为。</li>
+<li>int getTimeout()：获取事务的超时时间。</li>
+<li>boolean isReadOnly()：获取事务是否只读。</li>
+</ul>
+<p>隔离级别：</p>
+<table>
+<thead>
+<tr>
+<th>序号</th>
+<th>隔离 &amp; 描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>TransactionDefinition.ISOLATION_DEFAULT</strong>这是默认的隔离级别。</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>TransactionDefinition.ISOLATION_READ_COMMITTED</strong>表明能够阻止误读；可以发生不可重复读和虚读。</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>TransactionDefinition.ISOLATION_READ_UNCOMMITTED</strong>表明可以发生误读、不可重复读和虚读。</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>TransactionDefinition.ISOLATION_REPEATABLE_READ</strong>表明能够阻止误读和不可重复读；可以发生虚读。</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>TransactionDefinition.ISOLATION_SERIALIZABLE</strong>表明能够阻止误读、不可重复读和虚读。</td>
+</tr>
+</tbody>
+</table>
+<p>传播类型：</p>
+<table>
+<thead>
+<tr>
+<th>序号</th>
+<th>传播 &amp; 描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>TransactionDefinition.PROPAGATION_MANDATORY</strong>支持当前事务；如果不存在当前事务，则抛出一个异常。</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>TransactionDefinition.PROPAGATION_NESTED</strong>如果存在当前事务，则在一个嵌套的事务中执行。</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>TransactionDefinition.PROPAGATION_NEVER</strong>不支持当前事务；如果存在当前事务，则抛出一个异常。</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>TransactionDefinition.PROPAGATION_NOT_SUPPORTED</strong>不支持当前事务；而总是执行非事务性。</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>TransactionDefinition.PROPAGATION_REQUIRED</strong>支持当前事务；如果不存在事务，则创建一个新的事务。</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>TransactionDefinition.PROPAGATION_REQUIRES_NEW</strong>创建一个新事务，如果存在一个事务，则把当前事务挂起。</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>TransactionDefinition.PROPAGATION_SUPPORTS</strong>支持当前事务；如果不存在，则执行非事务性。</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>TransactionDefinition.TIMEOUT_DEFAULT</strong>使用默认超时的底层事务系统，或者如果不支持超时则没有。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="TransactionStatus"><a href="#TransactionStatus" class="headerlink" title="TransactionStatus"></a>TransactionStatus</h3><p>TransactionStatus接口是事务的状态，它描述了某一时间点上事务的状态信息。其中包含六个操作，具体如下：</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>void flush()</td>
+<td>刷新事务</td>
+</tr>
+<tr>
+<td>boolean hasSavepoint()</td>
+<td>获取是否存在保存点</td>
+</tr>
+<tr>
+<td>boolean isCompleted()</td>
+<td>获取事务是否完成</td>
+</tr>
+<tr>
+<td>boolean isNewTransaction()</td>
+<td>获取是否是新事务</td>
+</tr>
+<tr>
+<td>boolean isRollbackOnly()</td>
+<td>获取是否回滚</td>
+</tr>
+<tr>
+<td>void setRollbackOnly()</td>
+<td>设置事务回滚</td>
+</tr>
+</tbody>
+</table>
+<h2 id="0x03-编程式事务管理"><a href="#0x03-编程式事务管理" class="headerlink" title="0x03 编程式事务管理"></a>0x03 编程式事务管理</h2><p>编程式事务管理方法允许你在对你的源代码编程的帮助下管理事务。这给了你极大地灵活性，但是它很难维护。</p>
+<h3 id="Demo"><a href="#Demo" class="headerlink" title="Demo"></a>Demo</h3><p>注意，这里需要的jar包和前面<a href="http://localhost:4000/2019/01/01/Spring基础篇之JDBC框架/" target="_blank" rel="noopener">《Spring基础篇之JDBC框架》</a>中的Demo是一样的。</p>
+<p>StudentMarks.java：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.mi1k7ea;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StudentMarks</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Integer age;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line">    <span class="keyword">private</span> Integer marks;</span><br><span class="line">    <span class="keyword">private</span> Integer year;</span><br><span class="line">    <span class="keyword">private</span> Integer sid;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAge</span><span class="params">(Integer age)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.age = age;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Integer <span class="title">getAge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> age;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setId</span><span class="params">(Integer id)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.id = id;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Integer <span class="title">getId</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> id;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setMarks</span><span class="params">(Integer marks)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.marks = marks;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Integer <span class="title">getMarks</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> marks;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setYear</span><span class="params">(Integer year)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.year = year;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Integer <span class="title">getYear</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> year;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setSid</span><span class="params">(Integer sid)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.sid = sid;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Integer <span class="title">getSid</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> sid;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>StudentDAO.java，数据访问对象接口类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.mi1k7ea;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.sql.DataSource;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">StudentDAO</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * This is the method to be used to initialize</span></span><br><span class="line"><span class="comment">     * database resources ie. connection.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setDataSource</span><span class="params">(DataSource ds)</span></span>;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * This is the method to be used to create</span></span><br><span class="line"><span class="comment">     * a record in the Student and Marks tables.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">create</span><span class="params">(String name, Integer age, Integer marks, Integer year)</span></span>;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * This is the method to be used to list down</span></span><br><span class="line"><span class="comment">     * all the records from the Student and Marks tables.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;StudentMarks&gt; <span class="title">listStudents</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>StudentMarksMapper.java，：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.mi1k7ea;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.jdbc.core.RowMapper;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.sql.ResultSet;</span><br><span class="line"><span class="keyword">import</span> java.sql.SQLException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StudentMarksMapper</span> <span class="keyword">implements</span> <span class="title">RowMapper</span>&lt;<span class="title">StudentMarks</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> StudentMarks <span class="title">mapRow</span><span class="params">(ResultSet rs, <span class="keyword">int</span> rowNum)</span> <span class="keyword">throws</span> SQLException </span>&#123;</span><br><span class="line">        StudentMarks studentMarks = <span class="keyword">new</span> StudentMarks();</span><br><span class="line">        studentMarks.setId(rs.getInt(<span class="string">"id"</span>));</span><br><span class="line">        studentMarks.setName(rs.getString(<span class="string">"name"</span>));</span><br><span class="line">        studentMarks.setAge(rs.getInt(<span class="string">"age"</span>));</span><br><span class="line">        studentMarks.setSid(rs.getInt(<span class="string">"sid"</span>));</span><br><span class="line">        studentMarks.setMarks(rs.getInt(<span class="string">"marks"</span>));</span><br><span class="line">        studentMarks.setYear(rs.getInt(<span class="string">"year"</span>));</span><br><span class="line">        <span class="keyword">return</span> studentMarks;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>StudentJDBCTemplate.java，DAO接口类StudentDAO的实现类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.mi1k7ea;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.dao.DataAccessException;</span><br><span class="line"><span class="keyword">import</span> org.springframework.jdbc.core.JdbcTemplate;</span><br><span class="line"><span class="keyword">import</span> org.springframework.transaction.PlatformTransactionManager;</span><br><span class="line"><span class="keyword">import</span> org.springframework.transaction.TransactionDefinition;</span><br><span class="line"><span class="keyword">import</span> org.springframework.transaction.TransactionStatus;</span><br><span class="line"><span class="keyword">import</span> org.springframework.transaction.support.DefaultTransactionDefinition;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.sql.DataSource;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StudentJDBCTemplate</span> <span class="keyword">implements</span> <span class="title">StudentDAO</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> DataSource dataSource;</span><br><span class="line">    <span class="keyword">private</span> JdbcTemplate jdbcTemplateObject;</span><br><span class="line">    <span class="keyword">private</span> PlatformTransactionManager transactionManager;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setDataSource</span><span class="params">(DataSource dataSource)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.dataSource = dataSource;</span><br><span class="line">        <span class="keyword">this</span>.jdbcTemplateObject = <span class="keyword">new</span> JdbcTemplate(dataSource);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setTransactionManager</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">            PlatformTransactionManager transactionManager)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.transactionManager = transactionManager;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">create</span><span class="params">(String name, Integer age, Integer marks, Integer year)</span></span>&#123;</span><br><span class="line">        TransactionDefinition def = <span class="keyword">new</span> DefaultTransactionDefinition();</span><br><span class="line">        TransactionStatus status = transactionManager.getTransaction(def);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            String SQL1 = <span class="string">"insert into Student (name, age) values (?, ?)"</span>;</span><br><span class="line">            jdbcTemplateObject.update( SQL1, name, age);</span><br><span class="line">            <span class="comment">// Get the latest student id to be used in Marks table</span></span><br><span class="line">            String SQL2 = <span class="string">"select max(id) from Student"</span>;</span><br><span class="line">            <span class="keyword">int</span> sid = jdbcTemplateObject.queryForInt( SQL2 );</span><br><span class="line">            String SQL3 = <span class="string">"insert into Marks(sid, marks, year) "</span> +</span><br><span class="line">                    <span class="string">"values (?, ?, ?)"</span>;</span><br><span class="line">            jdbcTemplateObject.update( SQL3, sid, marks, year);</span><br><span class="line">            System.out.println(<span class="string">"Created Name = "</span> + name + <span class="string">", Age = "</span> + age);</span><br><span class="line">            transactionManager.commit(status);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (DataAccessException e) &#123;</span><br><span class="line">            System.out.println(<span class="string">"Error in creating record, rolling back"</span>);</span><br><span class="line">            transactionManager.rollback(status);</span><br><span class="line">            <span class="keyword">throw</span> e;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;StudentMarks&gt; <span class="title">listStudents</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        String SQL = <span class="string">"select * from Student, Marks where Student.id=Marks.sid"</span>;</span><br><span class="line">        List &lt;StudentMarks&gt; studentMarks = jdbcTemplateObject.query(SQL,</span><br><span class="line">                <span class="keyword">new</span> StudentMarksMapper());</span><br><span class="line">        <span class="keyword">return</span> studentMarks;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>MainApp.java：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.mi1k7ea;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.context.ApplicationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainApp</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        ApplicationContext context = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">"Beans.xml"</span>);</span><br><span class="line">        StudentJDBCTemplate studentJDBCTemplate = (StudentJDBCTemplate)context.getBean(<span class="string">"studentJDBCTemplate"</span>);</span><br><span class="line">        System.out.println(<span class="string">"------Records creation--------"</span> );</span><br><span class="line">        studentJDBCTemplate.create(<span class="string">"Zara"</span>, <span class="number">11</span>, <span class="number">99</span>, <span class="number">2010</span>);</span><br><span class="line">        studentJDBCTemplate.create(<span class="string">"Nuha"</span>, <span class="number">20</span>, <span class="number">97</span>, <span class="number">2010</span>);</span><br><span class="line">        studentJDBCTemplate.create(<span class="string">"Ayan"</span>, <span class="number">25</span>, <span class="number">100</span>, <span class="number">2011</span>);</span><br><span class="line">        System.out.println(<span class="string">"------Listing all the records--------"</span> );</span><br><span class="line">        List&lt;StudentMarks&gt; studentMarks = studentJDBCTemplate.listStudents();</span><br><span class="line">        <span class="keyword">for</span> (StudentMarks record : studentMarks) &#123;</span><br><span class="line">            System.out.print(<span class="string">"ID : "</span> + record.getId() );</span><br><span class="line">            System.out.print(<span class="string">", Name : "</span> + record.getName() );</span><br><span class="line">            System.out.print(<span class="string">", Marks : "</span> + record.getMarks());</span><br><span class="line">            System.out.print(<span class="string">", Year : "</span> + record.getYear());</span><br><span class="line">            System.out.println(<span class="string">", Age : "</span> + record.getAge());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Beans.xml：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://www.springframework.org/schema/beans</span></span></span><br><span class="line"><span class="tag"><span class="string">    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd "</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- Initialization for data source --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"dataSource"</span></span></span><br><span class="line"><span class="tag">          <span class="attr">class</span>=<span class="string">"org.springframework.jdbc.datasource.DriverManagerDataSource"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"driverClassName"</span> <span class="attr">value</span>=<span class="string">"com.mysql.jdbc.Driver"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"url"</span> <span class="attr">value</span>=<span class="string">"jdbc:mysql://localhost:3306/test?serverTimezone=UTC"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"username"</span> <span class="attr">value</span>=<span class="string">"root"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"password"</span> <span class="attr">value</span>=<span class="string">""</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- Initialization for TransactionManager --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"transactionManager"</span></span></span><br><span class="line"><span class="tag">          <span class="attr">class</span>=<span class="string">"org.springframework.jdbc.datasource.DataSourceTransactionManager"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"dataSource"</span>  <span class="attr">ref</span>=<span class="string">"dataSource"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- Definition for studentJDBCTemplate bean --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"studentJDBCTemplate"</span></span></span><br><span class="line"><span class="tag">          <span class="attr">class</span>=<span class="string">"com.mi1k7ea.StudentJDBCTemplate"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"dataSource"</span>  <span class="attr">ref</span>=<span class="string">"dataSource"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"transactionManager"</span>  <span class="attr">ref</span>=<span class="string">"transactionManager"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>在执行之前，需要在数据库中执行以下SQL语句创建test数据库以及新建相关的表：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">DATABASE</span> <span class="keyword">test</span>;</span><br><span class="line"><span class="keyword">USE</span> <span class="keyword">test</span>;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> Student(</span><br><span class="line">   <span class="keyword">ID</span>   <span class="built_in">INT</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">   <span class="keyword">NAME</span> <span class="built_in">VARCHAR</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">   AGE  <span class="built_in">INT</span> <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">   PRIMARY <span class="keyword">KEY</span> (<span class="keyword">ID</span>)</span><br><span class="line">);</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> Marks(</span><br><span class="line">   <span class="keyword">SID</span> <span class="built_in">INT</span> <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">   MARKS  <span class="built_in">INT</span> <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">   <span class="keyword">YEAR</span>   <span class="built_in">INT</span> <span class="keyword">NOT</span> <span class="literal">NULL</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<p>创建成功后，运行MainApp成功使用JDBC框架实现数据库的连接使用：</p>
+<p><img src="/2019/01/01/Spring基础篇之事务管理/2.png" alt=""></p>
+<p><img src="/2019/01/01/Spring基础篇之事务管理/3.png" alt=""></p>
+<h2 id="0x04-声明式事务管理"><a href="#0x04-声明式事务管理" class="headerlink" title="0x04 声明式事务管理"></a>0x04 声明式事务管理</h2><p>Spring声明式事务管理在底层采用了AOP技术，其最大的优点在于无须通过编程的方式管理事务，只需要在配置文件中进行相关的规则声明，就可以将事务规则应用到业务逻辑中。</p>
+<p>下面是与声明式事务相关的步骤：</p>
+<ul>
+<li>我们使用标签，它创建一个事务处理的建议，同时，我们定义一个匹配所有方法的切入点，我们希望这些方法是事务型的并且会引用事务型的建议。</li>
+<li>如果在事务型配置中包含了一个方法的名称，那么创建的建议在调用方法之前就会在事务中开始进行。</li>
+<li>目标方法会在try/catch块中执行。</li>
+<li>如果方法正常结束，AOP建议会成功的提交事务，否则它执行回滚操作。</li>
+</ul>
+<p>Spring实现声明式事务管理主要有两种方式：</p>
+<ul>
+<li>基于XML方式的声明式事务管理。</li>
+<li>通过Annotation注解方式的事务管理。</li>
+</ul>
+<h3 id="基于XML实现事务管理"><a href="#基于XML实现事务管理" class="headerlink" title="基于XML实现事务管理"></a>基于XML实现事务管理</h3><p>基于XML形式实现的事务管理，就是通过XML配置文件来实现的事务管理。下面直接看示例。</p>
+<p>注意，这里需要的jar包，在前面编程式事务管理的基础上，还需添加一个c3p0、mchange-commons的jar包。</p>
+<p>先在MySQL中创建一个名为spring的数据库，然后在该数据库中创建一个account表，并向表中插入两条数据，其SQL执行语句如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">DATABASE</span> spring;</span><br><span class="line"><span class="keyword">USE</span> spring;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="keyword">account</span> (</span><br><span class="line">    <span class="keyword">id</span> <span class="built_in">INT</span> (<span class="number">11</span>) PRIMARY <span class="keyword">KEY</span> AUTO_INCREMENT,</span><br><span class="line">    username <span class="built_in">VARCHAR</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">    money <span class="built_in">INT</span> <span class="keyword">DEFAULT</span> <span class="literal">NULL</span></span><br><span class="line">);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="keyword">account</span> <span class="keyword">VALUES</span> (<span class="number">1</span>,<span class="string">'zhangsan'</span>,<span class="number">1000</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="keyword">account</span> <span class="keyword">VALUES</span> (<span class="number">2</span>,<span class="string">'lisi'</span>,<span class="number">1000</span>);</span><br></pre></td></tr></table></figure>
+<p>接着在项目的src下创建一个名为c3p0-db.properties的配置文件，这里使用C3P0数据源，需要在该文件中添加如下配置：</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">jdbc.driverClass</span> = <span class="string">com.mysql.jdbc.Driver</span></span><br><span class="line"><span class="meta">jdbc.jdbcUrl</span> = <span class="string">jdbc:mysql://localhost:3306/spring?serverTimezone=UTC</span></span><br><span class="line"><span class="meta">jdbc.user</span> = <span class="string">root</span></span><br><span class="line"><span class="meta">jdbc.password</span> =<span class="string"></span></span><br></pre></td></tr></table></figure>
+<p>AccountDao.java，DAO接口类，在com.mi1k7ea.dao包中，并在接口中创建汇款和收款的方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.mi1k7ea.dao;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">AccountDao</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 汇款</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">out</span><span class="params">(String outUser, <span class="keyword">int</span> money)</span></span>;</span><br><span class="line">    <span class="comment">// 收款</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">in</span><span class="params">(String inUser, <span class="keyword">int</span> money)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>AccountDaoImpl.java，DAO层接口实现类，在com.mi1k7ea.dao.impl包中，使用JdbcTemplate.update()方法实现了更新操作：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.mi1k7ea.dao.impl;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.mi1k7ea.dao.AccountDao;</span><br><span class="line"><span class="keyword">import</span> org.springframework.jdbc.core.JdbcTemplate;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AccountDaoImpl</span> <span class="keyword">implements</span> <span class="title">AccountDao</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> JdbcTemplate jdbcTemplate;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setJdbcTemplate</span><span class="params">(JdbcTemplate jdbcTemplate)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.jdbcTemplate = jdbcTemplate;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 汇款的实现方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">out</span><span class="params">(String outUser, <span class="keyword">int</span> money)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.jdbcTemplate.update(<span class="string">"update account set money =money-? where username =?"</span>, money, outUser);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 收款的实现方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">in</span><span class="params">(String inUser, <span class="keyword">int</span> money)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.jdbcTemplate.update(<span class="string">"update account set money =money+? where username =?"</span>, money, inUser);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>AccountService.java，Service层DAO接口类，在com.mi1k7ea.service包中：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.mi1k7ea.service;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">AccountService</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 转账</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">transfer</span><span class="params">(String outUser, String inUser, <span class="keyword">int</span> money)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>AccountServiceImpl.java，Service层DAO接口实现类，在com.mi1k7ea.service.impl包中，实现了AccountService接口，，并对转账方法进行了实现，根据参数的不同调用DAO层相应的方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.mi1k7ea.service.impl;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.mi1k7ea.dao.AccountDao;</span><br><span class="line"><span class="keyword">import</span> com.mi1k7ea.service.AccountService;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AccountServiceImpl</span> <span class="keyword">implements</span> <span class="title">AccountService</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> AccountDao accountDao;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAccountDao</span><span class="params">(AccountDao accountDao)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.accountDao = accountDao;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">transfer</span><span class="params">(String outUser, String inUser, <span class="keyword">int</span> money)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.accountDao.out(outUser, money);</span><br><span class="line">        <span class="keyword">this</span>.accountDao.in(inUser, money);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>创建Spirng配置文件applicationContext.xml，位于src目录下，其中使用<code>&lt;tx:advice&gt;</code>标记配置事务通知内容：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:context</span>=<span class="string">"http://www.springframework.org/schema/context"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:tx</span>=<span class="string">"http://www.springframework.org/schema/tx"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:aop</span>=<span class="string">"http://www.springframework.org/schema/aop"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://www.springframework.org/schema/beans</span></span></span><br><span class="line"><span class="tag"><span class="string">            http://www.springframework.org/schema/beans/spring-beans-2.5.xsd  </span></span></span><br><span class="line"><span class="tag"><span class="string">            http://www.springframework.org/schema/context</span></span></span><br><span class="line"><span class="tag"><span class="string">            http://www.springframework.org/schema/context/spring-context.xsd</span></span></span><br><span class="line"><span class="tag"><span class="string">            http://www.springframework.org/schema/tx</span></span></span><br><span class="line"><span class="tag"><span class="string">            http://www.springframework.org/schema/tx/spring-tx-2.5.xsd</span></span></span><br><span class="line"><span class="tag"><span class="string">            http://www.springframework.org/schema/aop</span></span></span><br><span class="line"><span class="tag"><span class="string">            http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 加载properties文件 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">context:property-placeholder</span> <span class="attr">location</span>=<span class="string">"classpath:c3p0-db.properties"</span> /&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 配置数据源，读取properties文件信息 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"dataSource"</span> <span class="attr">class</span>=<span class="string">"com.mchange.v2.c3p0.ComboPooledDataSource"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"driverClass"</span> <span class="attr">value</span>=<span class="string">"$&#123;jdbc.driverClass&#125;"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"jdbcUrl"</span> <span class="attr">value</span>=<span class="string">"$&#123;jdbc.jdbcUrl&#125;"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"user"</span> <span class="attr">value</span>=<span class="string">"$&#123;jdbc.user&#125;"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"password"</span> <span class="attr">value</span>=<span class="string">"$&#123;jdbc.password&#125;"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 配置jdbc模板 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"jdbcTemplate"</span> <span class="attr">class</span>=<span class="string">"org.springframework.jdbc.core.JdbcTemplate"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"dataSource"</span> <span class="attr">ref</span>=<span class="string">"dataSource"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 配置dao --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"accountDao"</span> <span class="attr">class</span>=<span class="string">"com.mi1k7ea.dao.impl.AccountDaoImpl"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"jdbcTemplate"</span> <span class="attr">ref</span>=<span class="string">"jdbcTemplate"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 配置service --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"accountService"</span> <span class="attr">class</span>=<span class="string">"com.mi1k7ea.service.impl.AccountServiceImpl"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"accountDao"</span> <span class="attr">ref</span>=<span class="string">"accountDao"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 事务管理器，依赖于数据源 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"txManager"</span></span></span><br><span class="line"><span class="tag">          <span class="attr">class</span>=<span class="string">"org.springframework.jdbc.datasource.DataSourceTransactionManager"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"dataSource"</span> <span class="attr">ref</span>=<span class="string">"dataSource"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 编写通知：对事务进行增强（通知），需要编写切入点和具体执行事务的细节 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">tx:advice</span> <span class="attr">id</span>=<span class="string">"txAdvice"</span> <span class="attr">transaction-manager</span>=<span class="string">"txManager"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">tx:attributes</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- 给切入点方法添加事务详情，name表示方法名称，*表示任意方法名称，propagation用于设置传播行为，read-only表示隔离级别，是否只读 --&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">tx:method</span> <span class="attr">name</span>=<span class="string">"find*"</span> <span class="attr">propagation</span>=<span class="string">"SUPPORTS"</span></span></span><br><span class="line"><span class="tag">                       <span class="attr">rollback-for</span>=<span class="string">"Exception"</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">tx:method</span> <span class="attr">name</span>=<span class="string">"*"</span> <span class="attr">propagation</span>=<span class="string">"REQUIRED"</span> <span class="attr">isolation</span>=<span class="string">"DEFAULT"</span></span></span><br><span class="line"><span class="tag">                       <span class="attr">read-only</span>=<span class="string">"false"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">tx:attributes</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">tx:advice</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- aop编写，让Spring自动对目标生成代理，需要使用AspectJ的表达式 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aop:config</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 切入点 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">aop:pointcut</span> <span class="attr">expression</span>=<span class="string">"execution(* com.mi1k7ea.service.*.*(..))"</span></span></span><br><span class="line"><span class="tag">                      <span class="attr">id</span>=<span class="string">"txPointCut"</span> /&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 切面：将切入点与通知整合 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">aop:advisor</span> <span class="attr">pointcut-ref</span>=<span class="string">"txPointCut"</span> <span class="attr">advice-ref</span>=<span class="string">"txAdvice"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">aop:config</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>MainApp.java：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.mi1k7ea;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.mi1k7ea.service.AccountService;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.ApplicationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainApp</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        ApplicationContext applicationContext = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">"applicationContext.xml"</span>);</span><br><span class="line">        AccountService accountService = (AccountService) applicationContext.getBean(<span class="string">"accountService"</span>);</span><br><span class="line">        accountService.transfer(<span class="string">"zhangsan"</span>, <span class="string">"lisi"</span>, <span class="number">100</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行之后，无报错的话，在MySQL中就可以看到zhangsan用户的钱减少了100而lisi的钱多了100：</p>
+<p><img src="/2019/01/01/Spring基础篇之事务管理/4.png" alt=""></p>
+<h3 id="基于Annotation实现事务管理"><a href="#基于Annotation实现事务管理" class="headerlink" title="基于Annotation实现事务管理"></a>基于Annotation实现事务管理</h3><p>使用Annotation的方式非常简单，只需要在项目中做两件事：</p>
+<ol>
+<li><p>在Spring容器中注册驱动，代码如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">tx:annotation-driven</span> <span class="attr">transaction-manager</span>=<span class="string">"txManager"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在需要使用事务的业务类或者方法中添加注解@Transactional，并配置@Transactional的参数；</p>
+</li>
+</ol>
+<p>下面还是修改上一小节的示例作为演示。</p>
+<p>修改Spring配置文件applicationContext.xml，与原来的配置文件相比，这里只修改了事务管理器部分，新添加并注册了事务管理器的驱动：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:context</span>=<span class="string">"http://www.springframework.org/schema/context"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:tx</span>=<span class="string">"http://www.springframework.org/schema/tx"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:aop</span>=<span class="string">"http://www.springframework.org/schema/aop"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://www.springframework.org/schema/beans</span></span></span><br><span class="line"><span class="tag"><span class="string">            http://www.springframework.org/schema/beans/spring-beans-2.5.xsd  </span></span></span><br><span class="line"><span class="tag"><span class="string">            http://www.springframework.org/schema/context</span></span></span><br><span class="line"><span class="tag"><span class="string">            http://www.springframework.org/schema/context/spring-context.xsd</span></span></span><br><span class="line"><span class="tag"><span class="string">            http://www.springframework.org/schema/tx</span></span></span><br><span class="line"><span class="tag"><span class="string">            http://www.springframework.org/schema/tx/spring-tx-2.5.xsd</span></span></span><br><span class="line"><span class="tag"><span class="string">            http://www.springframework.org/schema/aop</span></span></span><br><span class="line"><span class="tag"><span class="string">            http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 加载properties文件 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">context:property-placeholder</span> <span class="attr">location</span>=<span class="string">"classpath:c3p0-db.properties"</span> /&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 配置数据源，读取properties文件信息 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"dataSource"</span> <span class="attr">class</span>=<span class="string">"com.mchange.v2.c3p0.ComboPooledDataSource"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"driverClass"</span> <span class="attr">value</span>=<span class="string">"$&#123;jdbc.driverClass&#125;"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"jdbcUrl"</span> <span class="attr">value</span>=<span class="string">"$&#123;jdbc.jdbcUrl&#125;"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"user"</span> <span class="attr">value</span>=<span class="string">"$&#123;jdbc.user&#125;"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"password"</span> <span class="attr">value</span>=<span class="string">"$&#123;jdbc.password&#125;"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 配置jdbc模板 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"jdbcTemplate"</span> <span class="attr">class</span>=<span class="string">"org.springframework.jdbc.core.JdbcTemplate"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"dataSource"</span> <span class="attr">ref</span>=<span class="string">"dataSource"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 配置dao --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"accountDao"</span> <span class="attr">class</span>=<span class="string">"com.mi1k7ea.dao.impl.AccountDaoImpl"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"jdbcTemplate"</span> <span class="attr">ref</span>=<span class="string">"jdbcTemplate"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 配置service --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"accountService"</span> <span class="attr">class</span>=<span class="string">"com.mi1k7ea.service.impl.AccountServiceImpl"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"accountDao"</span> <span class="attr">ref</span>=<span class="string">"accountDao"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 事务管理器，依赖于数据源 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"txManager"</span></span></span><br><span class="line"><span class="tag">          <span class="attr">class</span>=<span class="string">"org.springframework.jdbc.datasource.DataSourceTransactionManager"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"dataSource"</span> <span class="attr">ref</span>=<span class="string">"dataSource"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 注册事务管理驱动 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">tx:annotation-driven</span> <span class="attr">transaction-manager</span>=<span class="string">"txManager"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>需要注意得失，在学习AOP注解方式开发时，需要在配置文件中开启注解处理器，指定扫描哪些包下的注解，这里没有开启注解处理器是因为在XML中手动配置了AccountServiceImpl，而@Transactional注解就配置在该类中，所以会直接生效。</p>
+<p>修改AccountServiceImpl.java，在文件中添加@Transactional注解及参数，注意在使用@Transactional注解时参数之间用”,”进行分割：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.mi1k7ea.service.impl;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.mi1k7ea.dao.AccountDao;</span><br><span class="line"><span class="keyword">import</span> com.mi1k7ea.service.AccountService;</span><br><span class="line"><span class="keyword">import</span> org.springframework.transaction.annotation.Isolation;</span><br><span class="line"><span class="keyword">import</span> org.springframework.transaction.annotation.Propagation;</span><br><span class="line"><span class="keyword">import</span> org.springframework.transaction.annotation.Transactional;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Transactional</span>(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = <span class="keyword">false</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AccountServiceImpl</span> <span class="keyword">implements</span> <span class="title">AccountService</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> AccountDao accountDao;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAccountDao</span><span class="params">(AccountDao accountDao)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.accountDao = accountDao;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">transfer</span><span class="params">(String outUser, String inUser, <span class="keyword">int</span> money)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.accountDao.out(outUser, money);</span><br><span class="line">        <span class="keyword">this</span>.accountDao.in(inUser, money);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行MainApp之后，效果和前面的是一样的。</p>
+
+</div>
+
+<br>
+<div><center>
+  <span>Copyright &copy; Mi1k7ea</span>  |  <span id="busuanzi_container_site_uv">本站总访问量 <span id="busuanzi_value_site_uv"></span> 次</span>
+</center></div>
+
+
+  <div class="book-comments">
+    
+
+
+
+
+  </div>
+
+
+<script src="/js/book-post.js"></script>
+        </div>
+      </div>
+
+      <div class="column col-2 hide-lg">
+        <div class="book-toc">
+  <div class="book-tocbot">
+  </div>
+  <div class="book-tocbot-menu">
+    <a class="book-toc-expand" onclick="expand_toc()">Expand all</a>
+    <a onclick="go_top()">Back to top</a>
+    <a onclick="go_bottom()">Go to bottom</a>
+  </div>
+</div>
+
+<script>
+tocbot.init({
+  tocSelector: '.book-tocbot',
+  contentSelector: '.book-post',
+  headingSelector: 'h1, h2, h3, h4, h5',
+  collapseDepth: 2,
+  orderedList: false,
+  scrollSmooth: false,
+});
+
+function expand_toc(){
+  var b = document.querySelector(".book-toc-expand");
+  tocbot.init({
+    tocSelector: '.book-tocbot',
+    contentSelector: '.book-post',
+    headingSelector: 'h1, h2, h3, h4, h5',
+    collapseDepth: 6,
+    orderedList: false,
+    scrollSmooth: false,
+  });
+  b.setAttribute("onclick", "collapse_toc()");
+  b.innerHTML = "Collapse all"
+}
+
+function collapse_toc(){
+  var b = document.querySelector(".book-toc-expand");
+  tocbot.init({
+    tocSelector: '.book-tocbot',
+    contentSelector: '.book-post',
+    headingSelector: 'h1, h2, h3, h4, h5',
+    collapseDepth: 2,
+    orderedList: false,
+    scrollSmooth: false,
+  });
+  b.setAttribute("onclick", "expand_toc()");
+  b.innerHTML = "Expand all"
+}
+
+function go_top() {
+  window.scrollTo(0, 0);
+}
+
+function go_bottom() {
+  window.scrollTo(0, document.body.scrollHeight);
+}
+
+</script>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

