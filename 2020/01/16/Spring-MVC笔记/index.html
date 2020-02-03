@@ -167,6 +167,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <li><a href="/2019/01/01/Spring基础篇之事务管理/">Spring基础篇之事务管理</a></li>
 <li><a href="/2019/09/02/由JNDI注入导致的Spring-Framework反序列化漏洞/">由JNDI注入引发的Spring Framework反序列化漏洞</a></li>
 <li><a href="/2019/04/05/Spring-Data-Rest之cve-2017-8046分析/">浅析Spring Data Rest之cve-2017-8046</a></li>
+<li><a href="/2020/02/03/浅析Spring-Data-Commons之CVE-2018-1273/">浅析Spring Data Commons之CVE-2018-1273</a></li>
 </ul>
 </li>
 <li>SpringCloud</li>
@@ -435,6 +436,7 @@ show_sidebar()
 <li><a href="/2019/01/01/Spring基础篇之事务管理/">Spring基础篇之事务管理</a></li>
 <li><a href="/2019/09/02/由JNDI注入导致的Spring-Framework反序列化漏洞/">由JNDI注入引发的Spring Framework反序列化漏洞</a></li>
 <li><a href="/2019/04/05/Spring-Data-Rest之cve-2017-8046分析/">浅析Spring Data Rest之cve-2017-8046</a></li>
+<li><a href="/2020/02/03/浅析Spring-Data-Commons之CVE-2018-1273/">浅析Spring Data Commons之CVE-2018-1273</a></li>
 </ul>
 </li>
 <li>SpringCloud</li>
@@ -580,7 +582,24 @@ show_sidebar()
 </header><br>
 
 <div class="book-post">
-  <p>…</p>
+  <h2 id="0x00-参考"><a href="#0x00-参考" class="headerlink" title="0x00 参考"></a>0x00 参考</h2><p><a href="http://c.biancheng.net/spring_mvc/" target="_blank" rel="noopener">http://c.biancheng.net/spring_mvc/</a></p>
+<h2 id="0x01-MVC设计模式"><a href="#0x01-MVC设计模式" class="headerlink" title="0x01 MVC设计模式"></a>0x01 MVC设计模式</h2><p>MVC是Model、View和Controller的缩写，分别代表Web应用程序中的三种职责：</p>
+<ul>
+<li>Model模型：用于存储数据以及处理用户请求的业务逻辑。</li>
+<li>View视图：向控制器提交数据，显示模型中的数据。</li>
+<li>Controller控制器：根据视图提出的请求判断将请求和数据交给哪个模型处理，将处理后的有关结果交给哪个视图更新显示。</li>
+</ul>
+<p>MVC设计不仅限于Java Web应用，还包括许多应用，比如前端、PHP、.NET 等语言。之所以那么做的根本原因在于解耦各个模块。</p>
+<p>其中，经典的基于Servlet的MVC模式的具体实现如下：</p>
+<p><img src="/2020/01/16/Spring-MVC笔记/1.png" alt=""></p>
+<ul>
+<li>模型：一个或多个JavaBean对象，用于存储数据（实体模型，由JavaBean类创建）和处理业务逻辑（业务模型，由一般的Java类创建）。</li>
+<li>视图：一个或多个JSP页面，向控制器提交数据和为模型提供数据显示，JSP页面主要使用HTML标记和JavaBean标记来显示数据。</li>
+<li>控制器：一个或多个Servlet对象，根据视图提交的请求进行控制，即将请求转发给处理业务逻辑的JavaBean，并将处理结果存放到实体模型JavaBean中，输出给视图显示。</li>
+</ul>
+<h2 id="0x02-Spring-MVC简介"><a href="#0x02-Spring-MVC简介" class="headerlink" title="0x02 Spring MVC简介"></a>0x02 Spring MVC简介</h2><p>Spring MVC是Spring提供给Web应用的框架设计，是典型的MVC架构。</p>
+<p>Spring MVC框架主要由DispatcherServlet、处理器映射、控制器、视图解析器、视图组成，其工作原理如图：</p>
+<p>…</p>
 
 </div>
 
