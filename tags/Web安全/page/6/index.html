@@ -79,6 +79,8 @@ document.addEventListener('DOMContentLoaded', function () {
 <li><a href="/2019/08/18/利用HTML注入劫持标签Bypass-CSP/">利用HTML注入劫持标签Bypass CSP</a></li>
 <li><a href="/2019/08/11/NoSQL注入之MongoDB/">NoSQL注入之MongoDB</a></li>
 <li><a href="/2019/08/10/Flash安全总结/">Flash安全总结</a></li>
+<li><a href="/2020/03/05/Redis安全小结/">Redis安全小结</a></li>
+<li><a href="/2020/02/29/SSRF-Tricks小结/">SSRF Tricks小结</a></li>
 <li><a href="/2020/01/21/CSRF-Tricks小结/">CSRF Tricks小结</a></li>
 <li><a href="/2019/08/05/利用Flash进行Json-CSRF攻击/">利用Flash进行Json CSRF攻击</a></li>
 <li><a href="/2019/07/31/SWFUpload-swf的Flash型XSS分析/">SWFUpload.swf的Flash型XSS分析</a></li>
@@ -212,6 +214,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <li><a href="/2019/05/31/Python沙箱逃逸小结/">Python沙箱逃逸小结</a></li>
 <li><a href="/2019/01/01/PyYAML反序列化漏洞/">Python PyYAML反序列化漏洞</a></li>
 <li><a href="/2019/01/01/cPickle反序列化漏洞/">Python cPickle反序列化漏洞</a></li>
+<li><a href="/2020/03/09/Python-urllib-CRLF注入漏洞小结/">Python urllib CRLF注入漏洞小结</a></li>
 </ul>
 </li>
 <li>安全开发<ul>
@@ -283,7 +286,13 @@ document.addEventListener('DOMContentLoaded', function () {
 <li>基础&amp;Tricks</li>
 <li>Kali</li>
 <li>Metasploit</li>
-<li>内网渗透</li>
+<li>内网渗透<ul>
+<li><a href="/2020/02/15/内网渗透基础/">内网渗透基础与域环境搭建</a></li>
+<li><a href="/2020/02/18/Windows-PowerShell基础/">内网渗透之Windows PowerShell基础</a></li>
+<li><a href="/2020/02/27/内网信息收集之本机信息收集/">内网信息收集之本机信息收集</a></li>
+<li><a href="/2020/03/08/内网信息收集之域相关信息收集/">内网信息收集之域相关信息收集</a></li>
+</ul>
+</li>
 <li>提权<ul>
 <li><a href="/2019/01/01/关于本地提权的学习笔记（一）：Administrator提权到System">Administrator提权到System</a></li>
 <li><a href="/2019/01/01/关于本地提权的学习笔记（二）：注入进程和利用漏洞提权">注入进程和利用漏洞提权</a></li>
@@ -335,6 +344,27 @@ show_sidebar()
           <ul class="archive-list-item">
           
               <li>
+                <span>2019-07-30</span>
+                <a href="/2019/07/30/ZeroClipboard-swf的Flash型XSS分析/">
+                  ZeroClipboard.swf的Flash型XSS分析
+                </a>
+              </li>
+          
+              <li>
+                <span>2019-07-28</span>
+                <a href="/2019/07/28/Flash型CSRF总结/">
+                  Flash型CSRF总结
+                </a>
+              </li>
+          
+              <li>
+                <span>2019-07-21</span>
+                <a href="/2019/07/21/Flash型XSS小结/">
+                  Flash型XSS总结
+                </a>
+              </li>
+          
+              <li>
                 <span>2019-07-20</span>
                 <a href="/2019/07/20/浅谈几种Bypass-open-basedir的方法/">
                   浅谈几种Bypass open_basedir的方法
@@ -383,34 +413,13 @@ show_sidebar()
                 </a>
               </li>
           
-              <li>
-                <span>2019-06-27</span>
-                <a href="/2019/06/27/一道Bypass正则过滤的反序列化漏洞题目/">
-                  一道Bypass正则过滤的反序列化漏洞题目
-                </a>
-              </li>
-          
-              <li>
-                <span>2019-06-27</span>
-                <a href="/2019/06/27/从一道CTF题看如何利用本地DTD文件实现XXE攻击/">
-                  从一道CTF题看如何通过本地DTD文件利用XXE实现回显
-                </a>
-              </li>
-          
-              <li>
-                <span>2019-06-25</span>
-                <a href="/2019/06/25/浅析DOM型XSS/">
-                  浅析DOM型XSS
-                </a>
-              </li>
-          
           </ul>
       </div>
   
 
   
     <nav class="pager">
-        <a class="extend prev" rel="prev" href="/tags/Web安全/page/5/">Prev</a><a class="page-number" href="/tags/Web安全/">1</a><span class="space">&hellip;</span><a class="page-number" href="/tags/Web安全/page/4/">4</a><a class="page-number" href="/tags/Web安全/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/tags/Web安全/page/7/">7</a><a class="page-number" href="/tags/Web安全/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/tags/Web安全/page/10/">10</a><a class="extend next" rel="next" href="/tags/Web安全/page/7/">Next</a>
+        <a class="extend prev" rel="prev" href="/tags/Web安全/page/5/">Prev</a><a class="page-number" href="/tags/Web安全/">1</a><span class="space">&hellip;</span><a class="page-number" href="/tags/Web安全/page/4/">4</a><a class="page-number" href="/tags/Web安全/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/tags/Web安全/page/7/">7</a><a class="page-number" href="/tags/Web安全/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/tags/Web安全/page/11/">11</a><a class="extend next" rel="next" href="/tags/Web安全/page/7/">Next</a>
     </nav>
   
 </div>
