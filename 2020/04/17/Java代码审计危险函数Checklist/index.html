@@ -1,0 +1,2582 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+    <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+    
+      <link rel="icon" href="/kanxi.jpg">
+    
+
+    <title>
+        
+          Java代码审计危险函数Checklist - Mi1k7ea
+        
+    </title>
+
+    <!-- Spectre.css framework -->
+    <link rel="stylesheet" href="/css/spectre.min.css">
+    <link rel="stylesheet" href="/css/spectre-exp.min.css">
+    <link rel="stylesheet" href="/css/spectre-icons.min.css">
+
+    <!-- Noto Sans TC -->
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+TC" rel="stylesheet">
+    <!-- Noto Sans SC -->
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+SC" rel="stylesheet">
+    <!-- Noto Sans -->
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet">
+
+    <!-- theme css & js -->
+    <link rel="stylesheet" href="/css/book.css">
+    <script src="/js/book.js"></script>
+
+    <!-- tocbot -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css">
+    
+    <!-- katex -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/zooming/2.1.1/zooming.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const zooming = new Zooming()
+    zooming.listen('img')
+})
+</script>
+
+</head>
+
+<body>
+
+<div class="container">
+  <div class="book-container">
+    <div class="columns">
+      <div class="column col-2 hide-lg">
+        <div class="book-sidebar">
+  <h4 class="site-meta">
+    <a href="/">Mi1k7ea</a>
+  </h4>
+  <div class="sidebar-content">
+    <p>Good Good Study</p>
+<ul>
+<li><strong><a href="/archives">归档</a></strong>    |    <strong><a href="/secwebsite/">站点收录</a></strong>    |    <strong><a href="/atom.xml">RSS</a></strong></li>
+</ul>
+<hr>
+<ul>
+<li><strong>Web安全</strong><ul>
+<li>Web安全基础&amp;Tricks<ul>
+<li><a href="/2019/10/14/文件上传漏洞总结/">文件上传攻击框架</a></li>
+<li><a href="/2019/10/04/CSWSH漏洞总结/">CSWSH漏洞总结</a></li>
+<li><a href="/2019/09/28/SSI注入漏洞总结/">SSI注入漏洞总结</a></li>
+<li><a href="/2019/08/20/JSONP跨域漏洞总结/">JSONP跨域漏洞总结</a></li>
+<li><a href="/2019/08/18/CORS跨域漏洞总结/">CORS跨域漏洞总结</a></li>
+<li><a href="/2020/04/06/浅析postMessage安全/">postMessage跨域漏洞总结</a></li>
+<li><a href="/2020/01/04/浅析XSSI漏洞/">浅析XSSI漏洞</a></li>
+<li><a href="/2020/03/11/浅析HRS漏洞/">浅析HRS漏洞</a></li>
+<li><a href="/2019/08/18/利用HTML注入劫持标签Bypass-CSP/">利用HTML注入劫持标签Bypass CSP</a></li>
+<li><a href="/2019/08/11/NoSQL注入之MongoDB/">NoSQL注入之MongoDB</a></li>
+<li><a href="/2019/08/10/Flash安全总结/">Flash安全总结</a></li>
+<li><a href="/2020/03/05/Redis安全小结/">Redis安全小结</a></li>
+<li><a href="/2020/02/29/SSRF-Tricks小结/">SSRF Tricks小结</a></li>
+<li><a href="/2020/01/21/CSRF-Tricks小结/">CSRF Tricks小结</a></li>
+<li><a href="/2019/08/05/利用Flash进行Json-CSRF攻击/">利用Flash进行Json CSRF攻击</a></li>
+<li><a href="/2019/07/31/SWFUpload-swf的Flash型XSS分析/">SWFUpload.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/30/ZeroClipboard-swf的Flash型XSS分析/">ZeroClipboard.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/28/Flash型CSRF总结/">Flash型CSRF总结</a></li>
+<li><a href="/2019/07/21/Flash型XSS小结/">Flash型XSS总结</a></li>
+<li><a href="/2019/06/30/命令注入Bypass技巧小结/">命令注入Bypass技巧小结</a></li>
+<li><a href="/2020/04/06/从浏览器解析原理看XSS/">从浏览器解析原理看XSS</a></li>
+<li><a href="/2020/04/07/跨域通信中的XSS利用/">跨域通信中的XSS利用</a></li>
+<li><a href="/2019/02/16/个人XSS-payload收集/">个人XSS payload收集</a></li>
+<li><a href="/2019/02/19/一些加载XSS-Payload的标签/">一些加载XSS Payload的标签</a></li>
+<li><a href="/2019/06/30/XSS从弹框到RCE/">XSS从弹框到RCE（IE）</a></li>
+<li><a href="/2019/06/25/浅析DOM型XSS/">浅析DOM型XSS</a></li>
+<li><a href="/2019/03/22/图片XSS小结/">图片XSS小结</a></li>
+<li><a href="/2019/02/24/CSP策略及绕过技巧小结/">CSP策略及绕过技巧小结</a></li>
+<li><a href="/2020/01/26/浅析XSSJacking/">浅析XSSJacking</a></li>
+<li><a href="/2019/01/30/常见Web漏洞类型/">常见Web漏洞类型总结</a></li>
+<li><a href="/2019/01/01/SQL注入写WebShell方式小结/">SQL注入写WebShell方式小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78716609" target="_blank" rel="noopener">(旧博客)Web安全加固小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78686832" target="_blank" rel="noopener">(旧博客)DoS与DDoS小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78301189" target="_blank" rel="noopener">(旧博客)MySQL数据库提权小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/69952026" target="_blank" rel="noopener">(旧博客)OWASP_top_10漏洞的总结笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76944203" target="_blank" rel="noopener">(旧博客)使用Docker搭建Nginx整数溢出漏洞（CVE-2017-7529）及Python PoC验证</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76862120" target="_blank" rel="noopener">(旧博客)使用Docker搭建Struts2-048漏洞环境及Python PoC验证</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76714002" target="_blank" rel="noopener">(旧博客)webshell的NTFS交换数据流文件隐藏及Python脚本查杀</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/59085529" target="_blank" rel="noopener">(旧博客)关于phpMyAdmin默认安装漏洞的学习笔记</a></li>
+</ul>
+</li>
+<li>Web安全之机器学习<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78457976" target="_blank" rel="noopener">(旧博客)机器学习应用之WebShell检测</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78298719" target="_blank" rel="noopener">(旧博客)数据挖掘之k-means算法的Python实现</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78012697" target="_blank" rel="noopener">(旧博客)数据挖掘之决策树归纳算法的Python实现</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78003975" target="_blank" rel="noopener">(旧博客)数据挖掘之Apriori算法的Python实现</a></li>
+</ul>
+</li>
+<li>WriteUp Web<ul>
+<li><a href="/2019/10/20/InCTF-2019-PHP三题复现/">InCTF 2019 PHP+1,+1.5,+2.5三题复现</a></li>
+<li><a href="/2019/10/05/upload-labs-WriteUp/">Upload-Labs WriteUp</a></li>
+<li><a href="/2019/01/01/Sqli-labs-writeup/">Sqli-labs Less1-20</a></li>
+<li><a href="/2019/09/28/bWAPP之Cross-Origin-Resource-Sharing-AJAX/">bWAPP之Cross-Origin Resource Sharing (AJAX)</a></li>
+<li><a href="/2019/07/02/DVWA之JavaScript攻击/">DVWA之JavaScript攻击</a></li>
+<li><a href="/2019/06/27/一道Bypass正则过滤的反序列化漏洞题目/">一道Bypass正则过滤的反序列化漏洞题目</a></li>
+<li><a href="/2019/06/27/从一道CTF题看如何利用本地DTD文件实现XXE攻击/">从一道CTF题看如何通过本地DTD文件利用XXE实现回显</a></li>
+<li><a href="/2019/03/31/0CTF-Web-writeup/">0CTF Web writeup</a></li>
+<li><a href="/2019/03/29/Securinets-CTF-Web-writeup/">Securinets CTF Web writeup</a></li>
+<li><a href="/2019/03/21/Teaser-CONFidence-CTF-Web-writeup/">Teaser CONFidence CTF Web writeup</a></li>
+<li><a href="/2019/03/17/SpEL注入之javacon/">SpEL注入之javacon</a></li>
+<li><a href="/2019/03/13/AeroCTF-writeupup之board-tracking-system/">AeroCTF writeupup之board tracking system</a></li>
+<li><a href="/2019/03/09/TAMUctf-Web-writeup/">TAMUctf Web writeup</a></li>
+<li><a href="/2019/02/21/一道绕过CSP的XSS题目/">一道绕过CSP的XSS题目</a></li>
+<li><a href="/2019/02/15/XSS闯关之xss-haozi-me/">XSS闯关之xss.haozi.me</a></li>
+<li><a href="/2019/01/01/通过DVWA学习DOM型XSS/">DVWA之DOM型XSS</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80306977" target="_blank" rel="noopener">(旧博客)通过Pentester_Lab学习XML注入</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/70168346" target="_blank" rel="noopener">(旧博客)Sqli-labs之Less1-10</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60882602" target="_blank" rel="noopener">(旧博客)DVWA之PHP文件包含漏洞（File Inclusion）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60477557" target="_blank" rel="noopener">(旧博客)通过DVWA学习CSRF漏洞</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60465854" target="_blank" rel="noopener">(旧博客)通过DVWA学习存储型XSS漏洞</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60359729" target="_blank" rel="noopener">(旧博客)通过DVWA学习反射型XSS漏洞</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/56307364" target="_blank" rel="noopener">(旧博客)通过DVWA学习SQL盲注</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/56279676" target="_blank" rel="noopener">(旧博客)通过DVWA学习SQL注入漏洞</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/54669614" target="_blank" rel="noopener">(旧博客)DVWA之PHP文件上传漏洞（File Upload）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/54630440" target="_blank" rel="noopener">(旧博客)通过DVWA学习命令执行漏洞（Command Execution）</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Java</strong><ul>
+<li>Java安全<ul>
+<li><a href="/2019/02/01/Java动态代理机制/">Java动态代理机制</a></li>
+<li><a href="/2019/02/01/Java反射机制/">Java反射机制</a></li>
+<li><a href="/2019/02/03/Java序列化和反序列化机制/">Java序列化和反序列化机制</a></li>
+<li><a href="/2019/09/01/Java-RMI原理与使用/">Java RMI原理与使用</a></li>
+<li><a href="/2019/11/25/（转）Java代码审计指南">（转）Java代码审计指南</a></li>
+<li><a href="/2019/11/25/（转）Java项目中常见jar包的说明">（转）Java项目中常见jar包的说明</a></li>
+<li><a href="/2019/06/09/探讨XXE防御之setFeature设置/">探讨XXE防御之setFeature设置</a></li>
+<li><a href="/2019/05/26/XML注入之SAXBuilder/">XML注入之SAXBuilder</a></li>
+<li><a href="/2019/05/26/XML注入之SAXParser/">XML注入之SAXParser</a></li>
+<li><a href="/2019/05/24/XML注入之SAXReader/">XML注入之SAXReader</a></li>
+<li><a href="/2019/02/13/XML注入之DocumentBuilder/">XML注入之DocumentBuilder与XXE攻击防御</a></li>
+<li><a href="/2019/09/15/浅析JNDI注入/">浅析JNDI注入</a></li>
+<li><a href="/2020/01/10/SpEL表达式注入漏洞总结/">SpEL表达式注入漏洞总结</a></li>
+<li><a href="/2020/03/16/OGNL表达式注入漏洞总结/">OGNL表达式注入漏洞总结</a></li>
+<li><a href="/2020/03/24/浅析Groovy代码注入漏洞/">浅析Groovy代码注入漏洞</a></li>
+<li><a href="/2020/04/12/浅析Easy-Rules代码注入漏洞/">浅析Easy-Rules代码注入漏洞</a></li>
+<li><a href="/2020/04/11/浅析QLExpress表达式注入漏洞/">浅析QLExpress表达式注入漏洞</a></li>
+<li><a href="/2020/04/11/浅析BeanShell代码注入漏洞/">浅析BeanShell代码注入漏洞</a></li>
+<li><a href="/2020/04/11/浅析JUEL表达式注入漏洞/">浅析JUEL表达式注入漏洞</a></li>
+<li><a href="/2020/04/11/浅析JSEL表达式注入漏洞/">浅析JSEL表达式注入漏洞</a></li>
+<li><a href="/2020/04/11/浅析MvEL表达式注入漏洞/">浅析MvEL表达式注入漏洞</a></li>
+<li><a href="/2020/04/11/浅析FEL表达式注入漏洞/">浅析FEL表达式注入漏洞</a></li>
+<li><a href="/2020/04/11/浅析JEXL表达式注入漏洞/">浅析JEXL表达式注入漏洞</a></li>
+<li><a href="/2019/12/08/浅析Java-SPI安全/">浅析Java SPI安全</a></li>
+<li><a href="/2020/04/01/Tomcat-URL解析差异性及利用/">Tomcat URL解析差异性及利用</a></li>
+<li><a href="/2019/02/06/Java反序列化漏洞/">Java反序列化漏洞</a></li>
+<li><a href="/2019/01/01/XMLDecoder反序列化漏洞/">Java XMLDecoder反序列化漏洞</a></li>
+<li><a href="/2019/10/21/XStream反序列化漏洞/">Java XStream反序列化漏洞</a></li>
+<li><a href="/2019/11/29/Java-SnakeYaml反序列化漏洞">Java SnakeYaml反序列化漏洞</a></li>
+<li><a href="/2019/12/07/Java-AMF3反序列化漏洞/">Java AMF3反序列化漏洞</a></li>
+<li><a href="/2020/01/25/Java-Hessian反序列化漏洞/">Java Hessian反序列化漏洞</a></li>
+<li><a href="/2019/11/13/Fastjson系列五——高版本JDK绕过及检测与防御/">Fastjson系列五——高版本JDK绕过及检测与防御</a></li>
+<li><a href="/2019/11/11/Fastjson系列四——1-2-25-1-2-47反序列化漏洞（无需开启AutoType）/">Fastjson系列四——1.2.25-1.2.47反序列化漏洞（无需开启AutoType）</a></li>
+<li><a href="/2019/11/10/Fastjson系列三——历史版本补丁绕过（需开启AutoType）/">Fastjson系列三——历史版本补丁绕过（需开启AutoType）</a></li>
+<li><a href="/2019/11/07/Fastjson系列二——1-2-22-1-2-24反序列化漏洞/">Fastjson系列二——1.2.22-1.2.24反序列化漏洞</a></li>
+<li><a href="/2019/11/03/Fastjson系列一——反序列化漏洞基本原理/">Fastjson系列一——反序列化漏洞基本原理</a></li>
+<li><a href="/2019/11/24/Jackson系列七——其他Gadgets/">Jackson系列七——其他Gadgets与检测防御</a></li>
+<li><a href="/2019/11/24/Jackson系列六——CVE-2019-12814（基于JDOM-XSLTransformer利用链）/">Jackson系列六——CVE-2019-12814（基于JDOM XSLTransformer利用链）</a></li>
+<li><a href="/2019/11/22/Jackson系列五——CVE-2019-12384（基于logback利用链）/">Jackson系列五——CVE-2019-12384（基于logback利用链）</a></li>
+<li><a href="/2019/11/19/Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）/">Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）</a></li>
+<li><a href="/2019/11/17/Jackson系列三—CVE-2017-1748（基于ClassPathXmlApplicationContext利用链）/">Jackson系列三——CVE-2017-17485（基于ClassPathXmlApplicationContext利用链）</a></li>
+<li><a href="/2019/11/16/Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）/">Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）</a></li>
+<li><a href="/2019/11/13/Jackson系列一——反序列化漏洞基本原理/">Jackson系列一——反序列化漏洞基本原理</a></li>
+</ul>
+</li>
+<li>Struts2</li>
+<li>Spring<ul>
+<li><a href="/2019/01/01/Spring基础篇之基本概念/">Spring基础篇之基本概念</a></li>
+<li><a href="/2019/01/01/Spring基础篇之IoC容器/">Spring基础篇之IoC容器</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean/">Spring基础篇之Bean</a></li>
+<li><a href="/2019/01/01/Spring基础篇之DI（依赖注入）/">Spring基础篇之DI（依赖注入）</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean装配/">Spring基础篇之Bean装配</a></li>
+<li><a href="/2019/01/01/Spring基础篇之AOP/">Spring基础篇之AOP</a></li>
+<li><a href="/2019/01/01/Spring基础篇之JDBC框架/">Spring基础篇之JDBC框架</a></li>
+<li><a href="/2019/01/01/Spring基础篇之事务管理/">Spring基础篇之事务管理</a></li>
+<li><a href="/2020/01/16/Spring-MVC笔记/">Spring MVC笔记</a></li>
+<li><a href="/2020/02/12/浅析自动绑定漏洞之Spring-MVC/">浅析自动绑定漏洞之Spring MVC</a></li>
+<li><a href="/2019/09/02/由JNDI注入导致的Spring-Framework反序列化漏洞/">由JNDI注入引发的Spring Framework反序列化漏洞</a></li>
+<li><a href="/2019/04/05/Spring-Data-Rest之cve-2017-8046分析/">浅析Spring Data Rest之CVE-2017-8046</a></li>
+<li><a href="/2020/02/03/浅析Spring-Data-Commons之CVE-2018-1273/">浅析Spring Data Commons之CVE-2018-1273</a></li>
+<li><a href="/2020/02/08/浅析Spring-Messaging之CVE-2018-1270/">浅析Spring Messaging之CVE-2018-1270</a></li>
+<li><a href="/2020/02/09/浅析Spring-WebFlow之CVE-2017-4971/">浅析Spring Web Flow之CVE-2017-4971</a></li>
+<li><a href="/2020/02/09/浅析Spring-Security-OAuth2之CVE-2016-4977/">浅析Spring Security OAuth2之CVE-2016-4977</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>PHP</strong><ul>
+<li>PHP安全<ul>
+<li><a href="/2019/08/25/浅谈PHP-FPM安全/">浅谈PHP-FPM安全</a></li>
+<li><a href="/2019/08/03/从蚁剑插件看利用PHP-FPM绕过disable-functions/">从蚁剑插件看利用PHP-FPM绕过disable_functions</a></li>
+<li><a href="/2019/07/20/浅谈几种Bypass-open-basedir的方法/">浅谈几种Bypass open_basedir的方法</a></li>
+<li><a href="/2019/07/16/PHP中mail-函数安全问题与防御/">PHP中mail()函数安全问题与防御</a></li>
+<li><a href="/2019/07/04/浅谈escapeshellarg与参数注入/">浅谈escapeshellarg逃逸与参数注入</a></li>
+<li><a href="/2019/07/02/浅析preg-replace与preg-match/">浅析preg_replace与preg_match</a></li>
+<li><a href="/2019/06/21/PHP弱类型小结/">PHP弱类型及相关函数Bypass小结</a></li>
+<li><a href="/2019/06/20/PHP变量覆盖漏洞/">PHP变量覆盖漏洞小结</a></li>
+<li><a href="/2019/06/09/巧用get-defined-functions隐藏WebShell/">巧用get_defined_functions隐藏WebShell</a></li>
+<li><a href="/2019/06/07/从一道题看PHP7-4的FFI绕过disable-functions/">从RCTF nextphp看PHP7.4的FFI绕过disable_functions</a></li>
+<li><a href="/2019/06/02/浅谈几种Bypass-disable-functions的方法/">浅谈几种Bypass disable_functions的方法</a></li>
+<li><a href="/2019/05/04/PHP对象注入之pop链构造/">PHP对象注入之pop链构造</a></li>
+<li><a href="/2019/04/21/PHP-session反序列化漏洞/">PHP session反序列化漏洞</a></li>
+<li><a href="/2019/01/31/PHP伪协议/">PHP伪协议</a></li>
+<li><a href="/2019/01/01/phar反序列化漏洞/">phar反序列化漏洞</a></li>
+<li><a href="/2019/01/01/Windows下的一种PHP隐蔽后门姿势/">Windows下的一种PHP隐藏后门姿势</a></li>
+<li><a href="/2019/01/01/PHP反序列化漏洞/">PHP unserialize反序列化漏洞</a></li>
+<li><a href="/2019/01/01/PHP内存型木马/">PHP内存型木马</a></li>
+<li><a href="/2020/04/06/PHP代码审计敏感配置与版本特性/">PHP代码审计敏感配置与版本特性</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/70228700" target="_blank" rel="noopener">(旧博客)PHP代码审计之基础篇</a></li>
+</ul>
+</li>
+<li>CMS<ul>
+<li><a href="/2019/01/02/PHP代码审计实战之盾灵CMS/">PHP代码审计实战之盾灵CMS</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78358332" target="_blank" rel="noopener">(旧博客)PHP代码审计实战之MetInfo CMS</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78304692" target="_blank" rel="noopener">(旧博客)PHP代码审计实战之XDcms</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Python</strong><ul>
+<li>Python安全<ul>
+<li><a href="/2019/06/02/浅析Python-Flask-SSTI/">浅析Python Flask SSTI</a></li>
+<li><a href="/2019/05/31/Python沙箱逃逸小结/">Python沙箱逃逸小结</a></li>
+<li><a href="/2019/01/01/PyYAML反序列化漏洞/">Python PyYAML反序列化漏洞</a></li>
+<li><a href="/2019/01/01/cPickle反序列化漏洞/">Python cPickle反序列化漏洞</a></li>
+<li><a href="/2020/03/09/Python-urllib-CRLF注入漏洞小结/">Python urllib CRLF注入漏洞小结</a></li>
+</ul>
+</li>
+<li>安全开发<ul>
+<li><a href="/2019/06/30/AWD文件监控脚本/">AWD文件监控脚本</a></li>
+<li><a href="/2019/01/01/Python安全小工具之反编译pyc文件/">Python安全小工具之反编译pyc文件</a></li>
+<li><a href="/2020/04/08/Python安全小工具之MySQL监控代理/">Python安全小工具之MySQL监控代理</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78705998" target="_blank" rel="noopener">(旧博客)Python安全小工具之日志分析识别AWVS扫描</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78445866" target="_blank" rel="noopener">(旧博客)Python安全小工具之Linux日志痕迹清除</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78443601" target="_blank" rel="noopener">(旧博客)Python安全小工具之Web目录扫描器</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78003891" target="_blank" rel="noopener">(旧博客)Python安全小工具之计算文件Hash值</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78003609" target="_blank" rel="noopener">(旧博客)Python安全小工具之生成高精度字典</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/72972238" target="_blank" rel="noopener">(旧博客)关于《Python绝技：运用Python成为顶级黑客》的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/71152826" target="_blank" rel="noopener">(旧博客)关于《Python黑帽子：黑客与渗透测试编程之道》的学习笔记</a></li>
+</ul>
+</li>
+<li>爬虫<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/68961258" target="_blank" rel="noopener">(旧博客)Python爬虫之基础篇</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78411824" target="_blank" rel="noopener">(旧博客)Python爬虫之爬取动态页面数据</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78840444" target="_blank" rel="noopener">(旧博客)Python爬虫之Scrapy爬虫框架</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78850550" target="_blank" rel="noopener">(旧博客)Python爬虫之分布式爬虫</a></li>
+</ul>
+</li>
+<li>Django<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78505235" target="_blank" rel="noopener">(旧博客)基于Django搭建简单的博客系统</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>JavaScript</strong><ul>
+<li>JavaScript安全<ul>
+<li><a href="/2019/10/20/浅析JavaScript原型链污染攻击/">浅析JavaScript原型链污染攻击</a></li>
+</ul>
+</li>
+<li>Node.js<ul>
+<li><a href="/2020/03/29/浅析Node-js安全/">浅析Node.js安全</a></li>
+<li><a href="/2020/03/29/node-serialize反序列化漏洞/">node-serialize反序列化漏洞</a></li>
+</ul>
+</li>
+<li>AngularJS<ul>
+<li><a href="/2020/03/29/浅析AngularJS安全/">浅析AngularJS安全</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>GO</strong><ul>
+<li>GO安全<ul>
+<li><a href="/2020/01/01/浅析Influxdb认证绕过漏洞/">浅析Influxdb认证绕过漏洞</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>二进制安全</strong><ul>
+<li>二进制基础<ul>
+<li><a href="/2019/05/24/GOT表-PLT表与动态链接/">ELF动态链接,PLT和GOT</a></li>
+<li><a href="/2019/04/27/堆基础/">堆基础</a></li>
+<li><a href="/2019/04/15/ELF二进制格式/">ELF二进制格式</a></li>
+<li><a href="/2019/03/03/栈及栈帧/">栈基础</a></li>
+<li><a href="/2019/02/09/ELF安全防御机制小结/">ELF安全防御机制小结</a></li>
+<li><a href="/2019/01/28/IA-32寄存器/">IA-32（Intel Architecture 32位）寄存器</a></li>
+<li><a href="/2019/01/01/Linux环境与相关工具/">Linux环境与相关工具</a></li>
+</ul>
+</li>
+<li>C/C++<ul>
+<li><a href="/2019/03/24/C编写实现Linux反弹shell/">C编写实现Linux反弹shell</a></li>
+<li><a href="/2020/04/08/C编写实现AWD进程木马/">C编写实现AWD进程木马</a></li>
+</ul>
+</li>
+<li>逆向工程<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80334012" target="_blank" rel="noopener">(旧博客)逆向分析HelloWorld程序</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80380974" target="_blank" rel="noopener">(旧博客)逆向分析abex’crackme#1</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80546988" target="_blank" rel="noopener">(旧博客)逆向分析abex’crackme #2</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80549743" target="_blank" rel="noopener">(旧博客)函数调用约定</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80554677" target="_blank" rel="noopener">(旧博客)栈帧</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80558193" target="_blank" rel="noopener">(旧博客)逆向分析Tut.ReverseMe1</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80571933" target="_blank" rel="noopener">(旧博客)PE文件格式</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80611969" target="_blank" rel="noopener">(旧博客)运行时压缩（UPX）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80636568" target="_blank" rel="noopener">(旧博客)基址重定位表</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80636900" target="_blank" rel="noopener">(旧博客)从可执行文件中删除.reloc节区</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80656921" target="_blank" rel="noopener">(旧博客)UPack的PE文件头分析与OEP查找</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80670045" target="_blank" rel="noopener">(旧博客)内嵌补丁练习</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80684358" target="_blank" rel="noopener">(旧博客)Windows消息钩取</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80777748" target="_blank" rel="noopener">(旧博客)DLL注入</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80780830" target="_blank" rel="noopener">(旧博客)DLL卸载</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80789234" target="_blank" rel="noopener">(旧博客)通过修改PE加载DLL</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/82947635" target="_blank" rel="noopener">(旧博客)代码注入（线程注入）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/82954890" target="_blank" rel="noopener">(旧博客)使用汇编语言编写注入代码</a></li>
+</ul>
+</li>
+<li>Fuzzing<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80950537" target="_blank" rel="noopener">(旧博客)Windows缓冲区溢出之SLMail</a></li>
+</ul>
+</li>
+<li>Pwn<ul>
+<li><a href="/2019/04/20/花式栈溢出之stack-pivoting/">花式栈溢出之stack pivoting</a></li>
+<li><a href="/2019/04/12/中级ROP之ret2csu/">栈溢出之ret2csu</a></li>
+<li><a href="/2019/04/09/蒸米ROP学习笔记/">蒸米32位及64位ROP笔记</a></li>
+<li><a href="/2019/04/07/pwntools笔记/">pwntools笔记</a></li>
+<li><a href="/2019/03/23/花式栈溢出之Stack-smash/">花式栈溢出之Stack smash</a></li>
+<li><a href="/2019/03/05/栈溢出之ret2libc/">栈溢出之ret2libc</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2syscall/">栈溢出之ret2syscall</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2shellcode/">栈溢出之ret2shellcode</a></li>
+<li><a href="/2019/03/03/ROP之ret2text/">ROP基础及栈溢出之ret2text</a></li>
+<li><a href="/2019/03/03/栈溢出基本原理/">栈溢出基本原理</a></li>
+</ul>
+</li>
+<li>WriteUp Pwn<ul>
+<li><a href="/2019/03/08/TAMUctf-Pwn-writeup/">TAMUctf Pwn writeup</a></li>
+</ul>
+</li>
+<li>WriteUp Reverse<ul>
+<li><a href="/2019/01/01/HITB_Binary_100_writeup/">HITB Binary 100 writeup</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>渗透测试</strong><ul>
+<li>基础&amp;Tricks<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63681200" target="_blank" rel="noopener">(旧博客)被动信息收集之DNS信息收集</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63681596" target="_blank" rel="noopener">(旧博客)被动信息收集之RECON-NG</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63682444" target="_blank" rel="noopener">(旧博客)主动信息收集之主机发现</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63684778" target="_blank" rel="noopener">(旧博客)主动信息收集之主机发现的一些脚本</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/64906997" target="_blank" rel="noopener">(旧博客)主动信息收集之端口扫描</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/66473045" target="_blank" rel="noopener">(旧博客)主动信息收集之端口扫描的一些脚本</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78301318" target="_blank" rel="noopener">(旧博客)渗透测试之漏洞扫描阶段</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/57405291" target="_blank" rel="noopener">(旧博客)在Windows和Linux系统下隐藏痕迹的小技巧</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/57403811" target="_blank" rel="noopener">(旧博客)在Windows和Linux系统中的一些信息收集方法</a></li>
+</ul>
+</li>
+<li>Kali<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76598873" target="_blank" rel="noopener">(旧博客)使用Kali无线渗透获取宿舍WiFi密码（WPA）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/62239673" target="_blank" rel="noopener">(旧博客)关于Kali的两个Webshell（Webacoo和Weevely）的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/62064984" target="_blank" rel="noopener">(旧博客)关于Kali获取HTTP账号密码的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/62045632" target="_blank" rel="noopener">(旧博客)关于Kali进行ARP欺骗的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/61926977" target="_blank" rel="noopener">(旧博客)关于Kali进行ARP攻击的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/61920179" target="_blank" rel="noopener">(旧博客)在Kali中安装IBus的拼音输入法</a></li>
+<li></li>
+</ul>
+</li>
+<li>Metasploit<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60881390" target="_blank" rel="noopener">(旧博客)关于Metasploit的学习笔记（一）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/62427016" target="_blank" rel="noopener">(旧博客)关于Metasploit的学习笔记（二）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/77103290" target="_blank" rel="noopener">(旧博客)Metasploit的Docker安装及其Eternal Blue（永恒之蓝）渗透实现</a></li>
+</ul>
+</li>
+<li>内网渗透<ul>
+<li><a href="/2020/02/15/内网渗透基础/">内网渗透基础与域环境搭建</a></li>
+<li><a href="/2020/02/18/Windows-PowerShell基础/">内网渗透之Windows PowerShell基础</a></li>
+<li><a href="/2020/02/27/内网信息收集之本机信息收集/">内网信息收集之本机信息收集</a></li>
+<li><a href="/2020/03/08/内网信息收集之域相关信息收集/">内网信息收集之域相关信息收集</a></li>
+</ul>
+</li>
+<li>提权<ul>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（一）：Administrator提权到System">Administrator提权到System</a></li>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（二）：注入进程和利用漏洞提权">注入进程和利用漏洞提权</a></li>
+</ul>
+</li>
+<li>免杀</li>
+<li>工具<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78333085" target="_blank" rel="noopener">(旧博客)Wireshark进阶之网络问题案例分析</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/61651960" target="_blank" rel="noopener">(旧博客)关于nmap所有的参数</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60332892" target="_blank" rel="noopener">(旧博客)关于Xsser的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60151041" target="_blank" rel="noopener">(旧博客)关于skipfish的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/58677137" target="_blank" rel="noopener">(旧博客)关于Vega的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/58188331" target="_blank" rel="noopener">(旧博客)关于SQLMAP所有参数的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/57418307" target="_blank" rel="noopener">(旧博客)关于NETCAT的学习笔记</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>OS</strong><ul>
+<li>Windows<ul>
+<li><a href="/2019/01/01/将Python脚本转换为exe">将Python脚本转换为exe</a></li>
+<li><a href="/2019/01/01/几个查看用户信息的Windows程序">几个查看用户信息的Windows程序</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78716967" target="_blank" rel="noopener">(旧博客)Windows系统安全小结</a></li>
+</ul>
+</li>
+<li>Linux<ul>
+<li><a href="/2020/03/28/Linux安全笔记/">Linux安全笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78169962" target="_blank" rel="noopener">(旧博客)Linux查找命令小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/72614754" target="_blank" rel="noopener">(旧博客)关于iptables防火墙的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63680773" target="_blank" rel="noopener">(旧博客)关于Linux日志的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78837765" target="_blank" rel="noopener">(旧博客)Ubuntu搭建MongoDB集群</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>云</strong><ul>
+<li>云安全</li>
+<li>Docker<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76696436" target="_blank" rel="noopener">(旧博客)Docker基本命令以及Ubuntu16.04更换源</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76713869" target="_blank" rel="noopener">(旧博客)使用Docker搭建基于MySQL、Apache和PHP的DVWA服务器</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+</div>
+
+<script src="/js/book-sidebar.js"></script>
+
+<script>
+collapse_sidebar(2)
+highlight_tab()
+show_sidebar()
+</script>
+      </div>
+
+      <div class="column col-8 col-lg-12">
+        <div class="book-content">
+          <div class="book-navbar">
+  <header class="navbar">
+  <section class="navbar-section">
+    <img class="navbar-icon" src="/kanxi.jpg">
+  </section>
+  <section class="navbar-center">
+    Mi1k7ea
+  </section>
+  <section class="navbar-section">
+    <label class="accordion-header c-hand" for="accordion-sidebar">
+      <i class="icon icon-menu"></i>
+    </label>
+  </section>
+</header>
+
+<div class="accordion">
+  <input type="checkbox" id="accordion-sidebar" name="accordion-checkbox" hidden>
+  <div class="accordion-body">
+    <p>Good Good Study</p>
+<ul>
+<li><strong><a href="/archives">归档</a></strong>    |    <strong><a href="/secwebsite/">站点收录</a></strong>    |    <strong><a href="/atom.xml">RSS</a></strong></li>
+</ul>
+<hr>
+<ul>
+<li><strong>Web安全</strong><ul>
+<li>Web安全基础&amp;Tricks<ul>
+<li><a href="/2019/10/14/文件上传漏洞总结/">文件上传攻击框架</a></li>
+<li><a href="/2019/10/04/CSWSH漏洞总结/">CSWSH漏洞总结</a></li>
+<li><a href="/2019/09/28/SSI注入漏洞总结/">SSI注入漏洞总结</a></li>
+<li><a href="/2019/08/20/JSONP跨域漏洞总结/">JSONP跨域漏洞总结</a></li>
+<li><a href="/2019/08/18/CORS跨域漏洞总结/">CORS跨域漏洞总结</a></li>
+<li><a href="/2020/04/06/浅析postMessage安全/">postMessage跨域漏洞总结</a></li>
+<li><a href="/2020/01/04/浅析XSSI漏洞/">浅析XSSI漏洞</a></li>
+<li><a href="/2020/03/11/浅析HRS漏洞/">浅析HRS漏洞</a></li>
+<li><a href="/2019/08/18/利用HTML注入劫持标签Bypass-CSP/">利用HTML注入劫持标签Bypass CSP</a></li>
+<li><a href="/2019/08/11/NoSQL注入之MongoDB/">NoSQL注入之MongoDB</a></li>
+<li><a href="/2019/08/10/Flash安全总结/">Flash安全总结</a></li>
+<li><a href="/2020/03/05/Redis安全小结/">Redis安全小结</a></li>
+<li><a href="/2020/02/29/SSRF-Tricks小结/">SSRF Tricks小结</a></li>
+<li><a href="/2020/01/21/CSRF-Tricks小结/">CSRF Tricks小结</a></li>
+<li><a href="/2019/08/05/利用Flash进行Json-CSRF攻击/">利用Flash进行Json CSRF攻击</a></li>
+<li><a href="/2019/07/31/SWFUpload-swf的Flash型XSS分析/">SWFUpload.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/30/ZeroClipboard-swf的Flash型XSS分析/">ZeroClipboard.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/28/Flash型CSRF总结/">Flash型CSRF总结</a></li>
+<li><a href="/2019/07/21/Flash型XSS小结/">Flash型XSS总结</a></li>
+<li><a href="/2019/06/30/命令注入Bypass技巧小结/">命令注入Bypass技巧小结</a></li>
+<li><a href="/2020/04/06/从浏览器解析原理看XSS/">从浏览器解析原理看XSS</a></li>
+<li><a href="/2020/04/07/跨域通信中的XSS利用/">跨域通信中的XSS利用</a></li>
+<li><a href="/2019/02/16/个人XSS-payload收集/">个人XSS payload收集</a></li>
+<li><a href="/2019/02/19/一些加载XSS-Payload的标签/">一些加载XSS Payload的标签</a></li>
+<li><a href="/2019/06/30/XSS从弹框到RCE/">XSS从弹框到RCE（IE）</a></li>
+<li><a href="/2019/06/25/浅析DOM型XSS/">浅析DOM型XSS</a></li>
+<li><a href="/2019/03/22/图片XSS小结/">图片XSS小结</a></li>
+<li><a href="/2019/02/24/CSP策略及绕过技巧小结/">CSP策略及绕过技巧小结</a></li>
+<li><a href="/2020/01/26/浅析XSSJacking/">浅析XSSJacking</a></li>
+<li><a href="/2019/01/30/常见Web漏洞类型/">常见Web漏洞类型总结</a></li>
+<li><a href="/2019/01/01/SQL注入写WebShell方式小结/">SQL注入写WebShell方式小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78716609" target="_blank" rel="noopener">(旧博客)Web安全加固小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78686832" target="_blank" rel="noopener">(旧博客)DoS与DDoS小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78301189" target="_blank" rel="noopener">(旧博客)MySQL数据库提权小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/69952026" target="_blank" rel="noopener">(旧博客)OWASP_top_10漏洞的总结笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76944203" target="_blank" rel="noopener">(旧博客)使用Docker搭建Nginx整数溢出漏洞（CVE-2017-7529）及Python PoC验证</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76862120" target="_blank" rel="noopener">(旧博客)使用Docker搭建Struts2-048漏洞环境及Python PoC验证</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76714002" target="_blank" rel="noopener">(旧博客)webshell的NTFS交换数据流文件隐藏及Python脚本查杀</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/59085529" target="_blank" rel="noopener">(旧博客)关于phpMyAdmin默认安装漏洞的学习笔记</a></li>
+</ul>
+</li>
+<li>Web安全之机器学习<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78457976" target="_blank" rel="noopener">(旧博客)机器学习应用之WebShell检测</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78298719" target="_blank" rel="noopener">(旧博客)数据挖掘之k-means算法的Python实现</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78012697" target="_blank" rel="noopener">(旧博客)数据挖掘之决策树归纳算法的Python实现</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78003975" target="_blank" rel="noopener">(旧博客)数据挖掘之Apriori算法的Python实现</a></li>
+</ul>
+</li>
+<li>WriteUp Web<ul>
+<li><a href="/2019/10/20/InCTF-2019-PHP三题复现/">InCTF 2019 PHP+1,+1.5,+2.5三题复现</a></li>
+<li><a href="/2019/10/05/upload-labs-WriteUp/">Upload-Labs WriteUp</a></li>
+<li><a href="/2019/01/01/Sqli-labs-writeup/">Sqli-labs Less1-20</a></li>
+<li><a href="/2019/09/28/bWAPP之Cross-Origin-Resource-Sharing-AJAX/">bWAPP之Cross-Origin Resource Sharing (AJAX)</a></li>
+<li><a href="/2019/07/02/DVWA之JavaScript攻击/">DVWA之JavaScript攻击</a></li>
+<li><a href="/2019/06/27/一道Bypass正则过滤的反序列化漏洞题目/">一道Bypass正则过滤的反序列化漏洞题目</a></li>
+<li><a href="/2019/06/27/从一道CTF题看如何利用本地DTD文件实现XXE攻击/">从一道CTF题看如何通过本地DTD文件利用XXE实现回显</a></li>
+<li><a href="/2019/03/31/0CTF-Web-writeup/">0CTF Web writeup</a></li>
+<li><a href="/2019/03/29/Securinets-CTF-Web-writeup/">Securinets CTF Web writeup</a></li>
+<li><a href="/2019/03/21/Teaser-CONFidence-CTF-Web-writeup/">Teaser CONFidence CTF Web writeup</a></li>
+<li><a href="/2019/03/17/SpEL注入之javacon/">SpEL注入之javacon</a></li>
+<li><a href="/2019/03/13/AeroCTF-writeupup之board-tracking-system/">AeroCTF writeupup之board tracking system</a></li>
+<li><a href="/2019/03/09/TAMUctf-Web-writeup/">TAMUctf Web writeup</a></li>
+<li><a href="/2019/02/21/一道绕过CSP的XSS题目/">一道绕过CSP的XSS题目</a></li>
+<li><a href="/2019/02/15/XSS闯关之xss-haozi-me/">XSS闯关之xss.haozi.me</a></li>
+<li><a href="/2019/01/01/通过DVWA学习DOM型XSS/">DVWA之DOM型XSS</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80306977" target="_blank" rel="noopener">(旧博客)通过Pentester_Lab学习XML注入</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/70168346" target="_blank" rel="noopener">(旧博客)Sqli-labs之Less1-10</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60882602" target="_blank" rel="noopener">(旧博客)DVWA之PHP文件包含漏洞（File Inclusion）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60477557" target="_blank" rel="noopener">(旧博客)通过DVWA学习CSRF漏洞</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60465854" target="_blank" rel="noopener">(旧博客)通过DVWA学习存储型XSS漏洞</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60359729" target="_blank" rel="noopener">(旧博客)通过DVWA学习反射型XSS漏洞</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/56307364" target="_blank" rel="noopener">(旧博客)通过DVWA学习SQL盲注</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/56279676" target="_blank" rel="noopener">(旧博客)通过DVWA学习SQL注入漏洞</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/54669614" target="_blank" rel="noopener">(旧博客)DVWA之PHP文件上传漏洞（File Upload）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/54630440" target="_blank" rel="noopener">(旧博客)通过DVWA学习命令执行漏洞（Command Execution）</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Java</strong><ul>
+<li>Java安全<ul>
+<li><a href="/2019/02/01/Java动态代理机制/">Java动态代理机制</a></li>
+<li><a href="/2019/02/01/Java反射机制/">Java反射机制</a></li>
+<li><a href="/2019/02/03/Java序列化和反序列化机制/">Java序列化和反序列化机制</a></li>
+<li><a href="/2019/09/01/Java-RMI原理与使用/">Java RMI原理与使用</a></li>
+<li><a href="/2019/11/25/（转）Java代码审计指南">（转）Java代码审计指南</a></li>
+<li><a href="/2019/11/25/（转）Java项目中常见jar包的说明">（转）Java项目中常见jar包的说明</a></li>
+<li><a href="/2019/06/09/探讨XXE防御之setFeature设置/">探讨XXE防御之setFeature设置</a></li>
+<li><a href="/2019/05/26/XML注入之SAXBuilder/">XML注入之SAXBuilder</a></li>
+<li><a href="/2019/05/26/XML注入之SAXParser/">XML注入之SAXParser</a></li>
+<li><a href="/2019/05/24/XML注入之SAXReader/">XML注入之SAXReader</a></li>
+<li><a href="/2019/02/13/XML注入之DocumentBuilder/">XML注入之DocumentBuilder与XXE攻击防御</a></li>
+<li><a href="/2019/09/15/浅析JNDI注入/">浅析JNDI注入</a></li>
+<li><a href="/2020/01/10/SpEL表达式注入漏洞总结/">SpEL表达式注入漏洞总结</a></li>
+<li><a href="/2020/03/16/OGNL表达式注入漏洞总结/">OGNL表达式注入漏洞总结</a></li>
+<li><a href="/2020/03/24/浅析Groovy代码注入漏洞/">浅析Groovy代码注入漏洞</a></li>
+<li><a href="/2020/04/12/浅析Easy-Rules代码注入漏洞/">浅析Easy-Rules代码注入漏洞</a></li>
+<li><a href="/2020/04/11/浅析QLExpress表达式注入漏洞/">浅析QLExpress表达式注入漏洞</a></li>
+<li><a href="/2020/04/11/浅析BeanShell代码注入漏洞/">浅析BeanShell代码注入漏洞</a></li>
+<li><a href="/2020/04/11/浅析JUEL表达式注入漏洞/">浅析JUEL表达式注入漏洞</a></li>
+<li><a href="/2020/04/11/浅析JSEL表达式注入漏洞/">浅析JSEL表达式注入漏洞</a></li>
+<li><a href="/2020/04/11/浅析MvEL表达式注入漏洞/">浅析MvEL表达式注入漏洞</a></li>
+<li><a href="/2020/04/11/浅析FEL表达式注入漏洞/">浅析FEL表达式注入漏洞</a></li>
+<li><a href="/2020/04/11/浅析JEXL表达式注入漏洞/">浅析JEXL表达式注入漏洞</a></li>
+<li><a href="/2019/12/08/浅析Java-SPI安全/">浅析Java SPI安全</a></li>
+<li><a href="/2020/04/01/Tomcat-URL解析差异性及利用/">Tomcat URL解析差异性及利用</a></li>
+<li><a href="/2019/02/06/Java反序列化漏洞/">Java反序列化漏洞</a></li>
+<li><a href="/2019/01/01/XMLDecoder反序列化漏洞/">Java XMLDecoder反序列化漏洞</a></li>
+<li><a href="/2019/10/21/XStream反序列化漏洞/">Java XStream反序列化漏洞</a></li>
+<li><a href="/2019/11/29/Java-SnakeYaml反序列化漏洞">Java SnakeYaml反序列化漏洞</a></li>
+<li><a href="/2019/12/07/Java-AMF3反序列化漏洞/">Java AMF3反序列化漏洞</a></li>
+<li><a href="/2020/01/25/Java-Hessian反序列化漏洞/">Java Hessian反序列化漏洞</a></li>
+<li><a href="/2019/11/13/Fastjson系列五——高版本JDK绕过及检测与防御/">Fastjson系列五——高版本JDK绕过及检测与防御</a></li>
+<li><a href="/2019/11/11/Fastjson系列四——1-2-25-1-2-47反序列化漏洞（无需开启AutoType）/">Fastjson系列四——1.2.25-1.2.47反序列化漏洞（无需开启AutoType）</a></li>
+<li><a href="/2019/11/10/Fastjson系列三——历史版本补丁绕过（需开启AutoType）/">Fastjson系列三——历史版本补丁绕过（需开启AutoType）</a></li>
+<li><a href="/2019/11/07/Fastjson系列二——1-2-22-1-2-24反序列化漏洞/">Fastjson系列二——1.2.22-1.2.24反序列化漏洞</a></li>
+<li><a href="/2019/11/03/Fastjson系列一——反序列化漏洞基本原理/">Fastjson系列一——反序列化漏洞基本原理</a></li>
+<li><a href="/2019/11/24/Jackson系列七——其他Gadgets/">Jackson系列七——其他Gadgets与检测防御</a></li>
+<li><a href="/2019/11/24/Jackson系列六——CVE-2019-12814（基于JDOM-XSLTransformer利用链）/">Jackson系列六——CVE-2019-12814（基于JDOM XSLTransformer利用链）</a></li>
+<li><a href="/2019/11/22/Jackson系列五——CVE-2019-12384（基于logback利用链）/">Jackson系列五——CVE-2019-12384（基于logback利用链）</a></li>
+<li><a href="/2019/11/19/Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）/">Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）</a></li>
+<li><a href="/2019/11/17/Jackson系列三—CVE-2017-1748（基于ClassPathXmlApplicationContext利用链）/">Jackson系列三——CVE-2017-17485（基于ClassPathXmlApplicationContext利用链）</a></li>
+<li><a href="/2019/11/16/Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）/">Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）</a></li>
+<li><a href="/2019/11/13/Jackson系列一——反序列化漏洞基本原理/">Jackson系列一——反序列化漏洞基本原理</a></li>
+</ul>
+</li>
+<li>Struts2</li>
+<li>Spring<ul>
+<li><a href="/2019/01/01/Spring基础篇之基本概念/">Spring基础篇之基本概念</a></li>
+<li><a href="/2019/01/01/Spring基础篇之IoC容器/">Spring基础篇之IoC容器</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean/">Spring基础篇之Bean</a></li>
+<li><a href="/2019/01/01/Spring基础篇之DI（依赖注入）/">Spring基础篇之DI（依赖注入）</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean装配/">Spring基础篇之Bean装配</a></li>
+<li><a href="/2019/01/01/Spring基础篇之AOP/">Spring基础篇之AOP</a></li>
+<li><a href="/2019/01/01/Spring基础篇之JDBC框架/">Spring基础篇之JDBC框架</a></li>
+<li><a href="/2019/01/01/Spring基础篇之事务管理/">Spring基础篇之事务管理</a></li>
+<li><a href="/2020/01/16/Spring-MVC笔记/">Spring MVC笔记</a></li>
+<li><a href="/2020/02/12/浅析自动绑定漏洞之Spring-MVC/">浅析自动绑定漏洞之Spring MVC</a></li>
+<li><a href="/2019/09/02/由JNDI注入导致的Spring-Framework反序列化漏洞/">由JNDI注入引发的Spring Framework反序列化漏洞</a></li>
+<li><a href="/2019/04/05/Spring-Data-Rest之cve-2017-8046分析/">浅析Spring Data Rest之CVE-2017-8046</a></li>
+<li><a href="/2020/02/03/浅析Spring-Data-Commons之CVE-2018-1273/">浅析Spring Data Commons之CVE-2018-1273</a></li>
+<li><a href="/2020/02/08/浅析Spring-Messaging之CVE-2018-1270/">浅析Spring Messaging之CVE-2018-1270</a></li>
+<li><a href="/2020/02/09/浅析Spring-WebFlow之CVE-2017-4971/">浅析Spring Web Flow之CVE-2017-4971</a></li>
+<li><a href="/2020/02/09/浅析Spring-Security-OAuth2之CVE-2016-4977/">浅析Spring Security OAuth2之CVE-2016-4977</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>PHP</strong><ul>
+<li>PHP安全<ul>
+<li><a href="/2019/08/25/浅谈PHP-FPM安全/">浅谈PHP-FPM安全</a></li>
+<li><a href="/2019/08/03/从蚁剑插件看利用PHP-FPM绕过disable-functions/">从蚁剑插件看利用PHP-FPM绕过disable_functions</a></li>
+<li><a href="/2019/07/20/浅谈几种Bypass-open-basedir的方法/">浅谈几种Bypass open_basedir的方法</a></li>
+<li><a href="/2019/07/16/PHP中mail-函数安全问题与防御/">PHP中mail()函数安全问题与防御</a></li>
+<li><a href="/2019/07/04/浅谈escapeshellarg与参数注入/">浅谈escapeshellarg逃逸与参数注入</a></li>
+<li><a href="/2019/07/02/浅析preg-replace与preg-match/">浅析preg_replace与preg_match</a></li>
+<li><a href="/2019/06/21/PHP弱类型小结/">PHP弱类型及相关函数Bypass小结</a></li>
+<li><a href="/2019/06/20/PHP变量覆盖漏洞/">PHP变量覆盖漏洞小结</a></li>
+<li><a href="/2019/06/09/巧用get-defined-functions隐藏WebShell/">巧用get_defined_functions隐藏WebShell</a></li>
+<li><a href="/2019/06/07/从一道题看PHP7-4的FFI绕过disable-functions/">从RCTF nextphp看PHP7.4的FFI绕过disable_functions</a></li>
+<li><a href="/2019/06/02/浅谈几种Bypass-disable-functions的方法/">浅谈几种Bypass disable_functions的方法</a></li>
+<li><a href="/2019/05/04/PHP对象注入之pop链构造/">PHP对象注入之pop链构造</a></li>
+<li><a href="/2019/04/21/PHP-session反序列化漏洞/">PHP session反序列化漏洞</a></li>
+<li><a href="/2019/01/31/PHP伪协议/">PHP伪协议</a></li>
+<li><a href="/2019/01/01/phar反序列化漏洞/">phar反序列化漏洞</a></li>
+<li><a href="/2019/01/01/Windows下的一种PHP隐蔽后门姿势/">Windows下的一种PHP隐藏后门姿势</a></li>
+<li><a href="/2019/01/01/PHP反序列化漏洞/">PHP unserialize反序列化漏洞</a></li>
+<li><a href="/2019/01/01/PHP内存型木马/">PHP内存型木马</a></li>
+<li><a href="/2020/04/06/PHP代码审计敏感配置与版本特性/">PHP代码审计敏感配置与版本特性</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/70228700" target="_blank" rel="noopener">(旧博客)PHP代码审计之基础篇</a></li>
+</ul>
+</li>
+<li>CMS<ul>
+<li><a href="/2019/01/02/PHP代码审计实战之盾灵CMS/">PHP代码审计实战之盾灵CMS</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78358332" target="_blank" rel="noopener">(旧博客)PHP代码审计实战之MetInfo CMS</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78304692" target="_blank" rel="noopener">(旧博客)PHP代码审计实战之XDcms</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Python</strong><ul>
+<li>Python安全<ul>
+<li><a href="/2019/06/02/浅析Python-Flask-SSTI/">浅析Python Flask SSTI</a></li>
+<li><a href="/2019/05/31/Python沙箱逃逸小结/">Python沙箱逃逸小结</a></li>
+<li><a href="/2019/01/01/PyYAML反序列化漏洞/">Python PyYAML反序列化漏洞</a></li>
+<li><a href="/2019/01/01/cPickle反序列化漏洞/">Python cPickle反序列化漏洞</a></li>
+<li><a href="/2020/03/09/Python-urllib-CRLF注入漏洞小结/">Python urllib CRLF注入漏洞小结</a></li>
+</ul>
+</li>
+<li>安全开发<ul>
+<li><a href="/2019/06/30/AWD文件监控脚本/">AWD文件监控脚本</a></li>
+<li><a href="/2019/01/01/Python安全小工具之反编译pyc文件/">Python安全小工具之反编译pyc文件</a></li>
+<li><a href="/2020/04/08/Python安全小工具之MySQL监控代理/">Python安全小工具之MySQL监控代理</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78705998" target="_blank" rel="noopener">(旧博客)Python安全小工具之日志分析识别AWVS扫描</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78445866" target="_blank" rel="noopener">(旧博客)Python安全小工具之Linux日志痕迹清除</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78443601" target="_blank" rel="noopener">(旧博客)Python安全小工具之Web目录扫描器</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78003891" target="_blank" rel="noopener">(旧博客)Python安全小工具之计算文件Hash值</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78003609" target="_blank" rel="noopener">(旧博客)Python安全小工具之生成高精度字典</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/72972238" target="_blank" rel="noopener">(旧博客)关于《Python绝技：运用Python成为顶级黑客》的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/71152826" target="_blank" rel="noopener">(旧博客)关于《Python黑帽子：黑客与渗透测试编程之道》的学习笔记</a></li>
+</ul>
+</li>
+<li>爬虫<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/68961258" target="_blank" rel="noopener">(旧博客)Python爬虫之基础篇</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78411824" target="_blank" rel="noopener">(旧博客)Python爬虫之爬取动态页面数据</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78840444" target="_blank" rel="noopener">(旧博客)Python爬虫之Scrapy爬虫框架</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78850550" target="_blank" rel="noopener">(旧博客)Python爬虫之分布式爬虫</a></li>
+</ul>
+</li>
+<li>Django<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78505235" target="_blank" rel="noopener">(旧博客)基于Django搭建简单的博客系统</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>JavaScript</strong><ul>
+<li>JavaScript安全<ul>
+<li><a href="/2019/10/20/浅析JavaScript原型链污染攻击/">浅析JavaScript原型链污染攻击</a></li>
+</ul>
+</li>
+<li>Node.js<ul>
+<li><a href="/2020/03/29/浅析Node-js安全/">浅析Node.js安全</a></li>
+<li><a href="/2020/03/29/node-serialize反序列化漏洞/">node-serialize反序列化漏洞</a></li>
+</ul>
+</li>
+<li>AngularJS<ul>
+<li><a href="/2020/03/29/浅析AngularJS安全/">浅析AngularJS安全</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>GO</strong><ul>
+<li>GO安全<ul>
+<li><a href="/2020/01/01/浅析Influxdb认证绕过漏洞/">浅析Influxdb认证绕过漏洞</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>二进制安全</strong><ul>
+<li>二进制基础<ul>
+<li><a href="/2019/05/24/GOT表-PLT表与动态链接/">ELF动态链接,PLT和GOT</a></li>
+<li><a href="/2019/04/27/堆基础/">堆基础</a></li>
+<li><a href="/2019/04/15/ELF二进制格式/">ELF二进制格式</a></li>
+<li><a href="/2019/03/03/栈及栈帧/">栈基础</a></li>
+<li><a href="/2019/02/09/ELF安全防御机制小结/">ELF安全防御机制小结</a></li>
+<li><a href="/2019/01/28/IA-32寄存器/">IA-32（Intel Architecture 32位）寄存器</a></li>
+<li><a href="/2019/01/01/Linux环境与相关工具/">Linux环境与相关工具</a></li>
+</ul>
+</li>
+<li>C/C++<ul>
+<li><a href="/2019/03/24/C编写实现Linux反弹shell/">C编写实现Linux反弹shell</a></li>
+<li><a href="/2020/04/08/C编写实现AWD进程木马/">C编写实现AWD进程木马</a></li>
+</ul>
+</li>
+<li>逆向工程<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80334012" target="_blank" rel="noopener">(旧博客)逆向分析HelloWorld程序</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80380974" target="_blank" rel="noopener">(旧博客)逆向分析abex’crackme#1</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80546988" target="_blank" rel="noopener">(旧博客)逆向分析abex’crackme #2</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80549743" target="_blank" rel="noopener">(旧博客)函数调用约定</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80554677" target="_blank" rel="noopener">(旧博客)栈帧</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80558193" target="_blank" rel="noopener">(旧博客)逆向分析Tut.ReverseMe1</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80571933" target="_blank" rel="noopener">(旧博客)PE文件格式</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80611969" target="_blank" rel="noopener">(旧博客)运行时压缩（UPX）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80636568" target="_blank" rel="noopener">(旧博客)基址重定位表</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80636900" target="_blank" rel="noopener">(旧博客)从可执行文件中删除.reloc节区</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80656921" target="_blank" rel="noopener">(旧博客)UPack的PE文件头分析与OEP查找</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80670045" target="_blank" rel="noopener">(旧博客)内嵌补丁练习</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80684358" target="_blank" rel="noopener">(旧博客)Windows消息钩取</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80777748" target="_blank" rel="noopener">(旧博客)DLL注入</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80780830" target="_blank" rel="noopener">(旧博客)DLL卸载</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80789234" target="_blank" rel="noopener">(旧博客)通过修改PE加载DLL</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/82947635" target="_blank" rel="noopener">(旧博客)代码注入（线程注入）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/82954890" target="_blank" rel="noopener">(旧博客)使用汇编语言编写注入代码</a></li>
+</ul>
+</li>
+<li>Fuzzing<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80950537" target="_blank" rel="noopener">(旧博客)Windows缓冲区溢出之SLMail</a></li>
+</ul>
+</li>
+<li>Pwn<ul>
+<li><a href="/2019/04/20/花式栈溢出之stack-pivoting/">花式栈溢出之stack pivoting</a></li>
+<li><a href="/2019/04/12/中级ROP之ret2csu/">栈溢出之ret2csu</a></li>
+<li><a href="/2019/04/09/蒸米ROP学习笔记/">蒸米32位及64位ROP笔记</a></li>
+<li><a href="/2019/04/07/pwntools笔记/">pwntools笔记</a></li>
+<li><a href="/2019/03/23/花式栈溢出之Stack-smash/">花式栈溢出之Stack smash</a></li>
+<li><a href="/2019/03/05/栈溢出之ret2libc/">栈溢出之ret2libc</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2syscall/">栈溢出之ret2syscall</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2shellcode/">栈溢出之ret2shellcode</a></li>
+<li><a href="/2019/03/03/ROP之ret2text/">ROP基础及栈溢出之ret2text</a></li>
+<li><a href="/2019/03/03/栈溢出基本原理/">栈溢出基本原理</a></li>
+</ul>
+</li>
+<li>WriteUp Pwn<ul>
+<li><a href="/2019/03/08/TAMUctf-Pwn-writeup/">TAMUctf Pwn writeup</a></li>
+</ul>
+</li>
+<li>WriteUp Reverse<ul>
+<li><a href="/2019/01/01/HITB_Binary_100_writeup/">HITB Binary 100 writeup</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>渗透测试</strong><ul>
+<li>基础&amp;Tricks<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63681200" target="_blank" rel="noopener">(旧博客)被动信息收集之DNS信息收集</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63681596" target="_blank" rel="noopener">(旧博客)被动信息收集之RECON-NG</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63682444" target="_blank" rel="noopener">(旧博客)主动信息收集之主机发现</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63684778" target="_blank" rel="noopener">(旧博客)主动信息收集之主机发现的一些脚本</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/64906997" target="_blank" rel="noopener">(旧博客)主动信息收集之端口扫描</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/66473045" target="_blank" rel="noopener">(旧博客)主动信息收集之端口扫描的一些脚本</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78301318" target="_blank" rel="noopener">(旧博客)渗透测试之漏洞扫描阶段</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/57405291" target="_blank" rel="noopener">(旧博客)在Windows和Linux系统下隐藏痕迹的小技巧</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/57403811" target="_blank" rel="noopener">(旧博客)在Windows和Linux系统中的一些信息收集方法</a></li>
+</ul>
+</li>
+<li>Kali<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76598873" target="_blank" rel="noopener">(旧博客)使用Kali无线渗透获取宿舍WiFi密码（WPA）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/62239673" target="_blank" rel="noopener">(旧博客)关于Kali的两个Webshell（Webacoo和Weevely）的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/62064984" target="_blank" rel="noopener">(旧博客)关于Kali获取HTTP账号密码的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/62045632" target="_blank" rel="noopener">(旧博客)关于Kali进行ARP欺骗的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/61926977" target="_blank" rel="noopener">(旧博客)关于Kali进行ARP攻击的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/61920179" target="_blank" rel="noopener">(旧博客)在Kali中安装IBus的拼音输入法</a></li>
+<li></li>
+</ul>
+</li>
+<li>Metasploit<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60881390" target="_blank" rel="noopener">(旧博客)关于Metasploit的学习笔记（一）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/62427016" target="_blank" rel="noopener">(旧博客)关于Metasploit的学习笔记（二）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/77103290" target="_blank" rel="noopener">(旧博客)Metasploit的Docker安装及其Eternal Blue（永恒之蓝）渗透实现</a></li>
+</ul>
+</li>
+<li>内网渗透<ul>
+<li><a href="/2020/02/15/内网渗透基础/">内网渗透基础与域环境搭建</a></li>
+<li><a href="/2020/02/18/Windows-PowerShell基础/">内网渗透之Windows PowerShell基础</a></li>
+<li><a href="/2020/02/27/内网信息收集之本机信息收集/">内网信息收集之本机信息收集</a></li>
+<li><a href="/2020/03/08/内网信息收集之域相关信息收集/">内网信息收集之域相关信息收集</a></li>
+</ul>
+</li>
+<li>提权<ul>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（一）：Administrator提权到System">Administrator提权到System</a></li>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（二）：注入进程和利用漏洞提权">注入进程和利用漏洞提权</a></li>
+</ul>
+</li>
+<li>免杀</li>
+<li>工具<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78333085" target="_blank" rel="noopener">(旧博客)Wireshark进阶之网络问题案例分析</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/61651960" target="_blank" rel="noopener">(旧博客)关于nmap所有的参数</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60332892" target="_blank" rel="noopener">(旧博客)关于Xsser的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60151041" target="_blank" rel="noopener">(旧博客)关于skipfish的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/58677137" target="_blank" rel="noopener">(旧博客)关于Vega的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/58188331" target="_blank" rel="noopener">(旧博客)关于SQLMAP所有参数的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/57418307" target="_blank" rel="noopener">(旧博客)关于NETCAT的学习笔记</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>OS</strong><ul>
+<li>Windows<ul>
+<li><a href="/2019/01/01/将Python脚本转换为exe">将Python脚本转换为exe</a></li>
+<li><a href="/2019/01/01/几个查看用户信息的Windows程序">几个查看用户信息的Windows程序</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78716967" target="_blank" rel="noopener">(旧博客)Windows系统安全小结</a></li>
+</ul>
+</li>
+<li>Linux<ul>
+<li><a href="/2020/03/28/Linux安全笔记/">Linux安全笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78169962" target="_blank" rel="noopener">(旧博客)Linux查找命令小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/72614754" target="_blank" rel="noopener">(旧博客)关于iptables防火墙的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63680773" target="_blank" rel="noopener">(旧博客)关于Linux日志的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78837765" target="_blank" rel="noopener">(旧博客)Ubuntu搭建MongoDB集群</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>云</strong><ul>
+<li>云安全</li>
+<li>Docker<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76696436" target="_blank" rel="noopener">(旧博客)Docker基本命令以及Ubuntu16.04更换源</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76713869" target="_blank" rel="noopener">(旧博客)使用Docker搭建基于MySQL、Apache和PHP的DVWA服务器</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+</div>
+</div>
+
+<header class="post-header text-center">
+	<h1 class="title">
+		Java代码审计危险函数Checklist
+	</h1>
+	<span class="read">
+		阅读量 <span id="busuanzi_value_page_pv"></span>
+	</span>
+</header><br>
+
+<div class="book-post">
+  <h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>这里小结一下Java代码审计中各种类型漏洞函数的Checklist，这些函数若参数外部可控则可能会造成安全问题。</p>
+<p>参考：<a href="https://find-sec-bugs.github.io/bugs.htm" target="_blank" rel="noopener">https://find-sec-bugs.github.io/bugs.htm</a></p>
+<h2 id="0x01-反序列化漏洞"><a href="#0x01-反序列化漏洞" class="headerlink" title="0x01 反序列化漏洞"></a>0x01 反序列化漏洞</h2><h3 id="原生反序列化漏洞"><a href="#原生反序列化漏洞" class="headerlink" title="原生反序列化漏洞"></a>原生反序列化漏洞</h3><table>
+<thead>
+<tr>
+<th>类名</th>
+<th>函数名</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>java.io.ObjectInputStream</td>
+<td>readObject</td>
+<td>原生</td>
+</tr>
+<tr>
+<td>java.net.URLClassLoader</td>
+<td>findClass</td>
+<td>加载远程类</td>
+</tr>
+<tr>
+<td>java.net.URLClassLoader</td>
+<td>findResource</td>
+<td>加载远程类</td>
+</tr>
+<tr>
+<td>java.net.URLClassLoader</td>
+<td>findResources</td>
+<td>加载远程类</td>
+</tr>
+</tbody>
+</table>
+<h3 id="三方件反序列化漏洞"><a href="#三方件反序列化漏洞" class="headerlink" title="三方件反序列化漏洞"></a>三方件反序列化漏洞</h3><table>
+<thead>
+<tr>
+<th>类名</th>
+<th>函数名</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>java.beans.XMLDecoder</td>
+<td>readObject</td>
+<td>XMLDecoder反序列化漏洞</td>
+</tr>
+<tr>
+<td>com.thoughtworks.xstream.XStream</td>
+<td>fromXML</td>
+<td>XStream反序列化漏洞</td>
+</tr>
+<tr>
+<td>com.alibaba.fastjson.JSON</td>
+<td>parse/parseObject</td>
+<td>Fastjson反序列化漏洞</td>
+</tr>
+<tr>
+<td>com.fasterxml.jackson.databind.ObjectMapper</td>
+<td>readValue</td>
+<td>Jackson反序列化漏洞</td>
+</tr>
+<tr>
+<td>org.yaml.snakeyaml.Yaml</td>
+<td>load</td>
+<td>Snakeyaml反序列化漏洞</td>
+</tr>
+<tr>
+<td>org.ho.yaml.YamlDecoder</td>
+<td><code>&lt;init&gt;</code></td>
+<td>Yaml反序列化漏洞</td>
+</tr>
+<tr>
+<td>org.ho.yaml.Yaml</td>
+<td>load</td>
+<td>Yaml反序列化漏洞</td>
+</tr>
+<tr>
+<td>com.esotericsoftware.yamlbeans.YamlReader</td>
+<td>read</td>
+<td>YamlReader反序列化漏洞</td>
+</tr>
+<tr>
+<td>flex.messaging.io.amf.AmfMessageDeserializer</td>
+<td>readMessage</td>
+<td>AMF3反序列化漏洞</td>
+</tr>
+<tr>
+<td>org.apache.batik.transcoder.TranscoderInput</td>
+<td><code>&lt;init&gt;</code></td>
+<td>TranscoderInput反序列化漏洞</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Gadgets利用类"><a href="#Gadgets利用类" class="headerlink" title="Gadgets利用类"></a>Gadgets利用类</h3><p>参考ysoserial和marshalsec的Gadgets即可。</p>
+<p>ysoserial支持的反序列化利用Gadgets：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">Payload             Authors                     Dependencies</span><br><span class="line">-------             -------                     ------------</span><br><span class="line">BeanShell1          @pwntester, @cschneider4711 bsh:2.0b5</span><br><span class="line">C3P0                @mbechler                   c3p0:0.9.5.2, mchange-commons-java:0.2.11</span><br><span class="line">Clojure             @JackOfMostTrades           clojure:1.8.0</span><br><span class="line">CommonsBeanutils1   @frohoff                    commons-beanutils:1.9.2, commons-collections:3.1, commons-logging:1.2</span><br><span class="line">CommonsCollections1 @frohoff                    commons-collections:3.1</span><br><span class="line">CommonsCollections2 @frohoff                    commons-collections4:4.0</span><br><span class="line">CommonsCollections3 @frohoff                    commons-collections:3.1</span><br><span class="line">CommonsCollections4 @frohoff                    commons-collections4:4.0</span><br><span class="line">CommonsCollections5 @matthias_kaiser, @jasinner commons-collections:3.1</span><br><span class="line">CommonsCollections6 @matthias_kaiser            commons-collections:3.1</span><br><span class="line">FileUpload1         @mbechler                   commons-fileupload:1.3.1, commons-io:2.4</span><br><span class="line">Groovy1             @frohoff                    groovy:2.3.9</span><br><span class="line">Hibernate1          @mbechler</span><br><span class="line">Hibernate2          @mbechler</span><br><span class="line">JBossInterceptors1  @matthias_kaiser            javassist:3.12.1.GA, jboss-interceptor-core:2.0.0.Final, cdi-api:1.0-SP1, javax.interceptor-api:3.1, jboss-interceptor-spi:2.0.0.Final, slf4j-api:1.7.21</span><br><span class="line">JRMPClient          @mbechler</span><br><span class="line">JRMPListener        @mbechler</span><br><span class="line">JSON1               @mbechler                   json-lib:jar:jdk15:2.4, spring-aop:4.1.4.RELEASE, aopalliance:1.0, commons-logging:1.2, commons-lang:2.6, ezmorph:1.0.6, commons-beanutils:1.9.2, spring-core:4.1.4.RELEASE, commons-collections:3.1</span><br><span class="line">JavassistWeld1      @matthias_kaiser            javassist:3.12.1.GA, weld-core:1.1.33.Final, cdi-api:1.0-SP1, javax.interceptor-api:3.1, jboss-interceptor-spi:2.0.0.Final, slf4j-api:1.7.21</span><br><span class="line">Jdk7u21             @frohoff</span><br><span class="line">Jython1             @pwntester, @cschneider4711 jython-standalone:2.5.2</span><br><span class="line">MozillaRhino1       @matthias_kaiser            js:1.7R2</span><br><span class="line">Myfaces1            @mbechler</span><br><span class="line">Myfaces2            @mbechler</span><br><span class="line">ROME                @mbechler                   rome:1.0</span><br><span class="line">Spring1             @frohoff                    spring-core:4.1.4.RELEASE, spring-beans:4.1.4.RELEASE</span><br><span class="line">Spring2             @mbechler                   spring-core:4.1.4.RELEASE, spring-aop:4.1.4.RELEASE, aopalliance:1.0, commons-logging:1.2</span><br><span class="line">URLDNS              @gebl</span><br><span class="line">Wicket1             @jacob-baines               wicket-util:6.23.0, slf4j-api:1.6.4</span><br></pre></td></tr></table></figure>
+<p>marshalsec支持的反序列化利用Gadgets：</p>
+<table>
+<thead>
+<tr>
+<th>Marshaller</th>
+<th>Gadget Impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BlazeDSAMF(0/3/X)</td>
+<td>JDK only escalation to Java serialization various third party libraries RCEs</td>
+</tr>
+<tr>
+<td>Hessian/Burlap</td>
+<td>various third party RCEs</td>
+</tr>
+<tr>
+<td>Castor</td>
+<td>dependency library RCE</td>
+</tr>
+<tr>
+<td>Jackson</td>
+<td><strong>possible JDK only RCE</strong>, various third party RCEs</td>
+</tr>
+<tr>
+<td>Java</td>
+<td>yet another third party RCE</td>
+</tr>
+<tr>
+<td>JsonIO</td>
+<td><strong>JDK only RCE</strong></td>
+</tr>
+<tr>
+<td>JYAML</td>
+<td><strong>JDK only RCE</strong></td>
+</tr>
+<tr>
+<td>Kryo</td>
+<td>third party RCEs</td>
+</tr>
+<tr>
+<td>KryoAltStrategy</td>
+<td><strong>JDK only RCE</strong></td>
+</tr>
+<tr>
+<td>Red5AMF(0/3)</td>
+<td><strong>JDK only RCE</strong></td>
+</tr>
+<tr>
+<td>SnakeYAML</td>
+<td><strong>JDK only RCEs</strong></td>
+</tr>
+<tr>
+<td>XStream</td>
+<td><strong>JDK only RCEs</strong></td>
+</tr>
+<tr>
+<td>YAMLBeans</td>
+<td>third party RCE</td>
+</tr>
+</tbody>
+</table>
+<h2 id="0x02-JNDI注入"><a href="#0x02-JNDI注入" class="headerlink" title="0x02 JNDI注入"></a>0x02 JNDI注入</h2><table>
+<thead>
+<tr>
+<th>类名</th>
+<th>函数名</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>javax.naming.InitialContext</td>
+<td>lookup</td>
+<td></td>
+</tr>
+<tr>
+<td>javax.naming.directory.InitialDirContext</td>
+<td>lookup</td>
+<td></td>
+</tr>
+<tr>
+<td>org.springframework.transaction.jta.JtaTransactionManager</td>
+<td>readObject</td>
+<td>重写readObject()中调用了InitialContext.lookup()的类方法</td>
+</tr>
+<tr>
+<td>com.sun.rowset.JdbcRowSetImpl</td>
+<td>execute</td>
+<td>RMI中调用InitialContext.lookup()的类方法</td>
+</tr>
+<tr>
+<td>javax.management.remote.rmi.RMIConnector</td>
+<td>connect</td>
+<td>RMI中调用InitialContext.lookup()的类方法</td>
+</tr>
+<tr>
+<td>org.hibernate.jmx.StatisticsService</td>
+<td>setSessionFactoryJNDIName</td>
+<td>RMI中调用InitialContext.lookup()的类方法</td>
+</tr>
+<tr>
+<td>org.springframework.ldap.core.LdapTemplate</td>
+<td>lookup</td>
+<td>LDAP协议中调用InitialContext.lookup()的类方法</td>
+</tr>
+<tr>
+<td>org.springframework.ldap.core.LdapTemplate</td>
+<td>lookupContext</td>
+<td>LDAP协议中调用InitialContext.lookup()的类方法</td>
+</tr>
+</tbody>
+</table>
+<h2 id="0x03-表达式注入"><a href="#0x03-表达式注入" class="headerlink" title="0x03 表达式注入"></a>0x03 表达式注入</h2><h3 id="SpEL"><a href="#SpEL" class="headerlink" title="SpEL"></a>SpEL</h3><table>
+<thead>
+<tr>
+<th>类名</th>
+<th>函数名</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>org.springframework.expression.ExpressionParser</td>
+<td>parseExpression</td>
+<td>SpEL</td>
+</tr>
+<tr>
+<td>org.springframework.expression.spel.standard.SpelExpressionParser</td>
+<td>parseExpression</td>
+<td>SpEL</td>
+</tr>
+<tr>
+<td>org.springframework.expression.common.TemplateAwareExpressionParser</td>
+<td>parseExpression</td>
+<td>SpEL</td>
+</tr>
+<tr>
+<td>org.springframework.expression.Expression</td>
+<td>getValue</td>
+<td>SpEL</td>
+</tr>
+<tr>
+<td>org.springframework.expression.Expression</td>
+<td>setValue</td>
+<td>SpEL</td>
+</tr>
+<tr>
+<td>org.springframework.beans.factory.config.BeanExpressionResolver</td>
+<td>evaluate</td>
+<td>SpEL</td>
+</tr>
+</tbody>
+</table>
+<h3 id="OGNL"><a href="#OGNL" class="headerlink" title="OGNL"></a>OGNL</h3><table>
+<thead>
+<tr>
+<th>类名</th>
+<th>函数名</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>com.opensymphony.xwork2.util.TextParseUtil</td>
+<td>translateVariables</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>com.opensymphony.xwork2.util.TextParseUtil</td>
+<td>translateVariablesCollection</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>com.opensymphony.xwork2.util.TextParseUtil</td>
+<td>shallBeIncluded</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>com.opensymphony.xwork2.util.TextParseUtil</td>
+<td>commaDelimitedStringToSet</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>com.opensymphony.xwork2.util.TextParser</td>
+<td>evaluate</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>com.opensymphony.xwork2.util.OgnlTextParser</td>
+<td>evaluate</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>com.opensymphony.xwork2.ognl.OgnlReflectionProvider</td>
+<td>getGetMethod</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>com.opensymphony.xwork2.ognl.OgnlReflectionProvider</td>
+<td>getSetMethod</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>com.opensymphony.xwork2.ognl.OgnlReflectionProvider</td>
+<td>getField</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>com.opensymphony.xwork2.ognl.OgnlReflectionProvider</td>
+<td>setProperties</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>com.opensymphony.xwork2.ognl.OgnlReflectionProvider</td>
+<td>setProperty</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>com.opensymphony.xwork2.ognl.OgnlReflectionProvider</td>
+<td>getValue</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>com.opensymphony.xwork2.ognl.OgnlReflectionProvider</td>
+<td>setValue</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>com.opensymphony.xwork2.util.reflection.ReflectionProvider</td>
+<td>getGetMethod</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>com.opensymphony.xwork2.util.reflection.ReflectionProvider</td>
+<td>getSetMethod</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>com.opensymphony.xwork2.util.reflection.ReflectionProvider</td>
+<td>getField</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>com.opensymphony.xwork2.util.reflection.ReflectionProvider</td>
+<td>setProperties</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>com.opensymphony.xwork2.util.reflection.ReflectionProvider</td>
+<td>setProperty</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>com.opensymphony.xwork2.util.reflection.ReflectionProvider</td>
+<td>getValue</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>com.opensymphony.xwork2.util.reflection.ReflectionProvider</td>
+<td>setValue</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>com.opensymphony.xwork2.ognl.OgnlUtil</td>
+<td>setProperties</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>com.opensymphony.xwork2.ognl.OgnlUtil</td>
+<td>setProperty</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>com.opensymphony.xwork2.ognl.OgnlUtil</td>
+<td>setValue</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>com.opensymphony.xwork2.ognl.OgnlUtil</td>
+<td>getValue</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>com.opensymphony.xwork2.ognl.OgnlUtil</td>
+<td>callMethod</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>com.opensymphony.xwork2.ognl.OgnlUtil</td>
+<td>compile</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>org.apache.struts2.util.VelocityStrutsUtil</td>
+<td>evaluate</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>org.apache.struts2.util.StrutsUtil</td>
+<td>isTrue</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>org.apache.struts2.util.StrutsUtil</td>
+<td>findString</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>org.apache.struts2.util.StrutsUtil</td>
+<td>findValue</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>org.apache.struts2.util.StrutsUtil</td>
+<td>getText</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>org.apache.struts2.util.StrutsUtil</td>
+<td>translateVariables</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>org.apache.struts2.util.StrutsUtil</td>
+<td>makeSelectList</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>org.apache.struts2.views.jsp.ui.OgnlTool</td>
+<td>findValue</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>com.opensymphony.xwork2.util.ValueStack</td>
+<td>findString</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>com.opensymphony.xwork2.util.ValueStack</td>
+<td>findValue</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>com.opensymphony.xwork2.util.ValueStack</td>
+<td>setValue</td>
+<td>OGNL</td>
+</tr>
+<tr>
+<td>com.opensymphony.xwork2.util.ValueStack</td>
+<td>setParameter</td>
+<td>OGNL</td>
+</tr>
+</tbody>
+</table>
+<h3 id="EL"><a href="#EL" class="headerlink" title="EL"></a>EL</h3><table>
+<thead>
+<tr>
+<th>类名</th>
+<th>函数名</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>javax.el.ExpressionFactory</td>
+<td>createValueExpression</td>
+<td>EL</td>
+</tr>
+<tr>
+<td>javax.el.ExpressionFactory</td>
+<td>createMethodExpression</td>
+<td>EL</td>
+</tr>
+<tr>
+<td>org.jboss.seam.log.Log</td>
+<td>debug,error,fatal,info,trace,warn</td>
+<td>seam-el</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ScriptEngine"><a href="#ScriptEngine" class="headerlink" title="ScriptEngine"></a>ScriptEngine</h3><table>
+<thead>
+<tr>
+<th>类名</th>
+<th>函数名</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>javax.script.ScriptEngine</td>
+<td>eval</td>
+<td>脚本引擎</td>
+</tr>
+</tbody>
+</table>
+<h2 id="0x04-XML注入"><a href="#0x04-XML注入" class="headerlink" title="0x04 XML注入"></a>0x04 XML注入</h2><table>
+<thead>
+<tr>
+<th>类名</th>
+<th>函数名</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>javax.xml.parsers.DocumentBuilder</td>
+<td>parse</td>
+<td>DocumentBuilder</td>
+</tr>
+<tr>
+<td>org.dom4j.SAXReader</td>
+<td>read</td>
+<td>SAXReader</td>
+</tr>
+<tr>
+<td>org.jdom.SAXBuilder</td>
+<td>build</td>
+<td>SAXBuilder</td>
+</tr>
+<tr>
+<td>javax.xml.parsers.SAXParser</td>
+<td>parse</td>
+<td>SAXParser</td>
+</tr>
+<tr>
+<td>org.apache.commons.digester.Digester</td>
+<td>parse</td>
+<td>Digester</td>
+</tr>
+<tr>
+<td>org.dom4j.DocumentHelper</td>
+<td>parseText</td>
+<td>DocumentHelper</td>
+</tr>
+<tr>
+<td>javax.xml.stream.XMLStreamReader</td>
+<td>getText</td>
+<td>XMLStreamReader</td>
+</tr>
+<tr>
+<td>javax.xml.xpath.XPathExpression</td>
+<td>evaluate</td>
+<td>XPathExpression</td>
+</tr>
+<tr>
+<td>org.xml.sax.XMLReader</td>
+<td>parse</td>
+<td>XMLReader</td>
+</tr>
+<tr>
+<td>javax.xml.transform.TransformerFactory</td>
+<td>transform</td>
+<td>TransformerFactory</td>
+</tr>
+<tr>
+<td>org.apache.poi.xssf.usermodel.XSSFWorkbook</td>
+<td><code>&lt;init&gt;</code></td>
+<td>XSSFWorkbook</td>
+</tr>
+</tbody>
+</table>
+<h2 id="0x05-命令注入"><a href="#0x05-命令注入" class="headerlink" title="0x05 命令注入"></a>0x05 命令注入</h2><table>
+<thead>
+<tr>
+<th>类名</th>
+<th>函数名</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>java.lang.Runtime</td>
+<td>exec</td>
+<td></td>
+</tr>
+<tr>
+<td>java.lang.ProcessBuilder</td>
+<td>start</td>
+</tr>
+</tbody>
+</table>
+<h2 id="0x06-SQL注入"><a href="#0x06-SQL注入" class="headerlink" title="0x06 SQL注入"></a>0x06 SQL注入</h2><table>
+<thead>
+<tr>
+<th>类名</th>
+<th>函数名</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>java.sql.Statement</td>
+<td>execute</td>
+<td>JDBC</td>
+</tr>
+<tr>
+<td>java.sql.Statement</td>
+<td>executeQuery</td>
+<td>JDBC</td>
+</tr>
+<tr>
+<td>java.sql.Statement</td>
+<td>executeUpdate</td>
+<td>JDBC</td>
+</tr>
+<tr>
+<td>java.sql.Statement</td>
+<td>executeLargeUpdate</td>
+<td>JDBC</td>
+</tr>
+<tr>
+<td>java.sql.Statement</td>
+<td>addBatch</td>
+<td>JDBC</td>
+</tr>
+<tr>
+<td>java.sql.PreparedStatement</td>
+<td>均同上所有</td>
+<td>JDBC</td>
+</tr>
+<tr>
+<td>java.sql.Connection</td>
+<td>prepareCall</td>
+<td>JDBC</td>
+</tr>
+<tr>
+<td>java.sql.Connection</td>
+<td>prepareStatement</td>
+<td>JDBC</td>
+</tr>
+<tr>
+<td>java.sql.Connection</td>
+<td>nativeSQL</td>
+<td>JDBC</td>
+</tr>
+<tr>
+<td>org.hibernate.criterion.Restrictions</td>
+<td>sqlRestriction</td>
+<td>hibernate</td>
+</tr>
+<tr>
+<td>org.hibernate.Session</td>
+<td>createQuery</td>
+<td>hibernate</td>
+</tr>
+<tr>
+<td>org.hibernate.Session</td>
+<td>createSQLQuery</td>
+<td>hibernate</td>
+</tr>
+<tr>
+<td>org.springframework.jdbc.core.PreparedStatementCreatorFactory</td>
+<td><code>&lt;init&gt;</code></td>
+<td>Spring</td>
+</tr>
+<tr>
+<td>org.springframework.jdbc.core.PreparedStatementCreatorFactory</td>
+<td>newPreparedStatementCreator</td>
+<td>Spring</td>
+</tr>
+<tr>
+<td>org.springframework.jdbc.core.JdbcOperations</td>
+<td>batchUpdate</td>
+<td>Spring</td>
+</tr>
+<tr>
+<td>org.springframework.jdbc.core.JdbcOperations</td>
+<td>execute</td>
+<td>Spring</td>
+</tr>
+<tr>
+<td>org.springframework.jdbc.core.JdbcOperations</td>
+<td>query</td>
+<td>Spring</td>
+</tr>
+<tr>
+<td>org.springframework.jdbc.core.JdbcOperations</td>
+<td>queryForList</td>
+<td>Spring</td>
+</tr>
+<tr>
+<td>org.springframework.jdbc.core.JdbcOperations</td>
+<td>queryForMap</td>
+<td>Spring</td>
+</tr>
+<tr>
+<td>org.springframework.jdbc.core.JdbcOperations</td>
+<td>queryForObject</td>
+<td>Spring</td>
+</tr>
+<tr>
+<td>org.springframework.jdbc.core.JdbcOperations</td>
+<td>queryForRowSet</td>
+<td>Spring</td>
+</tr>
+<tr>
+<td>org.springframework.jdbc.core.JdbcOperations</td>
+<td>queryForInt</td>
+<td>Spring</td>
+</tr>
+<tr>
+<td>org.springframework.jdbc.core.JdbcOperations</td>
+<td>queryForLong</td>
+<td>Spring</td>
+</tr>
+<tr>
+<td>org.springframework.jdbc.core.JdbcOperations</td>
+<td>update</td>
+<td>Spring</td>
+</tr>
+<tr>
+<td>org.springframework.jdbc.core.JdbcTemplate</td>
+<td>均同上所有</td>
+<td>Spring</td>
+</tr>
+<tr>
+<td>javax.jdo.PersistenceManager</td>
+<td>newQuery</td>
+<td>jdo</td>
+</tr>
+<tr>
+<td>javax.jdo.Query</td>
+<td>setFilter</td>
+<td>jdo</td>
+</tr>
+<tr>
+<td>javax.jdo.Query</td>
+<td>setGrouping</td>
+<td>jdo</td>
+</tr>
+<tr>
+<td>javax.persistence.EntityManager</td>
+<td>createQuery</td>
+<td>jpa</td>
+</tr>
+<tr>
+<td>javax.persistence.EntityManager</td>
+<td>createNativeQuery</td>
+<td>jpa</td>
+</tr>
+<tr>
+<td>org.apache.turbine.om.peer.BasePeer</td>
+<td>executeQuery</td>
+<td>turbine</td>
+</tr>
+<tr>
+<td>org.apache.torque.util.BasePeer</td>
+<td>executeQuery</td>
+<td>turbine</td>
+</tr>
+<tr>
+<td>com.amazonaws.services.simpledb.model.SelectRequest</td>
+<td><code>&lt;init&gt;</code></td>
+<td>AWS的SimpleDB</td>
+</tr>
+<tr>
+<td>com.amazonaws.services.simpledb.model.SelectRequest</td>
+<td>withSelectExpression</td>
+<td>AWS的SimpleDB</td>
+</tr>
+</tbody>
+</table>
+<h2 id="0x07-XSS"><a href="#0x07-XSS" class="headerlink" title="0x07 XSS"></a>0x07 XSS</h2><table>
+<thead>
+<tr>
+<th>类名</th>
+<th>函数名</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>javax.servlet.jsp.JspWriter</td>
+<td>write</td>
+<td>JSP</td>
+</tr>
+<tr>
+<td>javax.servlet.jsp.JspWriter</td>
+<td>append</td>
+<td>JSP</td>
+</tr>
+<tr>
+<td>javax.servlet.jsp.JspWriter</td>
+<td>print</td>
+<td>JSP</td>
+</tr>
+<tr>
+<td>javax.servlet.jsp.JspWriter</td>
+<td>println</td>
+<td>JSP</td>
+</tr>
+<tr>
+<td>org.owasp.encoder.tag.ForHtmlTag</td>
+<td>doTag</td>
+<td>JSP</td>
+</tr>
+<tr>
+<td>java.io.PrintWriter</td>
+<td>write</td>
+<td>Servlet</td>
+</tr>
+<tr>
+<td>java.io.PrintWriter</td>
+<td>format</td>
+<td>Servlet</td>
+</tr>
+<tr>
+<td>java.io.PrintWriter</td>
+<td>print</td>
+<td>Servlet</td>
+</tr>
+<tr>
+<td>java.io.PrintWriter</td>
+<td>println</td>
+<td>Servlet</td>
+</tr>
+<tr>
+<td>java.io.PrintWriter</td>
+<td>printf</td>
+<td>Servlet</td>
+</tr>
+<tr>
+<td>java.io.PrintWriter</td>
+<td>append</td>
+<td>Servlet</td>
+</tr>
+<tr>
+<td>javax.servlet.http.HttpServletResponse</td>
+<td>sendError</td>
+<td>Servlet</td>
+</tr>
+<tr>
+<td>javax.servlet.http.HttpServletResponse</td>
+<td>setStatus</td>
+<td>Servlet</td>
+</tr>
+<tr>
+<td>javax.servlet.http.HttpServletResponseWrapper</td>
+<td>均同上所有</td>
+<td>Servlet</td>
+</tr>
+<tr>
+<td>javax.servlet.ServletOutputStream</td>
+<td>print</td>
+<td>Servlet</td>
+</tr>
+<tr>
+<td>javax.servlet.ServletOutputStream</td>
+<td>println</td>
+<td>Servlet</td>
+</tr>
+</tbody>
+</table>
+<h2 id="0x08-任意文件上传-下载-读取-新建"><a href="#0x08-任意文件上传-下载-读取-新建" class="headerlink" title="0x08 任意文件上传/下载/读取/新建"></a>0x08 任意文件上传/下载/读取/新建</h2><table>
+<thead>
+<tr>
+<th>类名</th>
+<th>函数名</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>java.io.File</td>
+<td><code>&lt;init&gt;</code></td>
+<td>读文件</td>
+</tr>
+<tr>
+<td>java.io.File</td>
+<td>createTempFile</td>
+<td>新建文件</td>
+</tr>
+<tr>
+<td>java.io.FileInputStream</td>
+<td><code>&lt;init&gt;</code></td>
+<td>读文件</td>
+</tr>
+<tr>
+<td>java.io.FileReader</td>
+<td><code>&lt;init&gt;</code></td>
+<td>读文件</td>
+</tr>
+<tr>
+<td>java.io.RandomAccessFile</td>
+<td><code>&lt;init&gt;</code></td>
+<td>读文件</td>
+</tr>
+<tr>
+<td>javax.activation.FileDataSource</td>
+<td><code>&lt;init&gt;</code></td>
+<td>读文件</td>
+</tr>
+<tr>
+<td>java.nio.file.Paths</td>
+<td>get</td>
+<td>读文件</td>
+</tr>
+<tr>
+<td>java.nio.file.Files</td>
+<td>createTempFile</td>
+<td>新建文件</td>
+</tr>
+<tr>
+<td>java.nio.file.Files</td>
+<td>createTempDirectory</td>
+<td>新建文件</td>
+</tr>
+<tr>
+<td>java.io.FileWriter</td>
+<td><code>&lt;init&gt;</code></td>
+<td>写文件</td>
+</tr>
+<tr>
+<td>java.io.FileOutputStream</td>
+<td><code>&lt;init&gt;</code></td>
+<td>写文件</td>
+</tr>
+<tr>
+<td>kotlin.io.FilesKt</td>
+<td>createTempFile$default</td>
+<td>kotlin框架</td>
+</tr>
+<tr>
+<td>kotlin.io.FilesKt</td>
+<td>createTempFile</td>
+<td>kotlin框架</td>
+</tr>
+<tr>
+<td>kotlin.io.FilesKt</td>
+<td>createTempDir$default</td>
+<td>kotlin框架</td>
+</tr>
+<tr>
+<td>kotlin.io.FilesKt</td>
+<td>createTempDir</td>
+<td>kotlin框架</td>
+</tr>
+</tbody>
+</table>
+<h2 id="0x09-XPath注入"><a href="#0x09-XPath注入" class="headerlink" title="0x09 XPath注入"></a>0x09 XPath注入</h2><table>
+<thead>
+<tr>
+<th>类名</th>
+<th>函数名</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>org.apache.xpath.XPathAPI</td>
+<td>eval</td>
+<td>Apache</td>
+</tr>
+<tr>
+<td>org.apache.xpath.XPathAPI</td>
+<td>selectNodeIterator</td>
+<td>Apache</td>
+</tr>
+<tr>
+<td>org.apache.xpath.XPathAPI</td>
+<td>selectNodeList</td>
+<td>Apache</td>
+</tr>
+<tr>
+<td>org.apache.xpath.XPathAPI</td>
+<td>selectSingleNode</td>
+<td>Apache</td>
+</tr>
+<tr>
+<td>com.sun.org.apache.xpath.internal.XPathAPI</td>
+<td>均同上所有</td>
+<td>Apache</td>
+</tr>
+<tr>
+<td>org.apache.xml.security.utils.XPathAPI</td>
+<td>evaluate</td>
+<td>Apache</td>
+</tr>
+<tr>
+<td>org.apache.xml.security.utils.XPathAPI</td>
+<td>selectNodeList</td>
+<td>Apache</td>
+</tr>
+<tr>
+<td>org.apache.xml.security.utils.JDKXPathAPI</td>
+<td>均同上所有</td>
+<td>Apache</td>
+</tr>
+<tr>
+<td>org.apache.xml.security.utils.XalanXPathAPI</td>
+<td>均同上所有</td>
+<td>Apache</td>
+</tr>
+<tr>
+<td>javax.xml.xpath.XPath</td>
+<td>compile</td>
+<td>javax</td>
+</tr>
+<tr>
+<td>javax.xml.xpath.XPath</td>
+<td>evaluate</td>
+<td>javax</td>
+</tr>
+<tr>
+<td>javax.xml.xpath.XPathExpression</td>
+<td>evaluate</td>
+<td>javax</td>
+</tr>
+</tbody>
+</table>
+<h2 id="0x0A-LDAP注入"><a href="#0x0A-LDAP注入" class="headerlink" title="0x0A LDAP注入"></a>0x0A LDAP注入</h2><table>
+<thead>
+<tr>
+<th>类名</th>
+<th>函数名</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>javax.naming.ldap.LdapName</td>
+<td><code>&lt;init&gt;</code></td>
+<td></td>
+</tr>
+<tr>
+<td>javax.naming.Context</td>
+<td>lookup</td>
+<td></td>
+</tr>
+<tr>
+<td>javax.naming.directory.DirContext</td>
+<td>lookup</td>
+<td></td>
+</tr>
+<tr>
+<td>javax.naming.directory.DirContext</td>
+<td>search</td>
+<td></td>
+</tr>
+<tr>
+<td>javax.naming.directory.InitialDirContext</td>
+<td>均同上所有</td>
+<td></td>
+</tr>
+<tr>
+<td>javax.naming.ldap.LdapContext</td>
+<td>均同上所有</td>
+<td></td>
+</tr>
+<tr>
+<td>javax.naming.ldap.InitialLdapContext</td>
+<td>均同上所有</td>
+<td></td>
+</tr>
+<tr>
+<td>javax.naming.event.EventDirContext</td>
+<td>均同上所有</td>
+<td></td>
+</tr>
+<tr>
+<td>com.sun.jndi.ldap.LdapCtx</td>
+<td>均同上所有</td>
+<td></td>
+</tr>
+<tr>
+<td>com.unboundid.ldap.sdk.LDAPConnection</td>
+<td>search</td>
+<td></td>
+</tr>
+<tr>
+<td>org.springframework.ldap.core.LdapTemplate</td>
+<td>list</td>
+<td></td>
+</tr>
+<tr>
+<td>org.springframework.ldap.core.LdapTemplate</td>
+<td>lookup</td>
+<td></td>
+</tr>
+<tr>
+<td>org.springframework.ldap.core.LdapTemplate</td>
+<td>search</td>
+<td></td>
+</tr>
+<tr>
+<td>org.springframework.ldap.core.LdapOperations</td>
+<td>均同上所有</td>
+<td></td>
+</tr>
+<tr>
+<td>org.springframework.jndi.JndiTemplate</td>
+<td>lookup</td>
+</tr>
+</tbody>
+</table>
+<h2 id="0x0B-SSRF"><a href="#0x0B-SSRF" class="headerlink" title="0x0B SSRF"></a>0x0B SSRF</h2><table>
+<thead>
+<tr>
+<th>类名</th>
+<th>函数名</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HttpClient</td>
+<td></td>
+<td>仅支持HTTP/HTTPS协议</td>
+</tr>
+<tr>
+<td>HttpURLConnection</td>
+<td></td>
+<td>仅支持HTTP/HTTPS协议</td>
+</tr>
+<tr>
+<td>URLConnection</td>
+<td></td>
+<td>支持<code>sun.net.www.protocol</code>所有协议</td>
+</tr>
+<tr>
+<td>URL</td>
+<td></td>
+<td>支持<code>sun.net.www.protocol</code>所有协议</td>
+</tr>
+<tr>
+<td>OkHttp</td>
+<td></td>
+<td>仅支持HTTP/HTTPS协议</td>
+</tr>
+<tr>
+<td>ImageIO</td>
+<td></td>
+<td>支持<code>sun.net.www.protocol</code>所有协议</td>
+</tr>
+<tr>
+<td>Request</td>
+<td></td>
+<td>仅支持HTTP/HTTPS协议</td>
+</tr>
+</tbody>
+</table>
+<h2 id="0x0C-CRLF注入"><a href="#0x0C-CRLF注入" class="headerlink" title="0x0C CRLF注入"></a>0x0C CRLF注入</h2><table>
+<thead>
+<tr>
+<th>类名</th>
+<th>函数名</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>java.util.logging.Logger</td>
+<td>config</td>
+<td></td>
+</tr>
+<tr>
+<td>java.util.logging.Logger</td>
+<td>entering</td>
+<td></td>
+</tr>
+<tr>
+<td>java.util.logging.Logger</td>
+<td>exiting</td>
+<td></td>
+</tr>
+<tr>
+<td>java.util.logging.Logger</td>
+<td>fine</td>
+<td></td>
+</tr>
+<tr>
+<td>java.util.logging.Logger</td>
+<td>finer</td>
+<td></td>
+</tr>
+<tr>
+<td>java.util.logging.Logger</td>
+<td>finest</td>
+<td></td>
+</tr>
+<tr>
+<td>java.util.logging.Logger</td>
+<td>info</td>
+<td></td>
+</tr>
+<tr>
+<td>java.util.logging.Logger</td>
+<td>logp</td>
+<td></td>
+</tr>
+<tr>
+<td>java.util.logging.Logger</td>
+<td>logrb</td>
+<td></td>
+</tr>
+<tr>
+<td>java.util.logging.Logger</td>
+<td>severe</td>
+<td></td>
+</tr>
+<tr>
+<td>java.util.logging.Logger</td>
+<td>throwing</td>
+<td></td>
+</tr>
+<tr>
+<td>java.util.logging.Logger</td>
+<td>warning</td>
+<td></td>
+</tr>
+<tr>
+<td>java.utilging.Logger</td>
+<td>log</td>
+<td></td>
+</tr>
+<tr>
+<td>org.apache.commons.logging.Log</td>
+<td>debug</td>
+<td></td>
+</tr>
+<tr>
+<td>org.apache.commons.logging.Log</td>
+<td>error</td>
+<td></td>
+</tr>
+<tr>
+<td>org.apache.commons.logging.Log</td>
+<td>fatal</td>
+<td></td>
+</tr>
+<tr>
+<td>org.apache.commons.logging.Log</td>
+<td>info</td>
+<td></td>
+</tr>
+<tr>
+<td>org.apache.commons.logging.Log</td>
+<td>trace</td>
+<td></td>
+</tr>
+<tr>
+<td>org.apache.commons.logging.Log</td>
+<td>warn</td>
+<td></td>
+</tr>
+<tr>
+<td>org.slf4j.Logger</td>
+<td>debug</td>
+<td></td>
+</tr>
+<tr>
+<td>org.slf4j.Logger</td>
+<td>error</td>
+<td></td>
+</tr>
+<tr>
+<td>org.slf4j.Logger</td>
+<td>info</td>
+<td></td>
+</tr>
+<tr>
+<td>org.slf4j.Logger</td>
+<td>trace</td>
+<td></td>
+</tr>
+<tr>
+<td>org.slf4j.Logger</td>
+<td>warn</td>
+<td></td>
+</tr>
+<tr>
+<td>org.apache.logging.log4j.Logger</td>
+<td>debug</td>
+<td></td>
+</tr>
+<tr>
+<td>org.apache.logging.log4j.Logger</td>
+<td>entry</td>
+<td></td>
+</tr>
+<tr>
+<td>org.apache.logging.log4j.Logger</td>
+<td>error</td>
+<td></td>
+</tr>
+<tr>
+<td>org.apache.logging.log4j.Logger</td>
+<td>fatal</td>
+<td></td>
+</tr>
+<tr>
+<td>org.apache.logging.log4j.Logger</td>
+<td>info</td>
+<td></td>
+</tr>
+<tr>
+<td>org.apache.logging.log4j.Logger</td>
+<td>printf</td>
+<td></td>
+</tr>
+<tr>
+<td>org.apache.logging.log4j.Logger</td>
+<td>trace</td>
+<td></td>
+</tr>
+<tr>
+<td>org.apache.logging.log4j.Logger</td>
+<td>warn</td>
+<td></td>
+</tr>
+<tr>
+<td>org.apacheging4j.Logger</td>
+<td>log</td>
+<td></td>
+</tr>
+<tr>
+<td>org.apache.log4j.Category</td>
+<td>debug</td>
+<td></td>
+</tr>
+<tr>
+<td>org.apache.log4j.Category</td>
+<td>error</td>
+<td></td>
+</tr>
+<tr>
+<td>org.apache.log4j.Category</td>
+<td>fatal</td>
+<td></td>
+</tr>
+<tr>
+<td>org.apache.log4j.Category</td>
+<td>info</td>
+<td></td>
+</tr>
+<tr>
+<td>org.apache.log4j.Category</td>
+<td>l7dlog</td>
+<td></td>
+</tr>
+<tr>
+<td>org.apache.log4j.Category</td>
+<td>warn</td>
+<td></td>
+</tr>
+<tr>
+<td>org.apache4j.Category</td>
+<td>log</td>
+<td></td>
+</tr>
+<tr>
+<td>org.apache4j.Logger</td>
+<td>log</td>
+<td></td>
+</tr>
+<tr>
+<td>org.apache.log4j.Logger</td>
+<td>debug</td>
+<td></td>
+</tr>
+<tr>
+<td>org.apache.log4j.Logger</td>
+<td>error</td>
+<td></td>
+</tr>
+<tr>
+<td>org.apache.log4j.Logger</td>
+<td>fatal</td>
+<td></td>
+</tr>
+<tr>
+<td>org.apache.log4j.Logger</td>
+<td>info</td>
+<td></td>
+</tr>
+<tr>
+<td>org.apache.log4j.Logger</td>
+<td>l7dlog</td>
+<td></td>
+</tr>
+<tr>
+<td>org.apache.log4j.Logger</td>
+<td>warn</td>
+<td></td>
+</tr>
+<tr>
+<td>org.apache.log4j.Logger</td>
+<td>trace</td>
+<td></td>
+</tr>
+<tr>
+<td>org.pmw.tinylog.Logger</td>
+<td>debug</td>
+<td></td>
+</tr>
+<tr>
+<td>org.pmw.tinylog.Logger</td>
+<td>error</td>
+<td></td>
+</tr>
+<tr>
+<td>org.pmw.tinylog.Logger</td>
+<td>info</td>
+<td></td>
+</tr>
+<tr>
+<td>org.pmw.tinylog.Logger</td>
+<td>warn</td>
+<td></td>
+</tr>
+<tr>
+<td>org.pmw.tinylog.Logger</td>
+<td>trace</td>
+</tr>
+</tbody>
+</table>
+<h2 id="0x0D-任意URL跳转"><a href="#0x0D-任意URL跳转" class="headerlink" title="0x0D 任意URL跳转"></a>0x0D 任意URL跳转</h2><table>
+<thead>
+<tr>
+<th>类名</th>
+<th>函数名</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>javax.servlet.http.HttpServletResponse</td>
+<td>sendRedirect</td>
+<td>重定向</td>
+</tr>
+<tr>
+<td>javax.servlet.RequestDispatcher</td>
+<td>forward</td>
+<td>可导致文件泄露</td>
+</tr>
+<tr>
+<td>javax.servlet.RequestDispatcher</td>
+<td>include</td>
+<td>可导致文件泄露</td>
+</tr>
+</tbody>
+</table>
+<h2 id="0x0E-认证绕过"><a href="#0x0E-认证绕过" class="headerlink" title="0x0E 认证绕过"></a>0x0E 认证绕过</h2><p>解析获取URL时调用的函数：</p>
+<table>
+<thead>
+<tr>
+<th>类名</th>
+<th>函数名</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>javax.servlet.http.HttpServletRequest</td>
+<td>getRequestURI</td>
+</tr>
+<tr>
+<td>javax.servlet.http.HttpServletRequest</td>
+<td>getRequestURL</td>
+</tr>
+</tbody>
+</table>
+<p>判断是否包含白名单URL时调用的函数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">contains</span><br><span class="line">indexOf</span><br><span class="line">startsWith</span><br><span class="line">endsWith</span><br></pre></td></tr></table></figure>
+<h2 id="0x0F-SSTI"><a href="#0x0F-SSTI" class="headerlink" title="0x0F SSTI"></a>0x0F SSTI</h2><table>
+<thead>
+<tr>
+<th>类名</th>
+<th>函数名</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>freemarker.template.Template</td>
+<td>getTemplate</td>
+<td>FreeMarker</td>
+</tr>
+<tr>
+<td>freemarker.template.Template</td>
+<td>process</td>
+<td>FreeMarker</td>
+</tr>
+<tr>
+<td>org.apache.velocity.Template</td>
+<td>merge</td>
+<td>Velocity</td>
+</tr>
+</tbody>
+</table>
+<h2 id="0x10-反射调用任意类方法"><a href="#0x10-反射调用任意类方法" class="headerlink" title="0x10 反射调用任意类方法"></a>0x10 反射调用任意类方法</h2><table>
+<thead>
+<tr>
+<th>类名</th>
+<th>函数名</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>java.lang.reflect.Method</td>
+<td>invoke</td>
+<td></td>
+</tr>
+<tr>
+<td>java.lang.reflect.InvocationHandler</td>
+<td>invoke</td>
+</tr>
+</tbody>
+</table>
+<h2 id="0x11-远程连接"><a href="#0x11-远程连接" class="headerlink" title="0x11 远程连接"></a>0x11 远程连接</h2><table>
+<thead>
+<tr>
+<th>类名</th>
+<th>函数名</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>java.net.Socket</td>
+<td>connect</td>
+</tr>
+</tbody>
+</table>
+<h2 id="0x12-SMTP头注入"><a href="#0x12-SMTP头注入" class="headerlink" title="0x12 SMTP头注入"></a>0x12 SMTP头注入</h2><table>
+<thead>
+<tr>
+<th>类名</th>
+<th>函数名</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>javax.mail.Message</td>
+<td>setSubject</td>
+<td></td>
+</tr>
+<tr>
+<td>javax.mail.Message</td>
+<td>addHeader</td>
+<td></td>
+</tr>
+<tr>
+<td>javax.mail.Message</td>
+<td>setDescription</td>
+<td></td>
+</tr>
+<tr>
+<td>javax.mail.Message</td>
+<td>setDisposition</td>
+</tr>
+</tbody>
+</table>
+<h2 id="0x13-自动绑定漏洞"><a href="#0x13-自动绑定漏洞" class="headerlink" title="0x13 自动绑定漏洞"></a>0x13 自动绑定漏洞</h2><table>
+<thead>
+<tr>
+<th>类名</th>
+<th>注解名</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>org.springframework.web.bind.annotation.ModelAttribute</td>
+<td>@ModelAttribute</td>
+<td>Spring MVC</td>
+</tr>
+<tr>
+<td>org.springframework.web.bind.annotation.SessionAttributes</td>
+<td>@SessionAttributes</td>
+<td>Spring MVC</td>
+</tr>
+</tbody>
+</table>
+<h2 id="0x14-Beans注入"><a href="#0x14-Beans注入" class="headerlink" title="0x14 Beans注入"></a>0x14 Beans注入</h2><table>
+<thead>
+<tr>
+<th>类名</th>
+<th>函数名</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>org.apache.commons.beanutils.BeanUtils</td>
+<td>populate</td>
+<td></td>
+</tr>
+<tr>
+<td>org.apache.commons.beanutils.BeanUtilsBean</td>
+<td>populate</td>
+</tr>
+</tbody>
+</table>
+<h2 id="0x15-加解密相关"><a href="#0x15-加解密相关" class="headerlink" title="0x15 加解密相关"></a>0x15 加解密相关</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">java.sql.DriverManager  getConnection</span><br><span class="line">java.security.KeyStore$PasswordProtection  &lt;init&gt;</span><br><span class="line">org.springframework.security.oauth2.config.annotation.builders.ClientDetailsServiceBuilder$ClientBuilder  secret</span><br><span class="line">java.security.KeyStore  load</span><br><span class="line">javax.crypto.spec.PBEKeySpec  &lt;init&gt;</span><br><span class="line">java.net.PasswordAuthentication  &lt;init&gt;</span><br><span class="line">javax.security.auth.callback.PasswordCallback  setPassword</span><br><span class="line">javax.security.auth.kerberos.KerberosKey  &lt;init&gt;</span><br><span class="line">javax.net.ssl.KeyManagerFactory  init</span><br><span class="line">javax.crypto.spec.DESKeySpec  &lt;init&gt;</span><br><span class="line">javax.crypto.spec.DESedeKeySpec  &lt;init&gt;</span><br><span class="line">javax.crypto.spec.SecretKeySpec  &lt;init&gt;</span><br><span class="line">java.security.spec.X509EncodedKeySpec  &lt;init&gt;</span><br><span class="line">java.security.spec.PKCS8EncodedKeySpec  &lt;init&gt;</span><br><span class="line">java.security.KeyRep  &lt;init&gt;</span><br><span class="line">javax.security.auth.kerberos.KerberosTicket  &lt;init&gt;</span><br><span class="line">sun.security.provider.DSAPublicKeyImpl  &lt;init&gt;</span><br><span class="line">java.security.spec.DSAPrivateKeySpec  &lt;init&gt;</span><br><span class="line">java.security.spec.DSAPublicKeySpec  &lt;init&gt;</span><br><span class="line">javax.crypto.spec.DHPrivateKeySpec  &lt;init&gt;</span><br><span class="line">javax.crypto.spec.DHPublicKeySpec  &lt;init&gt; </span><br><span class="line">java.security.spec.ECPrivateKeySpec  &lt;init&gt;</span><br><span class="line">java.security.spec.RSAPrivateKeySpec  &lt;init&gt;</span><br><span class="line">java.security.spec.RSAMultiPrimePrivateCrtKeySpec  &lt;init&gt;</span><br><span class="line">java.security.spec.RSAPrivateCrtKeySpec  &lt;init&gt;</span><br><span class="line">java.security.spec.RSAPublicKeySpec  &lt;init&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="0x16-不安全配置"><a href="#0x16-不安全配置" class="headerlink" title="0x16 不安全配置"></a>0x16 不安全配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br></pre></td><td class="code"><pre><span class="line">//collections</span><br><span class="line">java.util.Collection  add,addAll,contains,containsAll,clear,remove,removeAll,removeIf,retainAll,toArray</span><br><span class="line">java.util.Iterator  next</span><br><span class="line">java.util.List  add,addAll,get,indexOf,lastIndexOf,listIterator,remove,replaceAll,retainAll,set,sort,subList,toArray</span><br><span class="line">java.util.ListIterator  add,previous,set</span><br><span class="line">java.util.ArrayList  &lt;init&gt;</span><br><span class="line">java.util.concurrent.CopyOnWriteArrayList  &lt;init&gt;</span><br><span class="line">java.util.Queue  element,offer,peek,poll,remove</span><br><span class="line">java.util.Deque  addFirst,addLast,descendingIterator,getFirst,getLast,offerFirst,offerLast,peekFirst,peekLast,pollFirst,pollLast,pop,push,removeFirst,removeFirstOccurrence,removeLast,removeLastOccurrence</span><br><span class="line">java.util.ArrayDeque  &lt;init&gt;</span><br><span class="line">java.util.concurrent.ConcurrentLinkedDeque  &lt;init&gt;</span><br><span class="line">java.util.LinkedList  &lt;init&gt;,get,set</span><br><span class="line">java.util.Vector  &lt;init&gt;,add,addAll,addElement,copyInto,elementAt,elements,firstElement,insertElementAt,setElementAt,sort</span><br><span class="line">java.util.Stack  &lt;init&gt;,peek,pop,push,search</span><br><span class="line">java.util.Enumeration  nextElement</span><br><span class="line">java.util.Arrays  asList</span><br><span class="line">java.util.HashSet  &lt;init&gt;</span><br><span class="line">java.util.LinkedHashSet  &lt;init&gt;</span><br><span class="line">java.util.SortedSet  first,headSet,last,tailSet,subSet</span><br><span class="line">java.util.NavigableSet  ceiling,descendingIterator,descendingSet,floor,headSet,higher,lower,pollFirst,pollLast,subSet,tailSet</span><br><span class="line">java.util.TreeSet  &lt;init&gt;</span><br><span class="line">java.util.concurrent.ConcurrentSkipListSet  &lt;init&gt;</span><br><span class="line">java.util.concurrent.CopyOnWriteArraySet  &lt;init&gt;</span><br><span class="line">java.util.Map  clear,compute,computeIfAbsent,computeIfPresent,containsKey,containsValue,entrySet,forEach,get,getOrDefault,keySet,merge,put,putAll,putIfAbsent,remove,replace,replaceAll,values</span><br><span class="line">java.util.Map$Entry  getKey,getValue,setValue</span><br><span class="line">java.util.HashMap  &lt;init&gt;</span><br><span class="line">java.util.LinkedHashMap  &lt;init&gt;</span><br><span class="line">java.util.WeakHashMap  &lt;init&gt;</span><br><span class="line">java.util.IdentityHashMap  &lt;init&gt;</span><br><span class="line">java.util.TreeMap  &lt;init&gt;</span><br><span class="line">java.util.Dictionary  elements,get,keys,put,remove</span><br><span class="line">java.util.Hashtable  &lt;init&gt;</span><br><span class="line">java.util.Properties  &lt;init&gt;,getProperty,load,loadFromXML,propertyNames,setProperty,stringPropertyNames</span><br><span class="line">java.util.Collections  addAll,asLifoQueue,binarySearch,checkedCollection,checkedList,checkedMap,checkedNavigableMap,checkedNavigableSet,checkedQueue,checkedSet,checkedSortedMap,checkedSortedSet,copy,disjoint,emptyEnumeration,emptyIterator,emptyListIterator,emptyMap,emptyNavigableMap,emptyNavigableSet,emptySet,emptySortedMap,emptySortedSet,enumeration,fill,frequency,indexOfSubList,lastIndexOfSubList,list,max,min,nCopies,newSetFromMap,replaceAll,reverse,rotate,shuffle,singleton,singletonList,singletonMap,sort,swap,synchronizedCollection,synchronizedList,synchronizedMap,synchronizedNavigableMap,synchronizedNavigableSet,synchronizedSet,synchronizedSortedMap,synchronizedSortedSet,unmodifiableCollection,unmodifiableList,unmodifiableMap,unmodifiableNavigableMap,unmodifiableNavigableSet,unmodifiableSet,unmodifiableSortedMap,unmodifiableSortedSet</span><br><span class="line"></span><br><span class="line">//dropwizard</span><br><span class="line">io.dropwizard.servlets.Servlets  getFullUrl</span><br><span class="line"></span><br><span class="line">//guava</span><br><span class="line">com.google.common.base.Optional  or</span><br><span class="line"></span><br><span class="line">//java-ee</span><br><span class="line">javax.servlet.ServletRequest  getAttributeNames,getCharacterEncoding,getContentType,getLocalAddr,getLocalName,getParameter,getParameterMap,getParameterNames,getParameterValues,getProtocol,getRealPath,getRemoteAddr,getRemoteHost,getRequestDispatcher,getScheme,getServerName</span><br><span class="line">javax.servlet.http.HttpServletRequest  getAttributeNames,changeSessionId,getAuthType,getCharacterEncoding,getContentType,getContextPath,getCookies,getHeader,getHeaderNames,getHeaders,getLocalAddr,getLocalName,getMethod,getParameter,getParameterMap,getParameterNames,getParameterValues,getProtocol,getPathInfo,getPathTranslated,getQueryString,getRealPath,getRemoteAddr,getRemoteHost,getRemoteUser,getRequestDispatcher,getRequestURI,getRequestURL,getScheme,getServerName,getServletPath</span><br><span class="line">javax.servlet.http.HttpServletRequestWrapper  getAttributeNames,changeSessionId,getAuthType,getCharacterEncoding,getContentType,getContextPath,getCookies,getHeader,getHeaderNames,getHeaders,getLocalAddr,getLocalName,getMethod,getParameter,getParameterMap,getParameterNames,getParameterValues,getProtocol,getPathInfo,getPathTranslated,getQueryString,getRealPath,getRemoteAddr,getRemoteHost,getRemoteUser,getRequestDispatcher,getRequestURI,getRequestURL,getScheme,getServerName,getServletPath</span><br><span class="line">javax.servlet.ServletRequestWrapper  getAttributeNames,getCharacterEncoding,getContentType,getLocalAddr,getLocalName,getParameter,getParameterMap,getParameterNames,getParameterValues,getProtocol,getRealPath,getRemoteAddr,getRemoteHost,getRequestDispatcher,getScheme,getServerName</span><br><span class="line">javax.servlet.http.Cookie  getComment,getDomain,getName,getPath,getValue</span><br><span class="line">javax.servlet.ServletContext  getContextPath,getNamedDispatcher,getRequestDispatcher,getRealPath,getResource,getResourceAsStream,getResourcePaths</span><br><span class="line">javax.servlet.jsp.JspWriter  write,print,println</span><br><span class="line">org.apache.commons.fileupload.FileItem  getName</span><br><span class="line">javax.ws.rs.core.MultivaluedMap  getFirst</span><br><span class="line"></span><br><span class="line">//java-lang</span><br><span class="line">Ljava.lang  String;:#IMMUTABLE,Boolean;:SAFE#IMMUTABLE,Character;:SAFE#IMMUTABLE,Double;:SAFE#IMMUTABLE,Float;:SAFE#IMMUTABLE,Integer;:SAFE#IMMUTABLE,Long;:SAFE#IMMUTABLE,Byte;:SAFE#IMMUTABLE,Short;:SAFE#IMMUTABLE</span><br><span class="line">Ljava.io  File;:#IMMUTABLE</span><br><span class="line">Ljava.util  Locale;:#IMMUTABLE,Date;:SAFE#IMMUTABLE</span><br><span class="line">Ljava.net  Inet4Address;:#IMMUTABLE,Inet6Address;:#IMMUTABLE,InetSocketAddress;:#IMMUTABLE,URI;:#IMMUTABLE,URL;:#IMMUTABLE</span><br><span class="line">Ljava.math  BigInteger;:SAFE#IMMUTABLE,BigDecimal;:SAFE#IMMUTABLE</span><br><span class="line">Ljava.sql  Time;:SAFE#IMMUTABLE</span><br><span class="line">Ljava.time  Duration;:SAFE#IMMUTABLE,Instant;:SAFE#IMMUTABLE,LocalDate;:SAFE#IMMUTABLE,LocalDateTime;:SAFE#IMMUTABLE,LocalTime;:SAFE#IMMUTABLE,MonthDay;:SAFE#IMMUTABLE,OffsetDateTime;:SAFE#IMMUTABLE,OffsetTime;:SAFE#IMMUTABLE,Period;:SAFE#IMMUTABLE,Year;:SAFE#IMMUTABLE,YearMonth;:SAFE#IMMUTABLE,ZonedDateTime;:SAFE#IMMUTABLE,ZonedId;:SAFE#IMMUTABLE,ZoneOffset;:SAFE#IMMUTABLE</span><br><span class="line">Ljava.text  Format;:SAFE#IMMUTABLE,DateFormat;:SAFE#IMMUTABLE,SimpleDateFormat;:SAFE#IMMUTABLE,MessageFormat;:SAFE#IMMUTABLE,NumberFormat;:SAFE#IMMUTABLE,ChoiceFormat;:SAFE#IMMUTABLE,DecimalFormat;:SAFE#IMMUTABLE</span><br><span class="line">java.text.MessageFormat  format</span><br><span class="line">java.lang.Object  clone,equals,toString</span><br><span class="line">java.lang.Enum  name,toString</span><br><span class="line">java.lang.Iterable  forEach,iterator</span><br><span class="line">java.lang.System  clearProperty,getenv,getProperty,lineSeparator,setProperty</span><br><span class="line">java.lang.Appendable  append</span><br><span class="line">java.lang.StringBuilder  &lt;init&gt;,append,insert,delete,deleteCharAt,ensureCapacity,replace,reverse,substring,subSequence,trimToSize</span><br><span class="line">java.lang.StringBuffer  &lt;init&gt;,append,insert,delete,deleteCharAt,ensureCapacity,replace,reverse,substring,subSequence,trimToSize</span><br><span class="line">java.lang.String  &lt;init&gt;,concat,intern,format,join,replace,replaceAll,replaceFirst,split,substring,subSequence,toLowerCase,toUpperCase,trim,valueOf,getBytes</span><br><span class="line">java.util.Arrays  toString</span><br><span class="line">java.lang.CharSequence  subSequence</span><br><span class="line">java.lang.Boolean  toString</span><br><span class="line">java.lang.Character  getName,toString</span><br><span class="line">java.lang.Double  toString</span><br><span class="line">java.lang.Float  toHexString,toString</span><br><span class="line">java.lang.Integer  toBinaryString,toHexString,toOctalString,toString</span><br><span class="line">java.lang.Long  toBinaryString,toHexString,toOctalString,toString</span><br><span class="line">java.lang.Byte  toString</span><br><span class="line">java.lang.Short  toString</span><br><span class="line">java.math.BigDecimal  toEngineeringString,toPlainString,toString</span><br><span class="line">java.lang.reflect.Type  getTypeName</span><br><span class="line">java.lang.Class  getCanonicalName,getName,getResource,getSimpleName,toGenericString,toString,getResourceAsStream</span><br><span class="line">java.lang.ClassLoader  getResource,getResources,getSystemResource,getSystemResources</span><br><span class="line">java.lang.reflect.Member  getName</span><br><span class="line">java.lang.reflect.Executable  toGenericString</span><br><span class="line">java.lang.reflect.Method  toString</span><br><span class="line">java.lang.reflect.Constructor  toString</span><br><span class="line">java.lang.reflect.Field  toGenericString,toString</span><br><span class="line">java.lang.Package  getName,toString</span><br><span class="line">javax.xml.transform.stream.StreamSource  &lt;init&gt;</span><br><span class="line">java.io.FileInputStream  &lt;init&gt;</span><br><span class="line">java.io.ByteArrayInputStream  &lt;init&gt;</span><br><span class="line">java.util.ResourceBundle  getString,getStringArray,getObject</span><br><span class="line">kotlin.text.StringsKt  replace$default</span><br><span class="line">kotlin.text.Regex  replace,&lt;init&gt;</span><br><span class="line"></span><br><span class="line">//java-net</span><br><span class="line">java.net.URI  &lt;init&gt;,create,getAuthority,getFragment,getHost,getPath,getQuery,getRawAuthority,getRawFragment,getRawPath,getRawQuery,getRawSchemeSpecificPart,getRawUserInfo,getScheme,getSchemeSpecificPart,getUserInfo,normalize,parseServerAuthority,relativize,resolve,toASCIIString,toString,toURL</span><br><span class="line">java.net.URL  &lt;init&gt;,getAuthority,getContent,getFile,getHost,getPath,getProtocol,getQuery,getRef,getUserInfo,sameFile,toExternalForm,toString,toURI</span><br><span class="line">java.io.File  createTempFile,getCanonicalPath,separator:SAFE</span><br><span class="line">java.nio.file.FileSystem  getSeparator</span><br><span class="line"></span><br><span class="line">//jetty</span><br><span class="line">org.eclipse.jetty.http.HttpFields  getFieldNamesCollection,getFieldNames,getStringField,get,getCSV,getQualityCSV,getValues,valueParameters</span><br><span class="line">org.eclipse.jetty.http.HttpField  getName,getValue,getValues,toString</span><br><span class="line">org.eclipse.jetty.http.HttpCookie  getName,getValue,asString</span><br><span class="line">org.eclipse.jetty.http.HttpURI  getParam,getQuery,getHost</span><br><span class="line"></span><br><span class="line">//logging</span><br><span class="line">java.util.logging.Logger  entering,exiting,logp,logrb</span><br><span class="line">java.utilging.Logger  log</span><br><span class="line">org.apache.commons.logging.Log  debug,error,fatal,info,trace,warn</span><br><span class="line">org.slf4j.Logger  debug,error,info,trace,warn</span><br><span class="line">org.apache.logging.log4j.Logger  debug,entry,error,fatal,info,printf,trace,warn</span><br><span class="line">org.apacheging4j.Logger  log</span><br><span class="line">org.apache.log4j.Category  debug,error,fatal,info,l7dlog,warn</span><br><span class="line">org.apache4j.Category  log</span><br><span class="line">org.apache.log4j.Logger  debug,error,fatal,info,l7dlog,warn,trace</span><br><span class="line">org.apache4j.Logger  log</span><br><span class="line">org.pmw.tinylog.Logger  debug,error,info,trace,warn</span><br><span class="line">org.jboss.seam.log.Log  debug,error,fatal,info,trace,warn</span><br><span class="line"></span><br><span class="line">//other</span><br><span class="line">java.io.BufferedReader  readLine</span><br><span class="line">java.io.Console  readLine</span><br><span class="line">java.io.DataInputStream  readLine,readUTF</span><br><span class="line">java.io.LineNumberReader  readLine</span><br><span class="line">java.util.Scanner  &lt;init&gt;,next,nextLine</span><br><span class="line">java.sql.ResultSet  getNString,getString</span><br><span class="line">java.util.StringTokenizer  &lt;init&gt;,nextToken</span><br><span class="line">java.awt.TextComponent  getSelectedText,getText</span><br><span class="line">javax.swing.text.JTextComponent  getSelectedText,getText</span><br><span class="line">flexjson.JSONSerializer  deepSerialize,serialize</span><br><span class="line">javax.jdo.PersistenceManager  newQuery</span><br><span class="line"></span><br><span class="line">//portlet</span><br><span class="line">javax.portlet.PortletRequest  getPortletMode,getWindowState,getPreferences,getPortletSession,getPropertyNames,getPortalContext,getAuthType,getContextPath,getRemoteUser,getUserPrincipal,getAttributeNames,getParameter,getParameterMap,getParameterNames,getParameterValues,getRequestedSessionId,getResponseContentType,getResponseContentTypes,getLocale,getLocales,getScheme,getServerName,getWindowID,getCookies,getPrivateParameterMap,getPublicParameterMap</span><br><span class="line">javax.portlet.ActionRequest  getReader,getCharacterEncoding,getContentType</span><br><span class="line">javax.portlet.ClientDataRequest  getPortletInputStream,getReader,getCharacterEncoding,getContentType,getMethod</span><br><span class="line">javax.portlet.RenderRequest  getETag</span><br><span class="line">javax.portlet.ResourceRequest  getETag,getResourceID,getPrivateRenderParameterMap</span><br><span class="line">javax.portlet.PortletResponse  encodeURL,getNamespace</span><br><span class="line">javax.portlet.MimeResponse  createRenderURL,createActionURL,createResourceURL</span><br><span class="line">javax.portlet.RenderResponse  createRenderURL,createActionURL,getNamespace</span><br><span class="line">javax.portlet.ResourceResponse  createRenderURL,createActionURL,createResourceURL</span><br><span class="line">javax.portlet.BaseURL  setParameter,setParameters,addProperty,setProperty,toString</span><br><span class="line"></span><br><span class="line">//sonarqube</span><br><span class="line">org.sonarqube.ws.client.Parameters  getValue,getValues,getKeys</span><br><span class="line">org.sonarqube.ws.client.Headers  getValue,getNames</span><br><span class="line">org.sonarqube.ws.client.BaseRequest  getPath,getMediaType,getParams</span><br><span class="line">org.sonarqube.ws.client.WsRequest  getPath,getMediaType,getParams</span><br><span class="line"></span><br><span class="line">//struts2-taint</span><br><span class="line">org.apache.struts2.dispatcher.Parameter  getValue</span><br><span class="line">org.apache.struts2.util.StrutsUtil  buildUrl</span><br><span class="line"></span><br><span class="line">//taint-param-annotations</span><br><span class="line">org.springframework.web.bind.annotation  PathVariable,RequestParam,RequestBody,RequestHeader,MatrixVariable,RequestPart</span><br><span class="line">org.springframework.ws.server.endpoint.annotation  RequestPayload,XPathParam</span><br><span class="line">javax.ws.rs  PathParam,HeaderParam,MatrixParam,CookieParam,FormParam,QueryParam</span><br><span class="line"></span><br><span class="line">//taint-sensitive-data</span><br><span class="line">java.lang.System  getenv,getProperty</span><br><span class="line">com.typesafe.config.Config  getString</span><br><span class="line">play.api.Configuration  getString</span><br><span class="line"></span><br><span class="line">//tainted-system-variables</span><br><span class="line">java.lang.System  clearProperty,getenv,getProperty,setProperty</span><br><span class="line"></span><br><span class="line">//wicket</span><br><span class="line">org.apache.wicket.protocol.http.request.WebClientInfo  getUserAgent,getUserAgentStringLc,getRemoteAddr</span><br><span class="line">org.apache.wicket.request.http.WebRequest  getHeaders,getHeader</span><br><span class="line">org.apache.wicket.protocol.http.ClientProperties  getNavigatorAppCodeName,getNavigatorAppName,getNavigatorAppVersion,getNavigatorLanguage,getNavigatorPlatform,getNavigatorUserAgent,getRemoteAddress,getHostname</span><br><span class="line">org.apache.wicket.request.IRequestParameters  getParameterNames,getParameterValue,getParameterValues</span><br><span class="line">org.apache.wicket.protocol.http.servlet.ServletPartFileItem  getName,getFileName,get,getString,getInputStream</span><br></pre></td></tr></table></figure>
+
+</div>
+
+<br>
+<div><center>
+  <span>Copyright &copy; Mi1k7ea</span>  |  <span id="busuanzi_container_site_uv">访客 <span id="busuanzi_value_site_uv"></span> </span>  |  <span id="busuanzi_container_site_pv">总访问量 <span id="busuanzi_value_site_pv"></span> 次</span>
+</center></div>
+
+
+  <div class="book-comments">
+    
+
+
+
+
+  </div>
+
+
+<script src="/js/book-post.js"></script>
+        </div>
+      </div>
+
+      <div class="column col-2 hide-lg">
+        <div class="book-toc">
+  <div class="book-tocbot">
+  </div>
+  <div class="book-tocbot-menu">
+    <a class="book-toc-expand" onclick="expand_toc()">Expand all</a>
+    <a onclick="go_top()">Back to top</a>
+    <a onclick="go_bottom()">Go to bottom</a>
+  </div>
+</div>
+
+<script>
+tocbot.init({
+  tocSelector: '.book-tocbot',
+  contentSelector: '.book-post',
+  headingSelector: 'h1, h2, h3, h4, h5',
+  collapseDepth: 2,
+  orderedList: false,
+  scrollSmooth: false,
+});
+
+function expand_toc(){
+  var b = document.querySelector(".book-toc-expand");
+  tocbot.init({
+    tocSelector: '.book-tocbot',
+    contentSelector: '.book-post',
+    headingSelector: 'h1, h2, h3, h4, h5',
+    collapseDepth: 6,
+    orderedList: false,
+    scrollSmooth: false,
+  });
+  b.setAttribute("onclick", "collapse_toc()");
+  b.innerHTML = "Collapse all"
+}
+
+function collapse_toc(){
+  var b = document.querySelector(".book-toc-expand");
+  tocbot.init({
+    tocSelector: '.book-tocbot',
+    contentSelector: '.book-post',
+    headingSelector: 'h1, h2, h3, h4, h5',
+    collapseDepth: 2,
+    orderedList: false,
+    scrollSmooth: false,
+  });
+  b.setAttribute("onclick", "expand_toc()");
+  b.innerHTML = "Expand all"
+}
+
+function go_top() {
+  window.scrollTo(0, 0);
+}
+
+function go_bottom() {
+  window.scrollTo(0, document.body.scrollHeight);
+}
+
+</script>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

