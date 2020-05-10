@@ -1,0 +1,39 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> BlackHat 2019 Web小结 · Mi1k7ea</title><meta name="description" content="BlackHat 2019 Web小结 - Mi1k7ea"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/1.jpg"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="https://www.mi1k7ea.com/atom.xml" title="Mi1k7ea"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/1.jpg" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">MI1K7EA</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">归档</a></li><li class="nav-list-item"><a href="/tags/" target="_self" class="nav-list-link">分类</a></li><li class="nav-list-item"><a href="/about/" target="_self" class="nav-list-link">关于</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">BlackHat 2019 Web小结</h1><div class="post-info">2020年4月20日</div><div class="post-content"><h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>最近整理下BlackHat 2019 Web相关议题，做下学习笔记。</p>
+<h2 id="0x01-Make-Redirection-Evil-Again-URL-Parser-Issues-in-OAuth"><a href="#0x01-Make-Redirection-Evil-Again-URL-Parser-Issues-in-OAuth" class="headerlink" title="0x01 Make Redirection Evil Again - URL Parser Issues in OAuth"></a>0x01 Make Redirection Evil Again - URL Parser Issues in OAuth</h2><p>PDF：</p>
+<p><a href="https://i.blackhat.com/asia-19/Fri-March-29/bh-asia-Wang-Make-Redirection-Evil-Again.pdf" target="_blank" rel="noopener">https://i.blackhat.com/asia-19/Fri-March-29/bh-asia-Wang-Make-Redirection-Evil-Again.pdf</a></p>
+<p><a href="http://i.blackhat.com/asia-19/Fri-March-29/bh-asia-Wang-Make-Redirection-Evil-Again-wp.pdf" target="_blank" rel="noopener">http://i.blackhat.com/asia-19/Fri-March-29/bh-asia-Wang-Make-Redirection-Evil-Again-wp.pdf</a></p>
+<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>本议题主要介绍利用URL解析问题来绕过限制进行各种任意URL跳转攻击。</p>
+<p>作者先介绍了什么是OAuth 2.0。OAuth（开放授权）是一个开放标准，允许用户授权第三方移动应用访问他们存储在另外的服务提供者上的信息，而不需要将用户名和密码提供给第三方移动应用或分享他们数据的所有内容，OAuth2.0是OAuth协议的延续版本，但不向后兼容OAuth 1.0即完全废止了OAuth1.0。</p>
+<p>OAuth 2.0协议细节如图：</p>
+<p><img src="/2020/04/20/BlackHat-2019-Web小结/1.png" alt=""></p>
+<p>但是，如果OAuth 2.0登录时的重定向页面参数如上图的redirect_uri参数可被攻击者控制，那么将会造成任意URL跳转攻击：</p>
+<p><img src="/2020/04/20/BlackHat-2019-Web小结/2.png" alt=""></p>
+<p>针对这种攻击场景，开发者往往会采取一系列的校验措施，但是仅有校验完整的URL时才是无风险的，其他的校验方法会存在缺陷：</p>
+<p><img src="/2020/04/20/BlackHat-2019-Web小结/3.png" alt=""></p>
+<p>后面就看下几种绕过URL校验的技巧。</p>
+<h3 id="Evil-Slash-Trick（恶意反斜杠）"><a href="#Evil-Slash-Trick（恶意反斜杠）" class="headerlink" title="Evil Slash Trick（恶意反斜杠）"></a>Evil Slash Trick（恶意反斜杠）</h3><p>如图，攻击者在redirect_uri参数中注入<code>https://evil.com\@good.com</code>，该URL在服务端校验时解析的Host识别的是<code>good.com</code>并将该URL内容作为302重定向响应返回给浏览器，由于浏览器会将反斜杠转换为斜杠，因此在客户端实际访问的Host为<code>evil.com</code>：</p>
+<p><img src="/2020/04/20/BlackHat-2019-Web小结/4.png" alt=""></p>
+<p>这是因为大多数浏览器都会将<code>/</code>和<code>\</code>视为路径分隔符，当用户在地址栏输入URL时，浏览器都是自动将<code>\</code>替换成<code>/</code>。</p>
+<h3 id="Server-Decoding-Error（服务端解码错误）"><a href="#Server-Decoding-Error（服务端解码错误）" class="headerlink" title="Server Decoding Error（服务端解码错误）"></a>Server Decoding Error（服务端解码错误）</h3><p>如图，攻击者在redirect_uri参数中注入<code>https://evil.com%ff@good.com</code>，这里<code>%ff</code>为超出ASCII范围的字符、并不是正常的URL编码内容，在服务端进行URL校验时由于解码错误导致识别的Host为<code>good.com</code>，当响应给浏览器重定向时该不可打印的字符被统一转换为了<code>?</code>，从而浏览器解析的时候被截断跳转到<code>evil.com</code>：</p>
+<p><img src="/2020/04/20/BlackHat-2019-Web小结/5.png" alt=""></p>
+<h3 id="Browser-Decoding-Error（浏览器解码错误）"><a href="#Browser-Decoding-Error（浏览器解码错误）" class="headerlink" title="Browser Decoding Error（浏览器解码错误）"></a>Browser Decoding Error（浏览器解码错误）</h3><p>同上类似，不同之处在于用到<code>%bf</code>+<code>:</code>来组合使得浏览器URL解码错误，然后统一将不可见字符转换为<code>?</code>，从而绕过检测：</p>
+<p><img src="/2020/04/20/BlackHat-2019-Web小结/6.png" alt=""></p>
+<h3 id="Domain-Matching-Prefix-Matching（域名和前缀匹配）"><a href="#Domain-Matching-Prefix-Matching（域名和前缀匹配）" class="headerlink" title="Domain Matching+Prefix Matching（域名和前缀匹配）"></a>Domain Matching+Prefix Matching（域名和前缀匹配）</h3><p>如图，服务端用startsWith()函数以及url.host来检测Host和前缀名；Host部分的绕过可以利用前面的反斜杠绕过；前缀部分的校验可以通过注册一个<code>good.com.evil.com</code>即包括前缀弱校验白名单作为子域名：</p>
+<p><img src="/2020/04/20/BlackHat-2019-Web小结/7.png" alt=""></p>
+<h3 id="Malformed-Scheme（畸形的Scheme）"><a href="#Malformed-Scheme（畸形的Scheme）" class="headerlink" title="Malformed Scheme（畸形的Scheme）"></a>Malformed Scheme（畸形的Scheme）</h3><p>如图，可以利用浏览器自动补全Scheme的特性，攻击者在redirect_uri参数中注入<code>evil.com://good.com</code>，服务端校验URL识别的是<code>good.com</code>，返回浏览器后URL被补全为<code>https://evil.com://good.com</code>从而成功绕过：</p>
+<p><img src="/2020/04/20/BlackHat-2019-Web小结/8.png" alt=""></p>
+<h3 id="IPv6-Address-Parsing-Bug（IPv6地址解析Bug）"><a href="#IPv6-Address-Parsing-Bug（IPv6地址解析Bug）" class="headerlink" title="IPv6 Address Parsing Bug（IPv6地址解析Bug）"></a>IPv6 Address Parsing Bug（IPv6地址解析Bug）</h3><p>如图，某些URL解析器会将<code>[]</code>内的任何字符串视为IPv6主机而没有任何校验：</p>
+<p><img src="/2020/04/20/BlackHat-2019-Web小结/9.png" alt=""></p>
+<h2 id="0x02-Preloading-Insecurity-In-Your-Electron"><a href="#0x02-Preloading-Insecurity-In-Your-Electron" class="headerlink" title="0x02 Preloading Insecurity In Your Electron"></a>0x02 Preloading Insecurity In Your Electron</h2><p>PDF：</p>
+<p><a href="https://i.blackhat.com/asia-19/Thu-March-28/bh-asia-Carettoni-Preloading-Insecurity-In-Your-Electron.pdf" target="_blank" rel="noopener">https://i.blackhat.com/asia-19/Thu-March-28/bh-asia-Carettoni-Preloading-Insecurity-In-Your-Electron.pdf</a></p>
+<p><a href="https://i.blackhat.com/asia-19/Thu-March-28/bh-asia-Carettoni-Preloading-Insecurity-In-Your-Electron-wp.pdf" target="_blank" rel="noopener">https://i.blackhat.com/asia-19/Thu-March-28/bh-asia-Carettoni-Preloading-Insecurity-In-Your-Electron-wp.pdf</a></p>
+<p>Electron历史漏洞：</p>
+<p><a href="https://www.freebuf.com/video/207509.html" target="_blank" rel="noopener">https://www.freebuf.com/video/207509.html</a></p>
+<p>Electron基本安全测试指南：</p>
+<p><a href="https://xz.aliyun.com/t/2461" target="_blank" rel="noopener">https://xz.aliyun.com/t/2461</a></p>
+<h3 id="简介-1"><a href="#简介-1" class="headerlink" title="简介"></a>简介</h3><p>Electron是Github开发的一个开源框架，它允许使用Node.js（作为后端）和Chromium（作为前端）完成桌面GUI应用程序的开发。Electron现已被多个开源Web应用程序用于前端和后端的开发，著名项目包括Github的Atom和微软的VSC。</p>
+<p>本议题作者提出来一个新的漏洞类别，即：针对新版本的Electron应用，在没有Bypass nodeIntegration限制的情况下，可以通过BrowserWindow的Preload来扩展攻击面，实现绕过隔离来访问Node.js的原语，再次实现从XSS到RCE的攻击利用。</p>
+<h3 id="基本原理"><a href="#基本原理" class="headerlink" title="基本原理"></a>基本原理</h3><p>Electron的nodeIntegration属性是用来开启Node API访问权限的，默认不开启，因此XSS无法访问底层OS。但是Electron创建浏览器窗口时传入属性preload，preload属性能够在WebView内所有脚本执行之前先执行指定的脚本，preload环境可以使用Node API。</p>
+<p>简单地说，和PHP中利用LD_PRELOAD绕过disable_function是异曲同工之妙。</p>
+<p>具体的怎么利用看官方文档即可。</p>
+</div></article></div></main><footer><div class="paginator"><a href="/2020/04/26/浅析EL表达式注入漏洞/" class="prev">上一篇</a><a href="/2020/04/20/BlackHat-2018-Web小结/" class="next">下一篇</a></div><div class="copyright"><p>© 2019 - 2020 <a href="https://www.mi1k7ea.com">Mi1k7ea</a>  |  <span id="busuanzi_container_site_uv">访客 <span id="busuanzi_value_site_uv"></span> </span>  |  <span id="busuanzi_container_site_pv">总访问量 <span id="busuanzi_value_site_pv"></span> 次</span></p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></body></html>
