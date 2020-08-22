@@ -1,4 +1,139 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> BlackHat 2017 Web小结 · Mi1k7ea</title><meta name="description" content="BlackHat 2017 Web小结 - Mi1k7ea"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/1.jpg"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="https://www.mi1k7ea.com/atom.xml" title="Mi1k7ea"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/1.jpg" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">MI1K7EA</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">归档</a></li><li class="nav-list-item"><a href="/tags/" target="_self" class="nav-list-link">分类</a></li><li class="nav-list-item"><a href="/about/" target="_self" class="nav-list-link">关于</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">BlackHat 2017 Web小结</h1><div class="post-info">2020年4月19日</div><div class="post-content"><h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>最近整理下BlackHat 2017 Web相关议题，做下学习笔记。</p>
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#202020">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+  
+  
+    <meta name="keywords" content="Web安全,BlackHat,">
+  
+
+  
+    <meta name="description" content="d2VsY29tZSB0byBteSBibG9n">
+  
+  
+  
+  <link rel="icon" type="image/x-icon" href="/1.jpg">
+  
+  <title>BlackHat 2017 Web小结 [ Mi1k7ea ]</title>
+  
+    <!-- stylesheets list from config.yml -->
+    
+      <link rel="stylesheet" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css">
+    
+      <link rel="stylesheet" href="/css/xoxo.css">
+    
+  
+</head>
+
+
+<body>
+  <div class="nav-container">
+    <nav class="home-menu pure-menu pure-menu-horizontal">
+  <a class="pure-menu-heading" href="/">
+    
+      <img class="avatar" src="/1.jpg">
+    
+    <span class="title" style="text-transform:none">Mi1k7ea</span>
+  </a>
+
+  <ul class="pure-menu-list clearfix">
+      
+          
+            
+              <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">归档</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/categories" class="pure-menu-link">分类</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/2019/01/01/mindmap/" class="pure-menu-link">导图</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/project" class="pure-menu-link">项目</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
+            
+              <a href="#" id="关于" class="pure-menu-link">关于</a>
+              <ul class="pure-menu-children">
+              
+                  
+                    <li class="pure-menu-item"><a href="/about" style="color:#202020;" class="pure-menu-link">Mi1k7ea</a></li>
+                  
+              
+                  
+                    <li class="pure-menu-item"><a href="https://xz.aliyun.com/u/30398" style="color:#202020;" class="pure-menu-link">先知</a></li>
+                  
+              
+                  
+                    <li class="pure-menu-item"><a href="https://blog.csdn.net/ski_12" style="color:#202020;" class="pure-menu-link">CSDN</a></li>
+                  
+              
+              </ul>
+            </li>
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/atom.xml" class="pure-menu-link">RSS</a></li>
+            
+          
+      
+  </ul>
+   
+</nav>
+
+  </div>
+
+  <div class="container" id="content-outer">
+    <div class="inner" id="content-inner">
+      <div class="post-container">
+  <article class="post" id="post">
+    <header class="post-header text-center">
+      <h1 class="title">
+        BlackHat 2017 Web小结
+      </h1>
+      <span>
+        
+        <time class="time" datetime="2020-04-19T06:43:43.000Z">
+        2020-04-19
+      </time>
+        
+      </span>
+      <span class="slash">/</span>
+      <span class="post-meta">
+      <span class="post-tags">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BlackHat/">BlackHat</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Web安全/">Web安全</a></li></ul>
+      </span>
+    </span>
+      <span class="slash">/</span>
+      <span class="read">
+      <span id="busuanzi_value_page_pv"></span> 点击
+    </span>
+      <span class="slash">/</span>
+    </header>
+
+    <div class="post-content">
+      <h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>最近整理下BlackHat 2017 Web相关议题，做下学习笔记。</p>
 <h2 id="0x01-WEB-CACHE-DECEPTION-ATTACK（Web缓存欺骗攻击）"><a href="#0x01-WEB-CACHE-DECEPTION-ATTACK（Web缓存欺骗攻击）" class="headerlink" title="0x01 WEB CACHE DECEPTION ATTACK（Web缓存欺骗攻击）"></a>0x01 WEB CACHE DECEPTION ATTACK（Web缓存欺骗攻击）</h2><p>PDF：<a href="https://www.blackhat.com/docs/us-17/wednesday/us-17-Gil-Web-Cache-Deception-Attack.pdf" target="_blank" rel="noopener">https://www.blackhat.com/docs/us-17/wednesday/us-17-Gil-Web-Cache-Deception-Attack.pdf</a></p>
 <p>相关参考：<a href="https://www.freebuf.com/articles/web/187538.html" target="_blank" rel="noopener">一种新型的Web缓存欺骗攻击技术</a></p>
 <h3 id="攻击原理"><a href="#攻击原理" class="headerlink" title="攻击原理"></a>攻击原理</h3><blockquote>
@@ -204,4 +339,211 @@
 <p>具体的Script Gadget PoC都在：<a href="https://github.com/google/security-research-pocs" target="_blank" rel="noopener">https://github.com/google/security-research-pocs</a></p>
 <h3 id="研究结论"><a href="#研究结论" class="headerlink" title="研究结论"></a>研究结论</h3><p>除了React库外，其他库都存在Script Gadget可以绕过特定的XSS Mitigation，其中Emberjs仅在开发者版本中存在绕过风险：</p>
 <p><img src="/2020/04/19/BlackHat-2017-Web小结/18.png" alt=""></p>
-</div></article></div></main><footer><div class="paginator"><a href="/2020/04/20/BlackHat-2018-Web小结/" class="prev">上一篇</a><a href="/2020/04/01/Tomcat-URL解析差异性及利用/" class="next">下一篇</a></div><div class="copyright"><p>© 2019 - 2020 <a href="https://www.mi1k7ea.com">Mi1k7ea</a>  |  <span id="busuanzi_container_site_uv">访客 <span id="busuanzi_value_site_uv"></span> </span>  |  <span id="busuanzi_container_site_pv">总访问量 <span id="busuanzi_value_site_pv"></span> 次</span></p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></body></html>
+
+    </div>
+
+  </article>
+  <div class="toc-container">
+    
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00-前言"><span class="toc-text">0x00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-WEB-CACHE-DECEPTION-ATTACK（Web缓存欺骗攻击）"><span class="toc-text">0x01 WEB CACHE DECEPTION ATTACK（Web缓存欺骗攻击）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#攻击原理"><span class="toc-text">攻击原理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-CRACKING-THE-LENS-TARGETING-HTTP’S-HIDDEN-ATTACK-SURFACE（HTTP的隐藏攻击面）"><span class="toc-text">0x02 CRACKING THE LENS: TARGETING HTTP’S HIDDEN ATTACK-SURFACE（HTTP的隐藏攻击面）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#简介"><span class="toc-text">简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#攻击方法"><span class="toc-text">攻击方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Listening监听"><span class="toc-text">Listening监听</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Research-Pipeline"><span class="toc-text">Research Pipeline</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Scaling-up扩大攻击面"><span class="toc-text">Scaling up扩大攻击面</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#案例——Misrouting-Requests"><span class="toc-text">案例——Misrouting Requests</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Invalid-Host"><span class="toc-text">Invalid Host</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Handling-input-permutation"><span class="toc-text">Handling input permutation</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Host-overriding"><span class="toc-text">Host overriding</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Ambiguous-requests"><span class="toc-text">Ambiguous requests</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Breaking-expectations"><span class="toc-text">Breaking expectations</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Tunnels"><span class="toc-text">Tunnels</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#案例——Targeting-auxiliary-systems"><span class="toc-text">案例——Targeting auxiliary systems</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Gathering-information"><span class="toc-text">Gathering information</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Pre-emptive-caching"><span class="toc-text">Pre-emptive caching</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-JSON-ATTACKS"><span class="toc-text">0x03 JSON ATTACKS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#简介-1"><span class="toc-text">简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JSON反序列化过程"><span class="toc-text">JSON反序列化过程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#通过默认构造函数与反射实现"><span class="toc-text">通过默认构造函数与反射实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#通过默认构造函数与setters实现"><span class="toc-text">通过默认构造函数与setters实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#通过特殊构造函数-类型转换器-回调函数实现"><span class="toc-text">通过特殊构造函数/类型转换器/回调函数实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RCE-Gadgets"><span class="toc-text">RCE Gadgets</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#org-hibernate-jmx-StatisticsService"><span class="toc-text">org.hibernate.jmx.StatisticsService</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#com-atomikos-icatch-jta-RemoteClientUserTransaction"><span class="toc-text">com.atomikos.icatch.jta.RemoteClientUserTransaction</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#com-sun-rowset-JdbcRowSetImpl"><span class="toc-text">com.sun.rowset.JdbcRowSetImpl</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#org-antlr-stringtemplate-StringTemplate"><span class="toc-text">org.antlr.stringtemplate.StringTemplate</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#各种JSON库的安全性与漏洞模式"><span class="toc-text">各种JSON库的安全性与漏洞模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Jackson"><span class="toc-text">Jackson</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Genson"><span class="toc-text">Genson</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#JSON-IO"><span class="toc-text">JSON-IO</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#FlexSON"><span class="toc-text">FlexSON</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#对类型检查防御的Bypass思路"><span class="toc-text">对类型检查防御的Bypass思路</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04-A-NEW-ERA-OF-SSRF-EXPLOITING-URL-PARSER-IN-TRENDING-PROGRAMMING-LANGUAGES-（利用URL解析器进行SSRF攻击）"><span class="toc-text">0x04 A NEW ERA OF SSRF - EXPLOITING URL PARSER IN TRENDING PROGRAMMING LANGUAGES!（利用URL解析器进行SSRF攻击）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#简介-2"><span class="toc-text">简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#基本概念与原理"><span class="toc-text">基本概念与原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#技术点"><span class="toc-text">技术点</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#SNI注入"><span class="toc-text">SNI注入</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Node-JS"><span class="toc-text">Node.JS</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#glibc-NSS特性"><span class="toc-text">glibc NSS特性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#遵循的标准不同"><span class="toc-text">遵循的标准不同</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x05-DON’T-TRUST-THE-DOM-BYPASSING-XSS-MITIGATIONS-VIA-SCRIPT-GADGETS（利用Script-Gadgets绕过XSS缓解措施）"><span class="toc-text">0x05 DON’T TRUST THE DOM: BYPASSING XSS MITIGATIONS VIA SCRIPT GADGETS（利用Script Gadgets绕过XSS缓解措施）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#基本概念与原理-1"><span class="toc-text">基本概念与原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#研究结论"><span class="toc-text">研究结论</span></a></li></ol></li></ol>
+  </div>
+
+
+  </div>
+</div>
+<div class="copyright">
+    <span>本作品采用</span>
+    <a href="https://creativecommons.org/licenses/by/4.0/">知识共享署名 4.0 国际许可协议</a>
+    <span>进行许可。 转载时请注明原文链接。</span>
+</div>
+
+
+  
+    <div class="post-nav">
+      <div class="post-nav-item post-nav-next">
+        
+          <span>〈 </span>
+          <a href="/2020/04/01/Tomcat-URL解析差异性及利用/" rel="next" title="（先知首发）Tomcat URL解析差异性导致的安全问题">
+          （先知首发）Tomcat URL解析差异性导致的安全问题
+          </a>
+        
+      </div>
+  
+      <div class="post-nav-item post-nav-prev">
+          
+          <a href="/2020/04/20/BlackHat-2018-Web小结/" rel="prev" title="BlackHat 2018 Web小结">
+            BlackHat 2018 Web小结
+          </a>
+          <span>〉</span>
+        
+      </div>
+    </div>
+  
+
+
+    </div>
+
+    
+    
+
+  </div>
+  <footer class="footer text-center">
+    <div id="bottom-inner">
+        <span>Copyright &copy; Mi1k7ea</span>  |  
+        <span id="busuanzi_container_site_pv">访客 <span id="busuanzi_value_site_pv"></span></span> | 
+        <span id="busuanzi_container_site_uv">总访问量 <span id="busuanzi_value_site_uv"></span></span>
+    </div>
+</footer>
+
+  
+
+<script>
+  (function(window, document, undefined) {
+
+    var timer = null;
+
+    function returnTop() {
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(function fn() {
+        var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (oTop > 0) {
+          document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
+          timer = requestAnimationFrame(fn);
+        } else {
+          cancelAnimationFrame(timer);
+        }
+      });
+    }
+
+    var hearts = [];
+    window.requestAnimationFrame = (function() {
+      return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+          setTimeout(callback, 1000 / 60);
+        }
+    })();
+    init();
+
+    function init() {
+      css(".heart{z-index:9999;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+      attachEvent();
+      gameloop();
+      addMenuEvent();
+    }
+
+    function gameloop() {
+      for (var i = 0; i < hearts.length; i++) {
+        if (hearts[i].alpha <= 0) {
+          document.body.removeChild(hearts[i].el);
+          hearts.splice(i, 1);
+          continue;
+        }
+        hearts[i].y--;
+        hearts[i].scale += 0.004;
+        hearts[i].alpha -= 0.013;
+        hearts[i].el.style.cssText = "left:" + hearts[i].x + "px;top:" + hearts[i].y + "px;opacity:" + hearts[i].alpha + ";transform:scale(" + hearts[i].scale + "," + hearts[i].scale + ") rotate(45deg);background:" + hearts[i].color;
+      }
+      requestAnimationFrame(gameloop);
+    }
+
+    /**
+     * 给logo设置点击事件
+     * 
+     * - 回到顶部
+     * - 出现爱心
+     */
+    function attachEvent() {
+      var old = typeof window.onclick === "function" && window.onclick;
+      var logo = document.getElementById("logo");
+      if (logo) {
+        logo.onclick = function(event) {
+          returnTop();
+          old && old();
+          createHeart(event);
+        }
+      }
+      
+    }
+
+    function createHeart(event) {
+      var d = document.createElement("div");
+      d.className = "heart";
+      hearts.push({
+        el: d,
+        x: event.clientX - 5,
+        y: event.clientY - 5,
+        scale: 1,
+        alpha: 1,
+        color: randomColor()
+      });
+      document.body.appendChild(d);
+    }
+
+    function css(css) {
+      var style = document.createElement("style");
+      style.type = "text/css";
+      try {
+        style.appendChild(document.createTextNode(css));
+      } catch (ex) {
+        style.styleSheet.cssText = css;
+      }
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
+
+    function randomColor() {
+      // return "rgb(" + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + ")";
+      return "#F44336";
+    }
+
+    function addMenuEvent() {
+      var menu = document.getElementById('menu-main-post');
+      if (menu) {
+        var toc = document.getElementById('toc');
+        if (toc) {
+          menu.onclick = function() {
+            if (toc) {
+              if (toc.style.display == 'block') {
+                toc.style.display = 'none';
+              } else {
+                toc.style.display = 'block';
+              }
+            }
+          };
+        } else {
+          menu.style.display = 'none';
+        }
+      }
+    }
+
+  })(window, document);
+</script>
+
+  
+
+
+
+  
+<script>
+  (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      }
+      else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+</body>
+</html>
