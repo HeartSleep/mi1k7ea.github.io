@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.mi1k7ea.com/project/index.html</loc>
+    
+    <lastmod>2020-09-06</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.mi1k7ea.com/2020/01/21/CSRF-Tricks%E5%B0%8F%E7%BB%93/</loc>
+    
+    <lastmod>2020-09-05</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.mi1k7ea.com/2019/01/01/mindmap/</loc>
     
     <lastmod>2020-09-05</lastmod>
@@ -12,13 +26,6 @@
     <loc>https://www.mi1k7ea.com/2020/09/05/%E4%BB%8EJenkins-RCE%E7%9C%8BGroovy%E4%BB%A3%E7%A0%81%E6%B3%A8%E5%85%A5/</loc>
     
     <lastmod>2020-09-05</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.mi1k7ea.com/project/index.html</loc>
-    
-    <lastmod>2020-09-04</lastmod>
     
   </url>
   
@@ -341,13 +348,6 @@
     <loc>https://www.mi1k7ea.com/2020/01/26/%E6%B5%85%E6%9E%90XSSJacking/</loc>
     
     <lastmod>2020-01-28</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.mi1k7ea.com/2020/01/21/CSRF-Tricks%E5%B0%8F%E7%BB%93/</loc>
-    
-    <lastmod>2020-01-25</lastmod>
     
   </url>
   
@@ -1243,7 +1243,7 @@
 
   <url>
     <loc>https://www.mi1k7ea.com/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -1251,364 +1251,364 @@
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/Web%E5%AE%89%E5%85%A8/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/%E5%AE%89%E5%85%A8%E5%BC%80%E5%8F%91/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/AWD/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/Python/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/BlackHat/</loc>
-    <lastmod>2020-09-05</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.mi1k7ea.com/tags/CORS/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/Java/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/BurpSuite/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.mi1k7ea.com/tags/CORS/</loc>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/XSS/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/CSRF/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/C-C/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/CSWSH/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/JavaScript/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/%E4%BA%8C%E8%BF%9B%E5%88%B6/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/Flash/</loc>
-    <lastmod>2020-09-05</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.mi1k7ea.com/tags/JSONP/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/PHP/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.mi1k7ea.com/tags/JSONP/</loc>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/Linux/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/SQL%E6%B3%A8%E5%85%A5/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/MongoDB/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/OGNL%E6%B3%A8%E5%85%A5/</loc>
-    <lastmod>2020-09-05</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.mi1k7ea.com/tags/%E6%A0%88%E6%BA%A2%E5%87%BA/</loc>
-    <lastmod>2020-09-05</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.mi1k7ea.com/tags/Pwn/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/CRLF%E6%B3%A8%E5%85%A5/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/%E6%B2%99%E7%AE%B1%E9%80%83%E9%80%B8/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.mi1k7ea.com/tags/%E6%A0%88%E6%BA%A2%E5%87%BA/</loc>
+    <lastmod>2020-09-06</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.mi1k7ea.com/tags/Pwn/</loc>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/Redis/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/SSI%E6%B3%A8%E5%85%A5/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/SSRF/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/SpEL%E6%B3%A8%E5%85%A5/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/Spring/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/Struts2/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/Tomcat/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/Windows/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/XML%E6%B3%A8%E5%85%A5/</loc>
-    <lastmod>2020-09-05</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.mi1k7ea.com/tags/Node-js/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/MindMap/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.mi1k7ea.com/tags/Node-js/</loc>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/Jenkins/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/Groovy/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/%E6%8F%90%E6%9D%83/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/%E5%B7%A5%E5%85%B7/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/%E5%91%BD%E4%BB%A4%E6%B3%A8%E5%85%A5/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/%E5%A0%86%E6%BA%A2%E5%87%BA/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/EL%E6%B3%A8%E5%85%A5/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/GO/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/Influxdb/</loc>
-    <lastmod>2020-09-05</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.mi1k7ea.com/tags/JNDI%E6%B3%A8%E5%85%A5/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/HRS/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.mi1k7ea.com/tags/JNDI%E6%B3%A8%E5%85%A5/</loc>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/SSTI/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/tags/XSSI/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
@@ -1617,140 +1617,140 @@
   
   <url>
     <loc>https://www.mi1k7ea.com/categories/WriteUp-Web/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/categories/Python/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/categories/Web%E5%AE%89%E5%85%A8%E5%9F%BA%E7%A1%80/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/categories/Java/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/categories/Python/Python%E5%AE%89%E5%85%A8%E5%BC%80%E5%8F%91/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/categories/C-C/</loc>
-    <lastmod>2020-09-05</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.mi1k7ea.com/categories/%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%9F%BA%E7%A1%80/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/categories/Java/Java%E5%AE%89%E5%85%A8%E5%BC%80%E5%8F%91/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.mi1k7ea.com/categories/%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%9F%BA%E7%A1%80/</loc>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/categories/WriteUp-Reverse/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/categories/Linux/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/categories/PHP/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/categories/Pwn/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/categories/Java/Spring/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/categories/Java/Struts2/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/categories/WriteUp-Pwn/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/categories/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/categories/JavaScript/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/categories/%E6%8F%90%E6%9D%83/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/categories/Windows/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.mi1k7ea.com/categories/GO/</loc>
-    <lastmod>2020-09-05</lastmod>
+    <lastmod>2020-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>

@@ -312,6 +312,102 @@
 <h4 id="绕过正则表达式"><a href="#绕过正则表达式" class="headerlink" title="绕过正则表达式"></a>绕过正则表达式</h4><p>如果referer检查是基于白名单的，你可以尝试绕过验证URL的正则表达式。例如，你可以尝试在referer的URL中将受害者域名置于二级域名区域或者URL目录区域。</p>
 <p>如果一个站点在referer字段检查“bank.com”字段，那么“bank.com.attacker.com”或”attakcer.com/bank.com”可能可以绕过这种检测。</p>
 <h4 id="判断Referer是某域情况下绕过"><a href="#判断Referer是某域情况下绕过" class="headerlink" title="判断Referer是某域情况下绕过"></a>判断Referer是某域情况下绕过</h4><p> 比如你找的csrf是xxx.com验证的referer是验证的*.xx.com可以找个二级域名之后<code>&lt;img &quot;csrf地址&quot;&gt;</code>之后在把文章地址发出去就可以伪造。</p>
+<h2 id="0x09-Cookie的SameSite属性"><a href="#0x09-Cookie的SameSite属性" class="headerlink" title="0x09 Cookie的SameSite属性"></a>0x09 Cookie的SameSite属性</h2><p>众所周知，正是cookie的滥用，才导致了CSRF漏洞的存在。</p>
+<p>在Cookie出现SameSite属性之前，针对CSRF攻击的防御措施都是基于Anti-CSRF Token机制或者校验Referer头字段。</p>
+<p>从Chrome 51开始，浏览器的Cookie新增加了一个SameSite属性，用来防止CSRF攻击和用户追踪（当然也能防御XSSI）。</p>
+<p>其中可以设置如下三个属性值：</p>
+<ul>
+<li>Strict</li>
+<li>Lax</li>
+<li>None</li>
+</ul>
+<h3 id="Strict"><a href="#Strict" class="headerlink" title="Strict"></a>Strict</h3><blockquote>
+<p>Strict最为严格，完全禁止第三方 Cookie，跨站点时，任何情况下都不会发送 Cookie。换言之，只有当前网页的 URL 与请求目标一致，才会带上 Cookie。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Set-Cookie: CookieName=CookieValue; SameSite=Strict;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这个规则过于严格，可能造成非常不好的用户体验。比如，当前网页有一个 GitHub 链接，用户点击跳转就不会带有 GitHub 的 Cookie，跳转过去总是未登陆状态。</p>
+</blockquote>
+<h3 id="Lax"><a href="#Lax" class="headerlink" title="Lax"></a>Lax</h3><blockquote>
+<p>Lax规则稍稍放宽，大多数情况也是不发送第三方 Cookie，但是导航到目标网址的 Get 请求除外。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Set-Cookie: CookieName=CookieValue; SameSite=Lax;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>导航到目标网址的 GET 请求，只包括三种情况：链接，预加载请求，GET 表单。详见下表。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>请求类型</th>
+<th>示例</th>
+<th>正常情况</th>
+<th>Lax</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>链接</td>
+<td><code>&lt;a href=&quot;...&quot;&gt;&lt;/a&gt;</code></td>
+<td>发送 Cookie</td>
+<td>发送 Cookie</td>
+</tr>
+<tr>
+<td>预加载</td>
+<td><code>&lt;link rel=&quot;prerender&quot; href=&quot;...&quot;/&gt;</code></td>
+<td>发送 Cookie</td>
+<td>发送 Cookie</td>
+</tr>
+<tr>
+<td>GET 表单</td>
+<td><code>&lt;form method=&quot;GET&quot; action=&quot;...&quot;&gt;</code></td>
+<td>发送 Cookie</td>
+<td>发送 Cookie</td>
+</tr>
+<tr>
+<td>POST 表单</td>
+<td><code>&lt;form method=&quot;POST&quot; action=&quot;...&quot;&gt;</code></td>
+<td>发送 Cookie</td>
+<td>不发送</td>
+</tr>
+<tr>
+<td>iframe</td>
+<td><code>&lt;iframe src=&quot;...&quot;&gt;&lt;/iframe&gt;</code></td>
+<td>发送 Cookie</td>
+<td>不发送</td>
+</tr>
+<tr>
+<td>AJAX</td>
+<td><code>$.get(&quot;...&quot;)</code></td>
+<td>发送 Cookie</td>
+<td>不发送</td>
+</tr>
+<tr>
+<td>Image</td>
+<td><code>&lt;img src=&quot;...&quot;&gt;</code></td>
+<td>发送 Cookie</td>
+<td>不发送</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>设置了Strict或Lax以后，基本就杜绝了 CSRF 攻击。当然，前提是用户浏览器支持 SameSite 属性。</p>
+</blockquote>
+<h3 id="None"><a href="#None" class="headerlink" title="None"></a>None</h3><blockquote>
+<p>Chrome 计划将Lax变为默认设置。这时，网站可以选择显式关闭SameSite属性，将其设为None。不过，前提是必须同时设置Secure属性（Cookie 只能通过 HTTPS 协议发送），否则无效。</p>
+<p>下面的设置无效。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Set-Cookie: widget_session=abc123; SameSite=None</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>下面的设置有效。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Set-Cookie: widget_session=abc123; SameSite=None; Secure</span><br></pre></td></tr></table></figure>
+<h3 id="安全整改"><a href="#安全整改" class="headerlink" title="安全整改"></a>安全整改</h3><p>一般而言，对于业务来说是建议设置SameSite属性值为Lax的，因为Strict太影响用户体验。</p>
+<p>Lax对GET请求是放行的，因此整改的重点在于要严格区分GET和POST的职责，即GET只能进行一些查询类或导航类的访问、而不是进行状态更改，要执行一些更改类的表单操作就必须交由POST来处理，在这种场景下Lax的设置才会将风险降到较低。这是因为：</p>
+<ul>
+<li>如果用GET携带参数访问，其中的参数值将会记录在浏览器历史、Web日志以及访问其他页面的Referer头字段中；</li>
+<li>Cookie的SameSite属性设置为Lax的GET请求还是会被攻击者利用进行CSRF攻击，且GET型CSRF攻击难度低；</li>
+</ul>
+<p>当然，结合其他的Cookie头字段设置可以达到更高的安全性，可参考：<a href="https://scotthelme.co.uk/tough-cookies/" target="_blank" rel="noopener">https://scotthelme.co.uk/tough-cookies/</a></p>
 
     </div>
 
@@ -320,7 +416,7 @@
     
   <div id="toc" class="toc-article">
     <strong class="toc-title">目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00-废话"><span class="toc-text">0x00 废话</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-CSRF并非必须点击才能攻击"><span class="toc-text">0x01 CSRF并非必须点击才能攻击</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-利用iframe隐藏攻击过程"><span class="toc-text">0x02 利用iframe隐藏攻击过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-CSRF并非必需浏览器才能攻击"><span class="toc-text">0x03 CSRF并非必需浏览器才能攻击</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04-GET型CSRF利用方式多样化"><span class="toc-text">0x04 GET型CSRF利用方式多样化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x05-CSRF-XSS漏洞组合拳"><span class="toc-text">0x05 CSRF+XSS漏洞组合拳</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#CSRF-XSS"><span class="toc-text">CSRF+XSS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CSRF-Self-XSS"><span class="toc-text">CSRF+Self-XSS</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x06-CSRF-文件上传漏洞组合拳"><span class="toc-text">0x06 CSRF+文件上传漏洞组合拳</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x07-CSRF蠕虫"><span class="toc-text">0x07 CSRF蠕虫</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Demo1——纯CSRF蠕虫"><span class="toc-text">Demo1——纯CSRF蠕虫</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Demo2——XSS-CSRF组合蠕虫"><span class="toc-text">Demo2——XSS+CSRF组合蠕虫</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x08-CSRF绕过技巧收集"><span class="toc-text">0x08 CSRF绕过技巧收集</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#所有的CSRF"><span class="toc-text">所有的CSRF</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#点击劫持"><span class="toc-text">点击劫持</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#更改请求方法"><span class="toc-text">更改请求方法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CSRF-token的防御措施"><span class="toc-text">CSRF token的防御措施</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#删除token参数或发送空token"><span class="toc-text">删除token参数或发送空token</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#使用另一个session的CSRF-token"><span class="toc-text">使用另一个session的CSRF token</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Session固定"><span class="toc-text">Session固定</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Referer字段的CSRF防御"><span class="toc-text">Referer字段的CSRF防御</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Referer字段为空"><span class="toc-text">Referer字段为空</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#移除Referer字段"><span class="toc-text">移除Referer字段</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#绕过正则表达式"><span class="toc-text">绕过正则表达式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#判断Referer是某域情况下绕过"><span class="toc-text">判断Referer是某域情况下绕过</span></a></li></ol></li></ol></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00-废话"><span class="toc-text">0x00 废话</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-CSRF并非必须点击才能攻击"><span class="toc-text">0x01 CSRF并非必须点击才能攻击</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-利用iframe隐藏攻击过程"><span class="toc-text">0x02 利用iframe隐藏攻击过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-CSRF并非必需浏览器才能攻击"><span class="toc-text">0x03 CSRF并非必需浏览器才能攻击</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04-GET型CSRF利用方式多样化"><span class="toc-text">0x04 GET型CSRF利用方式多样化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x05-CSRF-XSS漏洞组合拳"><span class="toc-text">0x05 CSRF+XSS漏洞组合拳</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#CSRF-XSS"><span class="toc-text">CSRF+XSS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CSRF-Self-XSS"><span class="toc-text">CSRF+Self-XSS</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x06-CSRF-文件上传漏洞组合拳"><span class="toc-text">0x06 CSRF+文件上传漏洞组合拳</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x07-CSRF蠕虫"><span class="toc-text">0x07 CSRF蠕虫</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Demo1——纯CSRF蠕虫"><span class="toc-text">Demo1——纯CSRF蠕虫</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Demo2——XSS-CSRF组合蠕虫"><span class="toc-text">Demo2——XSS+CSRF组合蠕虫</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x08-CSRF绕过技巧收集"><span class="toc-text">0x08 CSRF绕过技巧收集</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#所有的CSRF"><span class="toc-text">所有的CSRF</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#点击劫持"><span class="toc-text">点击劫持</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#更改请求方法"><span class="toc-text">更改请求方法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CSRF-token的防御措施"><span class="toc-text">CSRF token的防御措施</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#删除token参数或发送空token"><span class="toc-text">删除token参数或发送空token</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#使用另一个session的CSRF-token"><span class="toc-text">使用另一个session的CSRF token</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Session固定"><span class="toc-text">Session固定</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Referer字段的CSRF防御"><span class="toc-text">Referer字段的CSRF防御</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Referer字段为空"><span class="toc-text">Referer字段为空</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#移除Referer字段"><span class="toc-text">移除Referer字段</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#绕过正则表达式"><span class="toc-text">绕过正则表达式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#判断Referer是某域情况下绕过"><span class="toc-text">判断Referer是某域情况下绕过</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x09-Cookie的SameSite属性"><span class="toc-text">0x09 Cookie的SameSite属性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Strict"><span class="toc-text">Strict</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Lax"><span class="toc-text">Lax</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#None"><span class="toc-text">None</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安全整改"><span class="toc-text">安全整改</span></a></li></ol></li></ol>
   </div>
 
 
